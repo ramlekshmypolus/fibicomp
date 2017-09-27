@@ -8,10 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-//import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,17 +40,10 @@ public class LoginController {
 		String userName = vo.getUserName();
 		String password = vo.getPassword();
 		Boolean loginCheck = loginService.loginCheck(login_mode, userName, password, request, response);
-		/*
-		 * if (loginCheck) { return "redirect:/fibi.dashboard"; } else { return
-		 * "redirect:/loginfailed"; }
-		 */
 		if (loginCheck) {
 			return "SUCCESS";
-			// return new ResponseEntity<>(new String("SUCCESS"),
-			// HttpStatus.OK);
 		} else {
 			return "FAIL";
-			// return new ResponseEntity<>("FAIL", HttpStatus.NOT_FOUND);
 		}
 	}
 

@@ -2,13 +2,10 @@ package com.polus.fibicomp.config;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +14,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-
-import com.polus.fibicomp.pojo.PrincipalBo;
 
 @Configuration
 @PropertySource("classpath:application.properties")
@@ -99,14 +94,6 @@ public class FibiRepoConfig {
 		// asfb.setAnnotatedClasses(new Class<?>[]{PrincipalBo.class});
 		return asfb;
 	}
-
-	/*
-	 * @Bean
-	 * 
-	 * @Qualifier(value = "entityManager") public EntityManager
-	 * entityManager(EntityManagerFactory entityManagerFactory) { return
-	 * entityManagerFactory.createEntityManager(); }
-	 */
 
 	@Bean
 	public Properties getHibernateProperties() {

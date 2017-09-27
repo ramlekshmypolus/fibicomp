@@ -3,8 +3,6 @@ package com.polus.fibicomp.dao;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +12,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.internal.SessionImpl;
-import org.hibernate.jdbc.ReturningWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -26,10 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-/*import com.polus.fibicomp.pojo.AwardView;*/
 import com.polus.fibicomp.pojo.DashBoardProfile;
 import com.polus.fibicomp.pojo.PersonDTO;
-import com.polus.fibicomp.pojo.PrincipalBo;
 import com.polus.fibicomp.pojo.Protocol;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
@@ -49,46 +45,10 @@ public class DashboardDaoImpl implements DashboardDao {
 
 	@Value("${oracledb}")
 	private String oracledb;
-	
+
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
-	/*
-	 * public List<PrincipalBo> getAllUsers() { //Session session =
-	 * hibernateTemplate.getSessionFactory().getCurrentSession(); ///Criteria
-	 * criteria = session.createCriteria(PrincipalBo.class);
-	 * //criteria.add(Restrictions.eq("principalName", "admin"));
-	 * //criteria.list(); //List<PrincipalBo> bos = criteria.list();
-	 * SessionFactory sessionFactory = hibernateTemplate.getSessionFactory();
-	 * Session session = sessionFactory.openSession();//getCurrentSession();
-	 * Criteria criteria = session.createCriteria(PrincipalBo.class);
-	 * //criteria.add(Restrictions.eq("principalName", "admin"));
-	 * List<PrincipalBo> bos = criteria.list();
-	 * 
-	 * //javax.persistence.criteria.CriteriaQuery<PrincipalBo> cq =
-	 * session.getCriteriaBuilder().createQuery(PrincipalBo.class);
-	 * //cq.from(PrincipalBo.class); //List<PrincipalBo> bos =
-	 * session.createQuery(cq).getResultList();
-	 * 
-	 * //List<PrincipalBo> bos =
-	 * this.hibernateTemplate.loadAll(PrincipalBo.class);
-	 * 
-	 * 
-	 * org.hibernate.Query query = session.createSQLQuery(
-	 * "CALL GET_IRB_FOR_DASHBOARD(:av_person_id,:av_from_row,:av_to_row,:av_sort_column,:av_sort_order,:av_search_field)"
-	 * ); query.setString("av_person_id", "admin");
-	 * //query.setLong("av_from_row", pageNumber - 30 + 1);
-	 * query.setLong("av_from_row", 0); //query.setLong("av_from_row", 0);
-	 * query.setLong("av_to_row", 30); query.setString("av_sort_column",
-	 * "update_timestamp"); query.setString("av_sort_order", "DESC");
-	 * query.setString("av_search_field", "");
-	 * query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-	 * 
-	 * List<Object> protocols = query.list(); System.out.println(
-	 * "\n protocols : " + protocols); return bos; }
-	 */
-
-	/* @Override */
 	public String getDashBoardResearchSummary1(PersonDTO personDTO) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
@@ -152,6 +112,7 @@ public class DashboardDaoImpl implements DashboardDao {
 	public String getDashBoardResearchSummary(PersonDTO personDTO) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
+			logger.info("getDashBoardResearchSummary");
 			ArrayList<HashMap<String, Object>> dashboardResearchMap = new ArrayList<HashMap<String, Object>>();
 			List<ResearchSummaryView> dashboardResearchMapdetails = hibernateTemplate
 					.loadAll(ResearchSummaryView.class);
@@ -165,6 +126,7 @@ public class DashboardDaoImpl implements DashboardDao {
 					dashboardResearchMap.add(fieldMap);
 				}
 			}
+			//logger.info("DashboardResearchMap Details : " + dashboardResearchMap);
 			dashBoardProfile.setDashBoardResearchSummaryMap(dashboardResearchMap);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -178,7 +140,6 @@ public class DashboardDaoImpl implements DashboardDao {
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
-			System.out.println("Award testing");
 			dashBoardProfile.setTotalServiceRequest(getDashBoardCount(personDTO, requestType, pageNumber));
 			// Session session =
 			// hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -273,36 +234,8 @@ public class DashboardDaoImpl implements DashboardDao {
 				dashBoardProfile.setPageNumbers(pageNumbers);
 			}
 			Integer serviceRequestCount = dashBoardDetailsMap.size();
-
-			// if(awards != null && ! awards.isEmpty()){
-			/*
-			 * List<Integer> pageNumbers = new ArrayList<Integer>(); Integer
-			 * countOfRecords = awards.size(); Integer startCountCal =
-			 * ((pageNumber - 30) + 10) / 10; if (countOfRecords > 0) {
-			 * pageNumbers.add(startCountCal); } if (countOfRecords > 10) {
-			 * startCountCal = startCountCal + 1;
-			 * pageNumbers.add(startCountCal); } if (countOfRecords > 20) {
-			 * startCountCal = startCountCal + 1;
-			 * pageNumbers.add(startCountCal); } if (pageNumbers.size() != 1) {
-			 * dashBoardProfile.setPageNumbers(pageNumbers); } Integer
-			 * serviceRequestCount = awards.size();
-			 */
-			// ArrayList<HashMap<String, Object>> dashBoardDetailsMap = new
-			// ArrayList<HashMap<String, Object>>();
-			/*
-			 * for (Object award : awards) { HashMap<String, Object> fieldMap =
-			 * new HashMap<String, Object>(); Map row = (Map)award;
-			 * fieldMap.put("AWARD_NUMBER", row.get("AWARD_NUMBER"));
-			 * fieldMap.put("ACCOUNT_NUMBER", row.get("ACCOUNT_NUMBER"));
-			 * fieldMap.put("TITLE", row.get("TITLE")); fieldMap.put("SPONSOR",
-			 * row.get("SPONSOR")); fieldMap.put("PI", row.get("PI"));
-			 * fieldMap.put("UNIT_NAME", row.get("UNIT_NAME"));
-			 * dashBoardDetailsMap.add(fieldMap); }
-			 */
 			dashBoardProfile.setDashBoardDetailMap(dashBoardDetailsMap);
 			dashBoardProfile.setServiceRequestCount(serviceRequestCount);
-
-			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Error in method getDashBoardDataForAward", e);
@@ -310,14 +243,12 @@ public class DashboardDaoImpl implements DashboardDao {
 		return dashBoardProfile;
 	}
 
-	@Override
 	public DashBoardProfile getDashBoardDataForAward(PersonDTO personDTO, String requestType, Integer pageNumber,
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
-			System.out.println("Award testing");
+			logger.info("getDashBoardDataForAward");
 			dashBoardProfile.setTotalServiceRequest(getDashBoardCount(personDTO, requestType, pageNumber));
-
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria criteria = session.createCriteria(AwardView.class);
 			if (sortBy.isEmpty()) {
@@ -325,9 +256,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			} else {
 				criteria.addOrder(Order.desc(sortBy));
 			}
-
+			criteria.setFirstResult(pageNumber - 30 + 1);
+			criteria.setMaxResults(pageNumber);
 			List<AwardView> awards = criteria.list();
-
 			ArrayList<HashMap<String, Object>> dashBoardDetailsMap = new ArrayList<HashMap<String, Object>>();
 			// List<AwardView> awards =
 			// hibernateTemplate.loadAll(AwardView.class);
@@ -343,7 +274,7 @@ public class DashboardDaoImpl implements DashboardDao {
 					dashBoardDetailsMap.add(fieldMap);
 				}
 			}
-
+			//logger.info("Award DashBoardDetailsMap : " + dashBoardDetailsMap);
 			List<Integer> pageNumbers = new ArrayList<Integer>();
 			Integer countOfRecords = dashBoardDetailsMap.size();
 			Integer startCountCal = ((pageNumber - 30) + 10) / 10;
@@ -365,13 +296,12 @@ public class DashboardDaoImpl implements DashboardDao {
 			dashBoardProfile.setDashBoardDetailMap(dashBoardDetailsMap);
 			dashBoardProfile.setServiceRequestCount(serviceRequestCount);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("Error in method getDashBoardDataForAward", e);
+			e.printStackTrace();
 		}
 		return dashBoardProfile;
 	}
 
-	/* @Override */
 	public DashBoardProfile getDashBoardDataForProposal1(PersonDTO personDTO, String requestType, Integer pageNumber,
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
@@ -485,8 +415,8 @@ public class DashboardDaoImpl implements DashboardDao {
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
+			logger.info("getDashBoardDataForProposal");
 			dashBoardProfile.setTotalServiceRequest(getDashBoardCount(personDTO, requestType, pageNumber));
-
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria criteria = session.createCriteria(ProposalView.class);
 			if (sortBy.isEmpty()) {
@@ -494,8 +424,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			} else {
 				criteria.addOrder(Order.desc(sortBy));
 			}
+			criteria.setFirstResult(pageNumber - 30 + 1);
+			criteria.setMaxResults(pageNumber);
 			List<ProposalView> proposals = criteria.list();
-
 			ArrayList<HashMap<String, Object>> dashBoardDetailsMap = new ArrayList<HashMap<String, Object>>();
 			// List<ProposalView> proposals =
 			// hibernateTemplate.loadAll(ProposalView.class);
@@ -511,6 +442,7 @@ public class DashboardDaoImpl implements DashboardDao {
 					dashBoardDetailsMap.add(fieldMap);
 				}
 			}
+			//logger.info("Proposal DashBoardDetailsMap" + dashBoardDetailsMap);
 			List<Integer> pageNumbers = new ArrayList<Integer>();
 			Integer countOfRecords = proposals.size();
 			Integer startCountCal = ((pageNumber - 30) + 10) / 10;
@@ -532,13 +464,12 @@ public class DashboardDaoImpl implements DashboardDao {
 			dashBoardProfile.setDashBoardDetailMap(dashBoardDetailsMap);
 			dashBoardProfile.setServiceRequestCount(serviceRequestCount);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("Error in method getDashBoardDataForProposal", e);
+			e.printStackTrace();
 		}
 		return dashBoardProfile;
 	}
 
-	/* @Override */
 	public DashBoardProfile getProtocolDashboardData1(PersonDTO personDTO, String requestType, Integer pageNumber,
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
@@ -620,9 +551,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
+			logger.info("getProtocolDashboardData");
 			Integer dashboardCount = getDashBoardCount(personDTO, requestType, pageNumber);
-			System.out.println("\n\n dashboardCount : " + dashboardCount);
-
+			logger.info("\n\n dashboardCount : " + dashboardCount);
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria criteria = session.createCriteria(ProtocolView.class);
 			if (sortBy.isEmpty()) {
@@ -630,11 +561,11 @@ public class DashboardDaoImpl implements DashboardDao {
 			} else {
 				criteria.addOrder(Order.desc(sortBy));
 			}
-			List<ProtocolView> protocols = criteria.list();
+			criteria.setFirstResult(pageNumber - 30 + 1);
+			criteria.setMaxResults(pageNumber);
 
+			List<ProtocolView> protocols = criteria.list();
 			ArrayList<HashMap<String, Object>> dashBoardDetailsMap = new ArrayList<HashMap<String, Object>>();
-			// List<ProtocolView> protocols =
-			// hibernateTemplate.loadAll(ProtocolView.class);
 			if (protocols != null && !protocols.isEmpty()) {
 				for (ProtocolView protocol : protocols) {
 					HashMap<String, Object> fieldMap = new HashMap<String, Object>();
@@ -646,6 +577,7 @@ public class DashboardDaoImpl implements DashboardDao {
 					dashBoardDetailsMap.add(fieldMap);
 				}
 			}
+			//logger.info("Protocol DashBoardDetailsMap" + dashBoardDetailsMap);
 			List<Integer> pageNumbers = new ArrayList<Integer>();
 			Integer countOfRecords = dashBoardDetailsMap.size();
 			Integer startCountCal = ((pageNumber - 30) + 10) / 10;
@@ -667,13 +599,12 @@ public class DashboardDaoImpl implements DashboardDao {
 			dashBoardProfile.setDashBoardDetailMap(dashBoardDetailsMap);
 			dashBoardProfile.setServiceRequestCount(serviceRequestCount);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("Error in method getProtocolDashboardData", e);
+			e.printStackTrace();
 		}
 		return dashBoardProfile;
 	}
 
-	/* @Override */
 	public DashBoardProfile getDashBoardDataForIacuc1(PersonDTO personDTO, String requestType, Integer pageNumber,
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
@@ -780,8 +711,8 @@ public class DashboardDaoImpl implements DashboardDao {
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
+			logger.info("getDashBoardDataForIacuc");
 			dashBoardProfile.setTotalServiceRequest(getDashBoardCount(personDTO, requestType, pageNumber));
-
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria criteria = session.createCriteria(IacucView.class);
 			if (sortBy.isEmpty()) {
@@ -789,11 +720,10 @@ public class DashboardDaoImpl implements DashboardDao {
 			} else {
 				criteria.addOrder(Order.desc(sortBy));
 			}
+			criteria.setFirstResult(pageNumber - 30 + 1);
+			criteria.setMaxResults(pageNumber);
 			List<IacucView> iacucProtocols = criteria.list();
-
 			ArrayList<HashMap<String, Object>> dashBoardDetailsMap = new ArrayList<HashMap<String, Object>>();
-			// List<IacucView> iacucProtocols =
-			// hibernateTemplate.loadAll(IacucView.class);
 			if (iacucProtocols != null && !iacucProtocols.isEmpty()) {
 				for (IacucView iacucProtocol : iacucProtocols) {
 					HashMap<String, Object> fieldMap = new HashMap<String, Object>();
@@ -805,6 +735,7 @@ public class DashboardDaoImpl implements DashboardDao {
 					dashBoardDetailsMap.add(fieldMap);
 				}
 			}
+			//logger.info("IACUC DashBoardDetailsMap" + dashBoardDetailsMap);
 			List<Integer> pageNumbers = new ArrayList<Integer>();
 			Integer countOfRecords = dashBoardDetailsMap.size();
 			Integer startCountCal = ((pageNumber - 30) + 10) / 10;
@@ -827,6 +758,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			dashBoardProfile.setServiceRequestCount(serviceRequestCount);
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardDataForIacuc");
+			e.printStackTrace();
 		}
 		return dashBoardProfile;
 	}
@@ -940,8 +872,8 @@ public class DashboardDaoImpl implements DashboardDao {
 			String sortBy, String reverse) {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
+			logger.info("getDashBoardDataForDisclosures");
 			dashBoardProfile.setTotalServiceRequest(getDashBoardCount(personDTO, requestType, pageNumber));
-
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria criteria = session.createCriteria(DisclosureView.class);
 			if (sortBy.isEmpty()) {
@@ -949,11 +881,10 @@ public class DashboardDaoImpl implements DashboardDao {
 			} else {
 				criteria.addOrder(Order.desc(sortBy));
 			}
+			criteria.setFirstResult(pageNumber - 30 + 1);
+			criteria.setMaxResults(pageNumber);
 			List<DisclosureView> disclosures = criteria.list();
-
 			ArrayList<HashMap<String, Object>> dashBoardDetailsMap = new ArrayList<HashMap<String, Object>>();
-			// List<DisclosureView> disclosures =
-			// hibernateTemplate.loadAll(DisclosureView.class);
 			if (disclosures != null && !disclosures.isEmpty()) {
 				for (DisclosureView disclosure : disclosures) {
 					HashMap<String, Object> fieldMap = new HashMap<String, Object>();
@@ -966,6 +897,7 @@ public class DashboardDaoImpl implements DashboardDao {
 					dashBoardDetailsMap.add(fieldMap);
 				}
 			}
+			//logger.info("Disclosure DashBoardDetailsMap" + dashBoardDetailsMap);
 			List<Integer> pageNumbers = new ArrayList<Integer>();
 			Integer countOfRecords = disclosures.size();
 			Integer startCountCal = ((pageNumber - 30) + 10) / 10;
@@ -988,6 +920,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			dashBoardProfile.setServiceRequestCount(serviceRequestCount);
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardDataForDisclosures");
+			e.printStackTrace();
 		}
 		return dashBoardProfile;
 	}
@@ -996,34 +929,171 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer dashBoardCount = null;
 		try {
 			if (pageNumber == 30) {
-				// Session session =
-				// hibernateTemplate.getSessionFactory().getCurrentSession();
 				Session session = hibernateTemplate.getSessionFactory().openSession();
-				dashBoardCount = session.doReturningWork(new ReturningWork<Integer>() {
-
-					@Override
-					public Integer execute(Connection connection) throws SQLException {
-						CallableStatement call = connection
-								.prepareCall("{ ? = call fn_fibi_get_dashboard_count(?,?,?) }");
-						call.registerOutParameter(1, Types.INTEGER);
-						call.setString(2, personDTO.getPersonID());
-						call.setString(3, requestType);
-						call.setString(4, "");
-						call.execute();
-						return call.getInt(1);
-					}
-				});
+				Query query = null;
+				if (requestType.equals("AWARD")) {
+					query = session.createQuery("select COUNT(*) from AwardView");
+					dashBoardCount = (int) (long) query.uniqueResult();
+					logger.info("AWARD dashBoardCount : " + dashBoardCount);
+				}
+				if (requestType.equals("PROPOSAL")) {
+					query = session.createQuery("select count(*) from ProposalView");
+					dashBoardCount = (int) (long) query.uniqueResult();
+					logger.info("PROPOSAL dashBoardCount : " + dashBoardCount);
+				}
+				if (requestType.equals("IRB")) {
+					query = session.createQuery("select count(*) from ProtocolView");
+					dashBoardCount = (int) (long) query.uniqueResult();
+					logger.info("IRB dashBoardCount : " + dashBoardCount);
+				}
+				if (requestType.equals("IACUC")) {
+					query = session.createQuery("select count(*) from IacucView");
+					dashBoardCount = (int) (long) query.uniqueResult();
+					logger.info("IACUC dashBoardCount : " + dashBoardCount);
+				}
+				if (requestType.equals("DISCLOSURE")) {
+					query = session.createQuery("select count(*) from DisclosureView");
+					dashBoardCount = (int) (long) query.uniqueResult();
+					logger.info("DISCLOSURE dashBoardCount : " + dashBoardCount);
+				}
 			}
 		} catch (Exception e) {
-			logger.error("Error in method getDashBoardCount", e);
+			logger.error("Error in method getDashBoardCount");
+			e.printStackTrace();
 		}
 		return dashBoardCount;
 	}
 
-	/*
-	 * @Override public List<AwardView> getAllAwardViews() { List<AwardView>
-	 * awardViews = hibernateTemplate.loadAll(AwardView.class);
-	 * System.out.println("awardViews : " + awardViews); return awardViews; }
-	 */
+	public String getSearchData(PersonDTO personDTO, String tabIndex, String inputData) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			ArrayList<HashMap<String, Object>> dashBoardDetailsMap = new ArrayList<HashMap<String, Object>>();
+
+			if (tabIndex.equals("AWARD")) {
+				Criteria criteria = session.createCriteria(AwardView.class);
+				Disjunction or = Restrictions.disjunction();
+				or.add(Restrictions.like("awardNumber", "%" + inputData + "%"));
+				or.add(Restrictions.like("accountNumber", "%" + inputData + "%"));
+				or.add(Restrictions.like("title", "%" + inputData + "%"));
+				or.add(Restrictions.like("sponsor", "%" + inputData + "%"));
+				or.add(Restrictions.like("unitName", "%" + inputData + "%"));
+				// or.add(Restrictions.eq("description","%"+inputData+"%"));
+				criteria.add(or);
+				List<AwardView> awards = criteria.list();
+				if (awards != null && !awards.isEmpty()) {
+					for (AwardView award : awards) {
+						HashMap<String, Object> fieldMap = new HashMap<String, Object>();
+						fieldMap.put("AWARD_NUMBER", award.getAwardNumber());
+						fieldMap.put("ACCOUNT_NUMBER", award.getAccountNumber());
+						fieldMap.put("TITLE", award.getTitle());
+						fieldMap.put("SPONSOR", award.getSponsor());
+						fieldMap.put("PI", award.getPi());
+						fieldMap.put("UNIT_NAME", award.getUnitName());
+						dashBoardDetailsMap.add(fieldMap);
+					}
+				}
+				//logger.info("dashBoardDetailsMap :" + dashBoardDetailsMap);
+			}
+			if (tabIndex.equals("PROPOSAL")) {
+				Criteria criteria = session.createCriteria(ProposalView.class);
+				Disjunction or = Restrictions.disjunction();
+				or.add(Restrictions.eq("proposalNumber", "%" + inputData + "%"));
+				or.add(Restrictions.eq("title", "%" + inputData + "%"));
+				or.add(Restrictions.eq("sponsor", "%" + inputData + "%"));
+				or.add(Restrictions.eq("leadUnit", "%" + inputData + "%"));
+				// or.add(Restrictions.eq("description","%"+inputData+"%"));
+				criteria.add(or);
+				List<ProposalView> proposals = criteria.list();
+				if (proposals != null && !proposals.isEmpty()) {
+					for (ProposalView proposal : proposals) {
+						HashMap<String, Object> fieldMap = new HashMap<String, Object>();
+						fieldMap.put("PROPOSAL_NUMBER", proposal.getProposalNumber());
+						fieldMap.put("TITLE", proposal.getTitle());
+						fieldMap.put("LEAD_UNIT", proposal.getLeadUnit());
+						fieldMap.put("SPONSOR", proposal.getSponsor());
+						fieldMap.put("DEADLINE_DATE", proposal.getDeadLinedate());
+						fieldMap.put("STATUS", proposal.getStatus());
+						dashBoardDetailsMap.add(fieldMap);
+					}
+				}
+				//logger.info("dashBoardDetailsMap :" + dashBoardDetailsMap);
+			}
+			if (tabIndex.equals("IRB")) {
+				Criteria criteria = session.createCriteria(ProposalView.class);
+				Disjunction or = Restrictions.disjunction();
+				or.add(Restrictions.eq("protocolNumber", "%" + inputData + "%"));
+				or.add(Restrictions.eq("title", "%" + inputData + "%"));
+				or.add(Restrictions.eq("leadUnit", "%" + inputData + "%"));
+				// or.add(Restrictions.eq("description","%"+inputData+"%"));
+				criteria.add(or);
+				List<ProtocolView> protocols = criteria.list();
+				if (protocols != null && !protocols.isEmpty()) {
+					for (ProtocolView protocol : protocols) {
+						HashMap<String, Object> fieldMap = new HashMap<String, Object>();
+						fieldMap.put("PROTOCOL_NUMBER", protocol.getProtocolNumber());
+						fieldMap.put("TITLE", protocol.getTitle());
+						fieldMap.put("LEAD_UNIT", protocol.getLeadUnit());
+						fieldMap.put("PROTOCOL_TYPE", protocol.getProtocolType());
+						fieldMap.put("STATUS", protocol.getStatus());
+						dashBoardDetailsMap.add(fieldMap);
+					}
+				}
+				//logger.info("dashBoardDetailsMap :" + dashBoardDetailsMap);
+			}
+			if (tabIndex.equals("IACUC")) {
+				Criteria criteria = session.createCriteria(ProposalView.class);
+				Disjunction or = Restrictions.disjunction();
+				or.add(Restrictions.eq("protocolNumber", "%" + inputData + "%"));
+				or.add(Restrictions.eq("title", "%" + inputData + "%"));
+				or.add(Restrictions.eq("leadUnit", "%" + inputData + "%"));
+				// or.add(Restrictions.eq("description","%"+inputData+"%"));
+				criteria.add(or);
+				List<IacucView> iacucProtocols = criteria.list();
+				if (iacucProtocols != null && !iacucProtocols.isEmpty()) {
+					for (IacucView iacucProtocol : iacucProtocols) {
+						HashMap<String, Object> fieldMap = new HashMap<String, Object>();
+						fieldMap.put("PROTOCOL_NUMBER", iacucProtocol.getProtocolNumber());
+						fieldMap.put("TITLE", iacucProtocol.getTitle());
+						fieldMap.put("LEAD_UNIT", iacucProtocol.getLeadUnit());
+						fieldMap.put("PROTOCOL_TYPE", iacucProtocol.getProtocolType());
+						fieldMap.put("STATUS", iacucProtocol.getStatus());
+						dashBoardDetailsMap.add(fieldMap);
+					}
+				}
+				//logger.info("dashBoardDetailsMap :" + dashBoardDetailsMap);
+			}
+			if (tabIndex.equals("DISCLOSURE")) {
+				Criteria criteria = session.createCriteria(ProposalView.class);
+				Disjunction or = Restrictions.disjunction();
+				or.add(Restrictions.eq("coiDisclosureNumber", "%" + inputData + "%"));
+				or.add(Restrictions.eq("fullName", "%" + inputData + "%"));
+				or.add(Restrictions.eq("moduleItemKey", "%" + inputData + "%"));
+				or.add(Restrictions.eq("expirationDate", "%" + inputData + "%"));
+				// or.add(Restrictions.eq("description","%"+inputData+"%"));
+				criteria.add(or);
+				List<DisclosureView> disclosures = criteria.list();
+				if (disclosures != null && !disclosures.isEmpty()) {
+					for (DisclosureView disclosure : disclosures) {
+						HashMap<String, Object> fieldMap = new HashMap<String, Object>();
+						fieldMap.put("COI_DISCLOSURE_NUMBER", disclosure.getCoiDisclosureNumber());
+						fieldMap.put("FULL_NAME", disclosure.getFullName());
+						fieldMap.put("DISCLOSURE_DISPOSITION", disclosure.getDisclosureDisposition());
+						fieldMap.put("DISCLOSURE_STATUS", disclosure.getDisclosureStatus());
+						fieldMap.put("MODULE_ITEM_KEY", disclosure.getModuleItemKey());
+						fieldMap.put("EXPIRATION_DATE", disclosure.getExpirationDate());
+						dashBoardDetailsMap.add(fieldMap);
+					}
+				}
+				//logger.info("dashBoardDetailsMap :" + dashBoardDetailsMap);
+			}
+			dashBoardProfile.setDashBoardDetailMap(dashBoardDetailsMap);
+		} catch (Exception e) {
+			logger.error("Error in methord getDashBoardData");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
+	}
 
 }

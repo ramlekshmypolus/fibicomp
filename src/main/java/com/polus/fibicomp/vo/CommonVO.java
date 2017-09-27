@@ -14,6 +14,8 @@ public class CommonVO {
 
 	private String tabIndex;
 
+	private String inputData;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -60,5 +62,13 @@ public class CommonVO {
 
 	public void setTabIndex(String tabIndex) {
 		this.tabIndex = tabIndex;
+	}
+
+	public String getInputData() {
+		return inputData;
+	}
+
+	public void setInputData(String inputData) {
+		this.inputData = inputData;
 	}
 }
