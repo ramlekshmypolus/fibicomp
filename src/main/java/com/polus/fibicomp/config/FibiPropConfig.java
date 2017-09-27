@@ -13,8 +13,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 @Configuration
 public class FibiPropConfig {
 
-	// <context:property-placeholder
-	// location="classpath:application.properties"></context:property-placeholder>
 	@Bean
 	public PropertyPlaceholderConfigurer getPropertyPlaceholderConfigurer() {
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();

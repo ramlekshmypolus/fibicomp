@@ -1,18 +1,12 @@
 package com.polus.fibicomp.dao;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-/*import com.polus.fibicomp.pojo.AwardView;*/
 import com.polus.fibicomp.pojo.DashBoardProfile;
 import com.polus.fibicomp.pojo.PersonDTO;
-import com.polus.fibicomp.pojo.PrincipalBo;
 
 @Service
 public interface DashboardDao {
-
-	/* public List<PrincipalBo> getAllUsers(); */
 
 	public String getDashBoardResearchSummary(PersonDTO personDTO) throws Exception;
 
@@ -33,5 +27,6 @@ public interface DashboardDao {
 
 	public Integer getDashBoardCount(PersonDTO personDTO, String requestType, Integer pageNumber);
 
-	/* public List<AwardView> getAllAwardViews(); */
+	public String getSearchData(PersonDTO personDTO, String tabIndex, String inputData) throws Exception;
+
 }
