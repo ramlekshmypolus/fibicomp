@@ -51,12 +51,6 @@ public class ProtocolView implements Serializable {
 	@Column(name = "PROTOCOL_TYPE")
 	private String protocolType;
 
-	@Column(name = "SPONSOR_CODE")
-	private String sponsorCode;
-
-	@Column(name = "SPONSOR")
-	private String sponsor;
-
 	@Column(name = "STATUS_CODE")
 	private String statusCode;
 
@@ -150,22 +144,6 @@ public class ProtocolView implements Serializable {
 
 	public void setProtocolType(String protocolType) {
 		this.protocolType = protocolType;
-	}
-
-	public String getSponsorCode() {
-		return sponsorCode;
-	}
-
-	public void setSponsorCode(String sponsorCode) {
-		this.sponsorCode = sponsorCode;
-	}
-
-	public String getSponsor() {
-		return sponsor;
-	}
-
-	public void setSponsor(String sponsor) {
-		this.sponsor = sponsor;
 	}
 
 	public String getStatusCode() {
