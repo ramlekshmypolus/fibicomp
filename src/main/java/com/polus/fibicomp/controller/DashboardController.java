@@ -36,11 +36,9 @@ public class DashboardController {
 	@Qualifier(value = "loginService")
 	private LoginService loginService;
 
-	@RequestMapping(value = "/getResearchSummaryData", method = RequestMethod.GET)
-	public String requestResearchSummaryData(HttpServletRequest request) throws Exception {
-		/*HttpSession session = request.getSession();
-		PersonDTO personDTO = (PersonDTO) session.getAttribute("personDTO");*/
-		PersonDTO personDTO = loginService.readPersonData("quickstart");
+	@RequestMapping(value = "/getResearchSummaryData", method = RequestMethod.POST)
+	public String requestResearchSummaryData(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
 		return dashboardService.getDashBoardResearchSummary(personDTO);
 	}
 
