@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name = "IRB_V")
+@Table(name = "IRB_MV")
 public class ProtocolView implements Serializable {
 
 	/**

@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "AWARD_V")
+@Table(name = "AWARD_MV")
 public class AwardView implements Serializable {
 
 	/**

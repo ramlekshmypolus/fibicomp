@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,8 @@ import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
+//@CrossOrigin(origins = {"http://192.168.1.72:8080"})
+@CrossOrigin(origins = {"http://demo.fibiweb.com/fibi30"})
 public class LoginController {
 
 	protected static Logger logger = Logger.getLogger(LoginController.class.getName());
@@ -34,17 +37,13 @@ public class LoginController {
 	private String login_mode;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String loginUser(@RequestBody CommonVO vo, HttpServletRequest request, HttpServletResponse response)
+	public PersonDTO loginUser(@RequestBody CommonVO vo, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		logger.debug("Received request for login: ");
 		String userName = vo.getUserName();
 		String password = vo.getPassword();
-		Boolean loginCheck = loginService.loginCheck(login_mode, userName, password, request, response);
-		if (loginCheck) {
-			return "SUCCESS";
-		} else {
-			return "FAIL";
-		}
+		PersonDTO personDTO = loginService.loginCheck(login_mode, userName, password, request, response);
+		return personDTO;
 	}
 
 	@RequestMapping(value = "/fibi.dashboard", method = RequestMethod.GET)
@@ -78,10 +77,11 @@ public class LoginController {
 		if (session != null) {
 			session.invalidate();
 		}
-		if ("TOUCHSTONE".equalsIgnoreCase(login_mode)) {
+		/*if ("TOUCHSTONE".equalsIgnoreCase(login_mode)) {
 			return "logout";
-		}
-		return "redirect:/login";
+		}*/
+		//return "redirect:/login";
+		return "SUCCESS";
 	}
 
 	@RequestMapping(value = "/logoutSession", method = RequestMethod.POST)

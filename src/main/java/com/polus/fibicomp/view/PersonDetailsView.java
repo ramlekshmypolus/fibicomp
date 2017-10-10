@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "AB_PERSON_DETAILS_VW")
+@Table(name = "KC_PERSON_MV")
 public class PersonDetailsView implements Serializable {
 
 	/**

@@ -1,5 +1,7 @@
 package com.polus.fibicomp.service;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.dao.DashboardDao;
+import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
 import com.polus.fibicomp.pojo.PersonDTO;
+import com.polus.fibicomp.vo.CommonVO;
 
 @Transactional
 @Service(value = "dashboardService")
@@ -62,4 +66,13 @@ public class DashboardServiceImpl implements DashboardService {
 		return dashboardDao.getSearchData(personDTO, tabIndex, inputData);
 	}
 
+	@Override
+	public String getSearchDataByProperty(PersonDTO personDTO, CommonVO vo) throws Exception {
+		return dashboardDao.getSearchDataByProperty(personDTO, vo);
+	}
+
+	@Override
+	public List<ActionItem> getUserNotification(String userName) {		
+		return  dashboardDao.getUserNotification(userName);
+	}
 }

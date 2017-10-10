@@ -58,6 +58,9 @@ public class FibiRepoConfig {
 	@Value("${hibernate.c3p0.testConnectionOnCheckout}")
 	private String hibernateTestConnectionOnCheckout;
 
+	@Value("${hibernate.temp.use_jdbc_metadata_defaults}")
+	private String hibernateMetadataDefaults;
+
 	@Bean
 	public DataSource getDataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
@@ -108,6 +111,7 @@ public class FibiRepoConfig {
 		properties.put("hibernate.c3p0.timeout", hibernateTimeOut);
 		properties.put("hibernate.c3p0.max_statement", hibernateMaxStmnt);
 		properties.put("hibernate.c3p0.testConnectionOnCheckout", hibernateTestConnectionOnCheckout);
+		properties.put("hibernate.temp.use_jdbc_metadata_defaults", hibernateMetadataDefaults);
 		return properties;
 	}
 }
