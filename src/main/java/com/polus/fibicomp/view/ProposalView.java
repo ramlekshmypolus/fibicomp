@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name = "PROPOSALS_V")
+@Table(name = "PROPOSALS_MV")
 public class ProposalView implements Serializable {
 
 	/**

@@ -19,19 +19,25 @@ public class LoginServiceImpl implements LoginService {
 	private LoginDao loginDao;
 
 	@Override
-	public Boolean loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
+	public PersonDTO loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		boolean isLoginSuccess = false;
+		PersonDTO personDTO = null;
 		if ("USERID".equalsIgnoreCase(loginMode)) {
 			isLoginSuccess = loginDao.authenticate(userName, password);
 		}
 		if (isLoginSuccess) {
 			HttpSession session = request.getSession();
-			PersonDTO personDTO = loginDao.readPersonData(userName);
+			personDTO = loginDao.readPersonData(userName);
 			session.setAttribute("personDTO", personDTO);
 			session.setAttribute("user", personDTO.getFullName());
-			return true;
+			return personDTO;
 		}
-		return false;
+		return personDTO;
+	}
+
+	@Override
+	public PersonDTO readPersonData(String userName) {
+		return loginDao.readPersonData(userName);
 	}
 }

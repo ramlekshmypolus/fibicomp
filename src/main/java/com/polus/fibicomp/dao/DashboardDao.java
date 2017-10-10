@@ -1,9 +1,13 @@
 package com.polus.fibicomp.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
 import com.polus.fibicomp.pojo.PersonDTO;
+import com.polus.fibicomp.vo.CommonVO;
 
 @Service
 public interface DashboardDao {
@@ -29,4 +33,7 @@ public interface DashboardDao {
 
 	public String getSearchData(PersonDTO personDTO, String tabIndex, String inputData) throws Exception;
 
+	public String getSearchDataByProperty(PersonDTO personDTO, CommonVO vo) throws Exception;
+	
+	public List<ActionItem> getUserNotification(String userName);
 }

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "DISCLOSURE_V")
+@Table(name = "DISCLOSURE_MV")
 public class DisclosureView implements Serializable {
 
 	/**

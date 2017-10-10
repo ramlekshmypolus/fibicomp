@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name = "IACUC_V")
+@Table(name = "IACUC_MV")
 public class IacucView implements Serializable {
 
 	/**
