@@ -6,34 +6,24 @@ import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
-import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.vo.CommonVO;
 
 @Service
 public interface DashboardDao {
 
-	public String getDashBoardResearchSummary(PersonDTO personDTO) throws Exception;
+	public String getDashBoardResearchSummary(String userName) throws Exception;
 
-	public DashBoardProfile getDashBoardDataForAward(PersonDTO personDTO, String requestType, Integer pageNumber,
-			String sortBy, String reverse);
+	public DashBoardProfile getDashBoardDataForAward(CommonVO vo);
 
-	public DashBoardProfile getDashBoardDataForProposal(PersonDTO personDTO, String requestType, Integer pageNumber,
-			String sortBy, String reverse);
+	public DashBoardProfile getDashBoardDataForProposal(CommonVO vo);
 
-	public DashBoardProfile getProtocolDashboardData(PersonDTO personDTO, String requestType, Integer pageNumber,
-			String sortBy, String reverse);
+	public DashBoardProfile getProtocolDashboardData(CommonVO vo);
 
-	public DashBoardProfile getDashBoardDataForIacuc(PersonDTO personDTO, String requestType, Integer pageNumber,
-			String sortBy, String reverse);
+	public DashBoardProfile getDashBoardDataForIacuc(CommonVO vo);
 
-	public DashBoardProfile getDashBoardDataForDisclosures(PersonDTO personDTO, String requestType, Integer pageNumber,
-			String sortBy, String reverse);
+	public DashBoardProfile getDashBoardDataForDisclosures(CommonVO vo);
 
-	public Integer getDashBoardCount(PersonDTO personDTO, String requestType, Integer pageNumber);
+	public Integer getDashBoardCount(String tabIndex, Integer pageNumber);
 
-	public String getSearchData(PersonDTO personDTO, String tabIndex, String inputData) throws Exception;
-
-	public String getSearchDataByProperty(PersonDTO personDTO, CommonVO vo) throws Exception;
-	
 	public List<ActionItem> getUserNotification(String userName);
 }

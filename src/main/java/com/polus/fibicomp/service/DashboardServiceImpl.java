@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.dao.DashboardDao;
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
-import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.vo.CommonVO;
 
 @Transactional
@@ -24,36 +23,31 @@ public class DashboardServiceImpl implements DashboardService {
 	private DashboardDao dashboardDao;
 
 	@Override
-	public String getDashBoardResearchSummary(PersonDTO personDTO) throws Exception {
-		return dashboardDao.getDashBoardResearchSummary(personDTO);
+	public String getDashBoardResearchSummary(String userName) throws Exception {
+		return dashboardDao.getDashBoardResearchSummary(userName);
 	}
 
 	@Override
-	public String getDashBoardData(PersonDTO personDTO, String requestType, Integer pageNumber, String sortBy,
-			String reverse) throws Exception {
+	public String getDashBoardData(CommonVO vo) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		String requestType = vo.getTabIndex();		
 		try {
 			if (requestType.equals("AWARD")) {
-				dashBoardProfile = dashboardDao.getDashBoardDataForAward(personDTO, requestType, pageNumber, sortBy,
-						reverse);
+				dashBoardProfile = dashboardDao.getDashBoardDataForAward(vo);
 			}
 			if (requestType.equals("PROPOSAL")) {
-				dashBoardProfile = dashboardDao.getDashBoardDataForProposal(personDTO, requestType, pageNumber, sortBy,
-						reverse);
+				dashBoardProfile = dashboardDao.getDashBoardDataForProposal(vo);
 			}
 			if (requestType.equals("IRB")) {
-				dashBoardProfile = dashboardDao.getProtocolDashboardData(personDTO, requestType, pageNumber, sortBy,
-						reverse);
+				dashBoardProfile = dashboardDao.getProtocolDashboardData(vo);
 			}
 			if (requestType.equals("IACUC")) {
-				dashBoardProfile = dashboardDao.getDashBoardDataForIacuc(personDTO, requestType, pageNumber, sortBy,
-						reverse);
+				dashBoardProfile = dashboardDao.getDashBoardDataForIacuc(vo);
 			}
 			if (requestType.equals("DISCLOSURE")) {
-				dashBoardProfile = dashboardDao.getDashBoardDataForDisclosures(personDTO, requestType, pageNumber,
-						sortBy, reverse);
+				dashBoardProfile = dashboardDao.getDashBoardDataForDisclosures(vo);
 			}
-			dashBoardProfile.setPersonDTO(personDTO);
+			// dashBoardProfile.setPersonDTO(personDTO);
 		} catch (Exception e) {
 			logger.error("Error in methord getDashBoardData", e);
 		}
@@ -62,17 +56,7 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public String getSearchData(PersonDTO personDTO, String tabIndex, String inputData) throws Exception {
-		return dashboardDao.getSearchData(personDTO, tabIndex, inputData);
-	}
-
-	@Override
-	public String getSearchDataByProperty(PersonDTO personDTO, CommonVO vo) throws Exception {
-		return dashboardDao.getSearchDataByProperty(personDTO, vo);
-	}
-
-	@Override
-	public List<ActionItem> getUserNotification(String userName) {		
-		return  dashboardDao.getUserNotification(userName);
+	public List<ActionItem> getUserNotification(String userName) {
+		return dashboardDao.getUserNotification(userName);
 	}
 }

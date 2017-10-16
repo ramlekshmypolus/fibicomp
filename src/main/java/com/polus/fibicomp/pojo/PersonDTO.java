@@ -27,6 +27,8 @@ public class PersonDTO {
 
 	private String unitNumber = "";
 
+	private boolean isUnitAdmin = false;
+	
 	public String getHasDual() {
 		return hasDual;
 	}
@@ -105,5 +107,13 @@ public class PersonDTO {
 
 	public void setUnitNumber(String unitNumber) {
 		this.unitNumber = unitNumber;
+	}
+
+	public boolean isUnitAdmin() {
+		return isUnitAdmin;
+	}
+
+	public void setUnitAdmin(boolean isUnitAdmin) {
+		this.isUnitAdmin = isUnitAdmin;
 	}
 }

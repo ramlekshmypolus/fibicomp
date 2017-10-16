@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.polus.fibicomp.pojo.PersonDTO;
@@ -23,8 +21,7 @@ import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-//@CrossOrigin(origins = {"http://192.168.1.72:8080"})
-@CrossOrigin(origins = {"http://demo.fibiweb.com/fibi30"})
+@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev", "http://192.168.1.76:8080/fibi30" })
 public class LoginController {
 
 	protected static Logger logger = Logger.getLogger(LoginController.class.getName());
@@ -46,29 +43,6 @@ public class LoginController {
 		return personDTO;
 	}
 
-	@RequestMapping(value = "/fibi.dashboard", method = RequestMethod.GET)
-	public String home(Model model, HttpSession session) {
-
-		PersonDTO personDTO = (PersonDTO) session.getAttribute("personDTO");
-		if (personDTO != null) {
-			model.addAttribute("name", personDTO.getUserName());
-			model.addAttribute("fullName", personDTO.getFullName());
-			model.addAttribute("roleNumber", personDTO.getRoleNumber());
-			model.addAttribute("createPermNo", personDTO.getCreateNo());
-			model.addAttribute("personID", personDTO.getPersonID());
-		} else {
-			return "redirect:/login";
-		}
-		return "/fibi.dashboard";
-	}
-
-	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
-	public String loginerror(ModelMap model) {
-		logger.debug("Login failed");
-		model.addAttribute("error", "true");
-		return "login";
-	}
-
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		logger.debug("Log Out");
@@ -77,19 +51,6 @@ public class LoginController {
 		if (session != null) {
 			session.invalidate();
 		}
-		/*if ("TOUCHSTONE".equalsIgnoreCase(login_mode)) {
-			return "logout";
-		}*/
-		//return "redirect:/login";
 		return "SUCCESS";
 	}
-
-	@RequestMapping(value = "/logoutSession", method = RequestMethod.POST)
-	public @ResponseBody void logoutSession(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession(false);
-		if (session != null) {
-			session.invalidate();
-		}
-	}
-
 }

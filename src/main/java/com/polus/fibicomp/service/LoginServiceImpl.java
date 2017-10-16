@@ -40,4 +40,9 @@ public class LoginServiceImpl implements LoginService {
 	public PersonDTO readPersonData(String userName) {
 		return loginDao.readPersonData(userName);
 	}
+
+	@Override
+	public boolean isUnitAdmin(String personId) {
+		return loginDao.isUnitAdmin(personId);
+	}
 }
