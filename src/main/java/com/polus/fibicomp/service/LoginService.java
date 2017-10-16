@@ -14,4 +14,6 @@ public interface LoginService {
 			HttpServletResponse response) throws Exception;
 
 	public PersonDTO readPersonData(String userName);
+
+	public boolean isUnitAdmin(String personId);
 }

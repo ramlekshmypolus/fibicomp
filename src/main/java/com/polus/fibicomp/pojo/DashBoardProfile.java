@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.polus.fibicomp.view.AwardView;
+import com.polus.fibicomp.view.DisclosureView;
+import com.polus.fibicomp.view.IacucView;
+import com.polus.fibicomp.view.ProposalView;
+import com.polus.fibicomp.view.ProtocolView;
+import com.polus.fibicomp.view.ResearchSummaryView;
+
 public class DashBoardProfile {
 
 	private ArrayList<HashMap<String, Object>> dashBoardDetailMap;
@@ -20,6 +27,18 @@ public class DashBoardProfile {
 
 	private String encryptedUserName;
 
+	private List<AwardView> awardViews;
+	
+	private List<ProposalView> proposalViews;
+	
+	private List<ProtocolView> protocolViews;
+	
+	private List<IacucView> iacucViews;
+
+	private List<DisclosureView> disclosureViews;
+	
+	private List<ResearchSummaryView> summaryViews;
+	
 	public ArrayList<HashMap<String, Object>> getDashBoardDetailMap() {
 		return dashBoardDetailMap;
 	}
@@ -74,5 +93,53 @@ public class DashBoardProfile {
 
 	public void setEncryptedUserName(String encryptedUserName) {
 		this.encryptedUserName = encryptedUserName;
+	}
+
+	public List<AwardView> getAwardViews() {
+		return awardViews;
+	}
+
+	public void setAwardViews(List<AwardView> awardViews) {
+		this.awardViews = awardViews;
+	}
+
+	public List<ProposalView> getProposalViews() {
+		return proposalViews;
+	}
+
+	public void setProposalViews(List<ProposalView> proposalViews) {
+		this.proposalViews = proposalViews;
+	}
+
+	public List<ProtocolView> getProtocolViews() {
+		return protocolViews;
+	}
+
+	public void setProtocolViews(List<ProtocolView> protocolViews) {
+		this.protocolViews = protocolViews;
+	}
+
+	public List<IacucView> getIacucViews() {
+		return iacucViews;
+	}
+
+	public void setIacucViews(List<IacucView> iacucViews) {
+		this.iacucViews = iacucViews;
+	}
+
+	public List<DisclosureView> getDisclosureViews() {
+		return disclosureViews;
+	}
+
+	public void setDisclosureViews(List<DisclosureView> disclosureViews) {
+		this.disclosureViews = disclosureViews;
+	}
+
+	public List<ResearchSummaryView> getSummaryViews() {
+		return summaryViews;
+	}
+
+	public void setSummaryViews(List<ResearchSummaryView> summaryViews) {
+		this.summaryViews = summaryViews;
 	}
 }

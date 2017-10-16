@@ -3,7 +3,6 @@ package com.polus.fibicomp.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,7 @@ import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-//@CrossOrigin(origins = {"http://192.168.1.72:8080"})
-@CrossOrigin(origins = {"http://demo.fibiweb.com/fibi30"})
+@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev", "http://192.168.1.76:8080/fibi30" })
 public class DashboardController {
 
 	protected static Logger logger = Logger.getLogger(DashboardController.class.getName());
@@ -38,45 +36,19 @@ public class DashboardController {
 
 	@RequestMapping(value = "/getResearchSummaryData", method = RequestMethod.POST)
 	public String requestResearchSummaryData(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
-		return dashboardService.getDashBoardResearchSummary(personDTO);
+		//PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
+		return dashboardService.getDashBoardResearchSummary(vo.getUserName());
 	}
 
 	@RequestMapping(value = "/fibiDashBoard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String requestInitialLoad(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		// PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
+		return dashboardService.getDashBoardData(vo);
+	}
+
+	@RequestMapping(value = "/getUserNotification", method = RequestMethod.POST)
+	public List<ActionItem> getUserNotification(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
-		String tabIndex = vo.getTabIndex();
-		Integer pageNumber = vo.getPageNumber();
-		String sortBy = vo.getSortBy();
-		String reverse = vo.getReverse();
-		logger.info("tabIndex : " + tabIndex);
-		logger.info("pageNumber : " + pageNumber);
-		logger.info("sortBy : " + sortBy);
-		logger.info("reverse : " + reverse);
-		return dashboardService.getDashBoardData(personDTO, tabIndex, pageNumber, sortBy, reverse);
-	}
-
-	@RequestMapping(value = "/searchDashBoard", method = RequestMethod.POST)
-	public String searchByName(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		HttpSession session = request.getSession();
-		PersonDTO personDTO = (PersonDTO) session.getAttribute("personDTO");
-		String inputData = vo.getInputData();
-		String tabIndex = vo.getTabIndex();
-		logger.info("TabIndex : " + tabIndex);
-		return dashboardService.getSearchData(personDTO, tabIndex, inputData);
-	}
-
-	@RequestMapping(value = "/searchByProperty", method = RequestMethod.POST)
-	public String searchByProperty(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		HttpSession session = request.getSession();
-		PersonDTO personDTO = (PersonDTO) session.getAttribute("personDTO");
-		return dashboardService.getSearchDataByProperty(personDTO, vo);
-	}
-	
-	@RequestMapping(value = "/getUserNotification", method = RequestMethod.GET)
-	public List<ActionItem> getUserNotification(HttpServletRequest request) throws Exception {
-		HttpSession session = request.getSession();
-		PersonDTO personDTO = (PersonDTO) session.getAttribute("personDTO");
 		return dashboardService.getUserNotification(personDTO.getPersonID());
 	}
 }

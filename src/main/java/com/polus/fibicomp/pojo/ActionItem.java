@@ -11,9 +11,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ACTION_ITM_V")
 public class ActionItem implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@Column(name = "ACTN_ITM_ID")
 	private String id;
@@ -171,5 +171,5 @@ public class ActionItem implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}	
+	}
 }

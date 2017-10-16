@@ -11,4 +11,5 @@ public interface LoginDao {
 
 	public PersonDTO readPersonData(String userName);
 
+	public boolean isUnitAdmin(String personId);
 }

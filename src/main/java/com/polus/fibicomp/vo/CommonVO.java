@@ -17,13 +17,15 @@ public class CommonVO {
 	private String inputData;
 
 	private String property1;
-	
+
 	private String property2;
-	
+
 	private String property3;
-	
+
 	private String property4;
-	
+
+	private Integer currentPage;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -110,5 +112,13 @@ public class CommonVO {
 
 	public void setProperty4(String property4) {
 		this.property4 = property4;
+	}
+
+	public Integer getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(Integer currentPage) {
+		this.currentPage = currentPage;
 	}
 }
