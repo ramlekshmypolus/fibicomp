@@ -66,6 +66,12 @@ public class ProtocolView implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
+	@Column(name = "PERSON_ID")
+	private String personId;
+
+	@Column(name = "FULL_NAME")
+	private String fullName;
+
 	public Integer getProtocolId() {
 		return protocolId;
 	}
@@ -188,5 +194,21 @@ public class ProtocolView implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }

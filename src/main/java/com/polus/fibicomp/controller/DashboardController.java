@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.polus.fibicomp.pojo.ActionItem;
-import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.service.DashboardService;
 import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev", "http://192.168.1.76:8080/fibi30" })
+@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev",
+		"http://192.168.1.76:8080/fibi30" })
 public class DashboardController {
 
 	protected static Logger logger = Logger.getLogger(DashboardController.class.getName());
@@ -36,19 +36,16 @@ public class DashboardController {
 
 	@RequestMapping(value = "/getResearchSummaryData", method = RequestMethod.POST)
 	public String requestResearchSummaryData(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		//PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
-		return dashboardService.getDashBoardResearchSummary(vo.getUserName());
+		return dashboardService.getDashBoardResearchSummary(vo.getPersonId());
 	}
 
 	@RequestMapping(value = "/fibiDashBoard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String requestInitialLoad(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		// PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
 		return dashboardService.getDashBoardData(vo);
 	}
 
 	@RequestMapping(value = "/getUserNotification", method = RequestMethod.POST)
 	public List<ActionItem> getUserNotification(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		PersonDTO personDTO = loginService.readPersonData(vo.getUserName());
-		return dashboardService.getUserNotification(personDTO.getPersonID());
+		return dashboardService.getUserNotification(vo.getPersonId());
 	}
 }

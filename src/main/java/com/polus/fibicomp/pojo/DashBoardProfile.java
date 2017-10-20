@@ -9,6 +9,7 @@ import com.polus.fibicomp.view.DisclosureView;
 import com.polus.fibicomp.view.IacucView;
 import com.polus.fibicomp.view.ProposalView;
 import com.polus.fibicomp.view.ProtocolView;
+import com.polus.fibicomp.view.ResearchSummaryPieChart;
 import com.polus.fibicomp.view.ResearchSummaryView;
 
 public class DashBoardProfile {
@@ -38,6 +39,10 @@ public class DashBoardProfile {
 	private List<DisclosureView> disclosureViews;
 	
 	private List<ResearchSummaryView> summaryViews;
+	
+	private List<ResearchSummaryPieChart> summaryAwardPieChart;
+	
+	private List<ResearchSummaryPieChart> summaryProposalPieChart;
 	
 	public ArrayList<HashMap<String, Object>> getDashBoardDetailMap() {
 		return dashBoardDetailMap;
@@ -141,5 +146,21 @@ public class DashBoardProfile {
 
 	public void setSummaryViews(List<ResearchSummaryView> summaryViews) {
 		this.summaryViews = summaryViews;
+	}
+
+	public List<ResearchSummaryPieChart> getSummaryAwardPieChart() {
+		return summaryAwardPieChart;
+	}
+
+	public void setSummaryAwardPieChart(List<ResearchSummaryPieChart> summaryAwardPieChart) {
+		this.summaryAwardPieChart = summaryAwardPieChart;
+	}
+
+	public List<ResearchSummaryPieChart> getSummaryProposalPieChart() {
+		return summaryProposalPieChart;
+	}
+
+	public void setSummaryProposalPieChart(List<ResearchSummaryPieChart> summaryProposalPieChart) {
+		this.summaryProposalPieChart = summaryProposalPieChart;
 	}
 }

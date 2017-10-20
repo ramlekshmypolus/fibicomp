@@ -15,10 +15,10 @@ public class FibiPropConfig {
 
 	@Bean
 	public PropertyPlaceholderConfigurer getPropertyPlaceholderConfigurer() {
-		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		ppc.setLocation(new ClassPathResource("application.properties"));
-		ppc.setIgnoreUnresolvablePlaceholders(true);
-		return ppc;
+		PropertyPlaceholderConfigurer placeHolderConfig = new PropertyPlaceholderConfigurer();
+		placeHolderConfig.setLocation(new ClassPathResource("application.properties"));
+		placeHolderConfig.setIgnoreUnresolvablePlaceholders(true);
+		return placeHolderConfig;
 	}
 
 	@Bean

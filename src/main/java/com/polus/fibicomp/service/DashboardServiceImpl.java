@@ -23,14 +23,14 @@ public class DashboardServiceImpl implements DashboardService {
 	private DashboardDao dashboardDao;
 
 	@Override
-	public String getDashBoardResearchSummary(String userName) throws Exception {
-		return dashboardDao.getDashBoardResearchSummary(userName);
+	public String getDashBoardResearchSummary(String personId) throws Exception {
+		return dashboardDao.getDashBoardResearchSummary(personId);
 	}
 
 	@Override
 	public String getDashBoardData(CommonVO vo) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
-		String requestType = vo.getTabIndex();		
+		String requestType = vo.getTabIndex();
 		try {
 			if (requestType.equals("AWARD")) {
 				dashBoardProfile = dashboardDao.getDashBoardDataForAward(vo);
@@ -56,7 +56,7 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public List<ActionItem> getUserNotification(String userName) {
-		return dashboardDao.getUserNotification(userName);
+	public List<ActionItem> getUserNotification(String personId) {
+		return dashboardDao.getUserNotification(personId);
 	}
 }

@@ -1,5 +1,6 @@
 package com.polus.fibicomp.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ import com.polus.fibicomp.view.DisclosureView;
 import com.polus.fibicomp.view.IacucView;
 import com.polus.fibicomp.view.ProposalView;
 import com.polus.fibicomp.view.ProtocolView;
+import com.polus.fibicomp.view.ResearchSummaryPieChart;
 import com.polus.fibicomp.view.ResearchSummaryView;
 import com.polus.fibicomp.vo.CommonVO;
 
@@ -41,18 +43,83 @@ public class DashboardDaoImpl implements DashboardDao {
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
-	public String getDashBoardResearchSummary(String userName) throws Exception {
+	public String getDashBoardResearchSummary(String person_id) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<ResearchSummaryView> summaryTable = new ArrayList<ResearchSummaryView>();
+		List<ResearchSummaryPieChart> summaryAwardPiechart = new ArrayList<ResearchSummaryPieChart>();
+		List<ResearchSummaryPieChart> summaryProposalPiechart = new ArrayList<ResearchSummaryPieChart>();
 		try {
-			logger.info("getDashBoardResearchSummary");
-			List<ResearchSummaryView> summaryViews = hibernateTemplate.loadAll(ResearchSummaryView.class);
-			dashBoardProfile.setSummaryViews(summaryViews);
+			logger.info("---------- getDashBoardResearchSummary -----------");
+			summaryTable = getSummaryTable(person_id, summaryTable);
+			logger.info("summaryTable : " + summaryTable);
+			summaryAwardPiechart = getSummaryAwardPieChart(person_id, summaryAwardPiechart);
+			logger.info("summaryAwardPiechart : " + summaryAwardPiechart);
+			summaryProposalPiechart = getSummaryProposalPieChart(person_id, summaryProposalPiechart);
+			logger.info("summaryProposalPiechart : " + summaryProposalPiechart);
+
+			dashBoardProfile.setSummaryViews(summaryTable);
+			dashBoardProfile.setSummaryAwardPieChart(summaryAwardPiechart);
+			dashBoardProfile.setSummaryProposalPieChart(summaryProposalPiechart);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("Error in method getDashBoardResearchSummary");
+			e.printStackTrace();
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ResearchSummaryView> getSummaryTable(String person_id, List<ResearchSummaryView> summaryTable) {
+		List<ResearchSummaryView> subPropCount = null;
+		List<ResearchSummaryView> inPropCount = null;
+		List<ResearchSummaryView> activeAwardsCount = null;
+
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query submittedProposal = session.createSQLQuery(
+				"select 'Submitted Proposal' as Submitted_Proposal, count(t1.proposal_number) as count,sum(t3.TOTAL_COST) as total_amount from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' where t1.status_code=5 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :person_id )");
+		submittedProposal.setString("person_id", person_id);
+		subPropCount = submittedProposal.list();
+		if (subPropCount != null && !subPropCount.isEmpty()) {
+			summaryTable.addAll(subPropCount);
+		}
+
+		Query inprogressProposal = session.createSQLQuery(
+				"select 'Inprogress Proposal' as In_Progress_Proposal, count(t1.proposal_number) as count,sum(t3.TOTAL_COST) as total_amount from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' where t1.status_code=1 and  t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :person_id )");
+		inprogressProposal.setString("person_id", person_id);
+		inPropCount = inprogressProposal.list();
+		if (inPropCount != null && !inPropCount.isEmpty()) {
+			summaryTable.addAll(inPropCount);
+		}
+
+		Query activeAwards = session.createSQLQuery(
+				"select 'Active Award' as Active_Award, count(t1.award_id),sum(t3.TOTAL_COST) as total_amount from AWARD t1 inner join AWARD_BUDGET_EXT t2 on t1.award_id=t2.award_id inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' where t1.award_sequence_status = 'ACTIVE' and t1.LEAD_UNIT_NUMBER in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Award' and person_id = :person_id )");
+		activeAwards.setString("person_id", person_id);
+		activeAwardsCount = activeAwards.list();
+		if (activeAwardsCount != null && !activeAwardsCount.isEmpty()) {
+			summaryTable.addAll(activeAwardsCount);
+		}
+
+		return summaryTable;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ResearchSummaryPieChart> getSummaryAwardPieChart(String person_id,
+			List<ResearchSummaryPieChart> summaryAwardPiechart) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query query = session.createSQLQuery(
+				"select t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION as sponsor_type,count(1) from AWARD t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
+		//query.setString("person_id", person_id);
+		return summaryAwardPiechart = query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ResearchSummaryPieChart> getSummaryProposalPieChart(String person_id,
+			List<ResearchSummaryPieChart> summaryProposalPiechart) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query query = session.createSQLQuery(
+				"select t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION as sponsor_type,count(1) from eps_proposal t1  inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :person_id ) group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
+		query.setString("person_id", person_id);
+		return summaryProposalPiechart = query.list();
 	}
 
 	public DashBoardProfile getDashBoardDataForAward(CommonVO vo) {
@@ -65,10 +132,11 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		String personId = vo.getPersonId();
 
 		Disjunction or = Restrictions.disjunction();
 		try {
-			logger.info("getDashBoardDataForAward");
+			logger.info("-------- getDashBoardDataForAward ---------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(AwardView.class);
 			Criteria countCriteria = session.createCriteria(AwardView.class);
@@ -91,13 +159,18 @@ public class DashboardDaoImpl implements DashboardDao {
 				or.add(Restrictions.like("unitName", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				or.add(Restrictions.like("pi", "%" + property4 + "%").ignoreCase());
+				or.add(Restrictions.like("fullName", "%" + property4 + "%").ignoreCase());
+			}
+			if (personId != null && !personId.isEmpty()) {
+				searchCriteria.add(Restrictions.eq("personId", personId));
+				countCriteria.add(Restrictions.eq("personId", personId));
 			}
 
 			searchCriteria.add(or);
 			countCriteria.add(or);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
 			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
 
 			int count = pageNumber * (currentPage - 1);
@@ -123,10 +196,11 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		String personId = vo.getPersonId();
 
 		Disjunction or = Restrictions.disjunction();
 		try {
-			logger.info("getDashBoardDataForProposal");
+			logger.info("---------- getDashBoardDataForProposal ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(ProposalView.class);
 			Criteria countCriteria = session.createCriteria(ProposalView.class);
@@ -151,11 +225,16 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property4 != null && !property4.isEmpty()) {
 				or.add(Restrictions.like("leadUnit", "%" + property4 + "%").ignoreCase());
 			}
+			if (personId != null && !personId.isEmpty()) {
+				searchCriteria.add(Restrictions.eq("personId", personId));
+				countCriteria.add(Restrictions.eq("personId", personId));
+			}
 
 			searchCriteria.add(or);
 			countCriteria.add(or);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
 			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
 
 			int count = pageNumber * (currentPage - 1);
@@ -181,10 +260,11 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		String personId = vo.getPersonId();
 
 		Disjunction or = Restrictions.disjunction();
 		try {
-			logger.info("getProtocolDashboardData");
+			logger.info("--------- getProtocolDashboardData -----------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(ProtocolView.class);
 			Criteria countCriteria = session.createCriteria(ProtocolView.class);
@@ -209,11 +289,16 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property4 != null && !property4.isEmpty()) {
 				or.add(Restrictions.like("protocolType", "%" + property4 + "%").ignoreCase());
 			}
+			if (personId != null && !personId.isEmpty()) {
+				searchCriteria.add(Restrictions.eq("personId", personId));
+				countCriteria.add(Restrictions.eq("personId", personId));
+			}
 
 			searchCriteria.add(or);
 			countCriteria.add(or);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
 			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
 
 			int count = pageNumber * (currentPage - 1);
@@ -239,10 +324,11 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		String personId = vo.getPersonId();
 
 		Disjunction or = Restrictions.disjunction();
 		try {
-			logger.info("getDashBoardDataForIacuc");
+			logger.info("---------- getDashBoardDataForIacuc -----------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(IacucView.class);
 			Criteria countCriteria = session.createCriteria(IacucView.class);
@@ -267,11 +353,16 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property4 != null && !property4.isEmpty()) {
 				or.add(Restrictions.like("protocolType", "%" + property4 + "%").ignoreCase());
 			}
+			if (personId != null && !personId.isEmpty()) {
+				searchCriteria.add(Restrictions.eq("personId", personId));
+				countCriteria.add(Restrictions.eq("personId", personId));
+			}
 
 			searchCriteria.add(or);
 			countCriteria.add(or);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
 			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
 
 			int count = pageNumber * (currentPage - 1);
@@ -298,10 +389,11 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		String personId = vo.getPersonId();
 
 		Disjunction or = Restrictions.disjunction();
 		try {
-			logger.info("getDashBoardDataForDisclosures");
+			logger.info("----------- getDashBoardDataForDisclosures ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(DisclosureView.class);
 			Criteria countCriteria = session.createCriteria(DisclosureView.class);
@@ -326,11 +418,16 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property4 != null && !property4.isEmpty()) {
 				or.add(Restrictions.like("moduleItemKey", "%" + property4 + "%").ignoreCase());
 			}
+			if (personId != null && !personId.isEmpty()) {
+				searchCriteria.add(Restrictions.eq("personId", personId));
+				countCriteria.add(Restrictions.eq("personId", personId));
+			}
 
 			searchCriteria.add(or);
 			countCriteria.add(or);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
 			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
 
 			int count = pageNumber * (currentPage - 1);
@@ -389,34 +486,11 @@ public class DashboardDaoImpl implements DashboardDao {
 	@Override
 	public List<ActionItem> getUserNotification(String principalId) {
 		List<ActionItem> actionLists = null;
-		/*
-		 * DetachedCriteria maxQuery = DetachedCriteria.forClass(ActionItem.class);
-		 * maxQuery.add(Restrictions.eq("principalId", principalId));
-		 * maxQuery.setProjection(Projections.max("dateAssigned"));
-		 */
 
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-
-		// Query query = session.getNamedQuery("getUserNotification");
-		/*
-		 * String q =
-		 * "FROM ActionItem t1 WHERE t1.id IN(SELECT id FROM(SELECT ai.documentId, MAX(ai.id) AS id FROM ActionItem ai WHERE ai.principalId = :principalId GROUP BY ai.documentId))"
-		 * ; Query query = session.createQuery(q); actionLists = query.list();
-		 */
-
 		Criteria criteria = session.createCriteria(ActionItem.class);
 		criteria.add(Restrictions.eq("principalId", principalId));
-
-		/*
-		 * Criteria criteria = session.createCriteria(ActionItem.class);
-		 * criteria.add(Restrictions.eq("principalId", principalId));
-		 * criteria.addOrder(Order.asc("documentId"));
-		 * criteria.add(Property.forName("dateAssigned").eq(maxQuery));
-		 */
 		actionLists = criteria.list();
-		if (actionLists != null && !actionLists.isEmpty()) {
-			return actionLists;
-		}
 		return actionLists;
 	}
 }

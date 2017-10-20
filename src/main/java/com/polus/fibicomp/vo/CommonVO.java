@@ -1,5 +1,9 @@
 package com.polus.fibicomp.vo;
 
+/**
+ * Value object for service arguement.
+ *
+ */
 public class CommonVO {
 
 	private String userName;
@@ -25,6 +29,8 @@ public class CommonVO {
 	private String property4;
 
 	private Integer currentPage;
+
+	private String personId;
 
 	public String getUserName() {
 		return userName;
@@ -120,5 +126,13 @@ public class CommonVO {
 
 	public void setCurrentPage(Integer currentPage) {
 		this.currentPage = currentPage;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
 	}
 }

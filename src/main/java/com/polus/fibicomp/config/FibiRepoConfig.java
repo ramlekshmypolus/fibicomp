@@ -15,6 +15,10 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
+/**
+ * This class is used for database configuration
+ *
+ */
 @Configuration
 @PropertySource("classpath:application.properties")
 public class FibiRepoConfig {
@@ -63,21 +67,21 @@ public class FibiRepoConfig {
 
 	@Bean
 	public DataSource getDataSource() {
-		DriverManagerDataSource ds = new DriverManagerDataSource();
-		ds.setDriverClassName(driverClassName);
-		ds.setUrl(url);
-		ds.setUsername(username);
-		ds.setPassword(password);
-		return ds;
+		DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+		driverManagerDataSource.setDriverClassName(driverClassName);
+		driverManagerDataSource.setUrl(url);
+		driverManagerDataSource.setUsername(username);
+		driverManagerDataSource.setPassword(password);
+		return driverManagerDataSource;
 	}
 
 	@Bean
 	@Autowired
 	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
-		HibernateTransactionManager htm = new HibernateTransactionManager();
-		htm.setDataSource(getDataSource());
-		htm.setSessionFactory(sessionFactory);
-		return htm;
+		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
+		hibernateTransactionManager.setDataSource(getDataSource());
+		hibernateTransactionManager.setSessionFactory(sessionFactory);
+		return hibernateTransactionManager;
 	}
 
 	@Bean
@@ -90,12 +94,12 @@ public class FibiRepoConfig {
 
 	@Bean
 	public LocalSessionFactoryBean getSessionFactory() {
-		LocalSessionFactoryBean asfb = new LocalSessionFactoryBean();
-		asfb.setDataSource(getDataSource());
-		asfb.setHibernateProperties(getHibernateProperties());
-		asfb.setPackagesToScan(new String[] { "com.polus.fibicomp.*" });
+		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
+		localSessionFactoryBean.setDataSource(getDataSource());
+		localSessionFactoryBean.setHibernateProperties(getHibernateProperties());
+		localSessionFactoryBean.setPackagesToScan(new String[] { "com.polus.fibicomp.*" });
 		// asfb.setAnnotatedClasses(new Class<?>[]{PrincipalBo.class});
-		return asfb;
+		return localSessionFactoryBean;
 	}
 
 	@Bean

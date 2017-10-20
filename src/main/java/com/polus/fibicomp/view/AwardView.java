@@ -51,14 +51,17 @@ public class AwardView implements Serializable {
 	@Column(name = "UNIT_NAME")
 	private String unitName;
 
-	@Column(name = "PI")
-	private String pi;
-
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimeStamp;
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
+
+	@Column(name = "FULL_NAME")
+	private String fullName;
+
+	@Column(name = "PERSON_ID")
+	private String personId;
 
 	public Integer getAwardId() {
 		return awardId;
@@ -148,14 +151,6 @@ public class AwardView implements Serializable {
 		this.unitName = unitName;
 	}
 
-	public String getPi() {
-		return pi;
-	}
-
-	public void setPi(String pi) {
-		this.pi = pi;
-	}
-
 	public Timestamp getUpdateTimeStamp() {
 		return updateTimeStamp;
 	}
@@ -174,5 +169,21 @@ public class AwardView implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
 	}
 }

@@ -29,22 +29,19 @@ public class LoginDaoImpl implements LoginDao {
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
-	public boolean authenticate(String userName, String password) {
-		boolean isLoginSuccess = false;
+	public PrincipalBo authenticate(String userName, String password) {
+		PrincipalBo principalBo = null;
 		try {
 			logger.info("userName : " + userName + " and password : " + password);
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria crit = session.createCriteria(PrincipalBo.class);
 			crit.add(Restrictions.eq("principalName", userName));
-			PrincipalBo principalBo = (PrincipalBo) crit.uniqueResult();
-			if (principalBo != null) {
-				isLoginSuccess = true;
-			}
-			logger.info("isLoginSuccess :" + isLoginSuccess);
+			principalBo = (PrincipalBo) crit.uniqueResult();
+			logger.info("principalBo :" + principalBo);
 		} catch (Exception e) {
 			logger.debug("Sql Exception: " + e);
 		}
-		return isLoginSuccess;
+		return principalBo;
 	}
 
 	public PersonDTO readPersonData(String userName) {
@@ -64,8 +61,7 @@ public class LoginDaoImpl implements LoginDao {
 				personDTO.setEmail(person.getEmailAddress());
 				personDTO.setUnitNumber(person.getUnitNumber());
 				personDTO.setUserName(userName);
-				//personDTO.setUnitAdmin(isUnitAdmin(person.getPrncplId()));
-				personDTO.setUnitAdmin(false);
+				personDTO.setUnitAdmin(isUnitAdmin(person.getPrncplId()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -82,6 +78,7 @@ public class LoginDaoImpl implements LoginDao {
 		Criteria criteria = session.createCriteria(UnitAdministrator.class);
 		criteria.add(Restrictions.eq("personId", personId));
 		criteria.add(Restrictions.eq("unitAdministratorTypeCode", "3"));
+		@SuppressWarnings("unchecked")
 		List<UnitAdministrator> administrators = criteria.list();
 		if (administrators != null && !administrators.isEmpty()) {
 			isAdmin = true;
