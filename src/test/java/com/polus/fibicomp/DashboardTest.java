@@ -1,26 +1,12 @@
 package com.polus.fibicomp;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.polus.fibicomp.config.FibiRepoConfig;
 import com.polus.fibicomp.dao.DashboardDao;
 import com.polus.fibicomp.dao.DashboardDaoImpl;
-import com.polus.fibicomp.dao.LoginDao;
-import com.polus.fibicomp.dao.LoginDaoImpl;
-import com.polus.fibicomp.pojo.DashBoardProfile;
-import com.polus.fibicomp.pojo.PersonDTO;
-import com.polus.fibicomp.pojo.PrincipalBo;
-import com.polus.fibicomp.service.DashboardService;
-import com.polus.fibicomp.service.DashboardServiceImpl;
-import com.polus.fibicomp.service.LoginService;
 
 public class DashboardTest {
 
@@ -38,6 +24,7 @@ public class DashboardTest {
 		ctx.refresh();
 
 		System.out.println(ctx);
+		@SuppressWarnings("unused")
 		DashboardDao dashboardDao = ctx.getBean("dashboardDao", DashboardDaoImpl.class);
 		/*
 		 * DashboardService dashboardService = ctx.getBean("dashboardService",

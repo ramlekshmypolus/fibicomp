@@ -107,8 +107,8 @@ public class DashboardDaoImpl implements DashboardDao {
 			List<ResearchSummaryPieChart> summaryAwardPiechart) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION as sponsor_type,count(1) from AWARD t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
-		//query.setString("person_id", person_id);
+				"select t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION as sponsor_type,count(1) from AWARD t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.LEAD_UNIT_NUMBER in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Award' and person_id = :person_id ) group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
+		query.setString("person_id", person_id);
 		return summaryAwardPiechart = query.list();
 	}
 
@@ -152,11 +152,11 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property1 != null && !property1.isEmpty()) {
 				or.add(Restrictions.like("accountNumber", "%" + property1 + "%").ignoreCase());
 			}
-			if (property2 != null && !property2.isEmpty()) {
-				or.add(Restrictions.like("sponsor", "%" + property2 + "%").ignoreCase());
+			if (property2 != null && !property2.isEmpty()) {				
+				or.add(Restrictions.like("unitName", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
-				or.add(Restrictions.like("unitName", "%" + property3 + "%").ignoreCase());
+				or.add(Restrictions.like("sponsor", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
 				or.add(Restrictions.like("fullName", "%" + property4 + "%").ignoreCase());
