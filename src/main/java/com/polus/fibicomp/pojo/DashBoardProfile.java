@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
+import com.polus.fibicomp.view.ExpenditureVolume;
 import com.polus.fibicomp.view.IacucView;
 import com.polus.fibicomp.view.ProposalView;
 import com.polus.fibicomp.view.ProtocolView;
@@ -29,21 +30,23 @@ public class DashBoardProfile {
 	private String encryptedUserName;
 
 	private List<AwardView> awardViews;
-	
+
 	private List<ProposalView> proposalViews;
-	
+
 	private List<ProtocolView> protocolViews;
-	
+
 	private List<IacucView> iacucViews;
 
 	private List<DisclosureView> disclosureViews;
-	
+
+	private List<ExpenditureVolume> expenditureVolumes;
+
 	private List<ResearchSummaryView> summaryViews;
-	
+
 	private List<ResearchSummaryPieChart> summaryAwardPieChart;
-	
+
 	private List<ResearchSummaryPieChart> summaryProposalPieChart;
-	
+
 	public ArrayList<HashMap<String, Object>> getDashBoardDetailMap() {
 		return dashBoardDetailMap;
 	}
@@ -138,6 +141,14 @@ public class DashBoardProfile {
 
 	public void setDisclosureViews(List<DisclosureView> disclosureViews) {
 		this.disclosureViews = disclosureViews;
+	}
+
+	public List<ExpenditureVolume> getExpenditureVolumes() {
+		return expenditureVolumes;
+	}
+
+	public void setExpenditureVolumes(List<ExpenditureVolume> expenditureVolumes) {
+		this.expenditureVolumes = expenditureVolumes;
 	}
 
 	public List<ResearchSummaryView> getSummaryViews() {
