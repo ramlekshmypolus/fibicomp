@@ -23,6 +23,7 @@ import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
+import com.polus.fibicomp.view.ExpenditureVolume;
 import com.polus.fibicomp.view.IacucView;
 import com.polus.fibicomp.view.ProposalView;
 import com.polus.fibicomp.view.ProtocolView;
@@ -45,11 +46,14 @@ public class DashboardDaoImpl implements DashboardDao {
 
 	public String getDashBoardResearchSummary(String person_id) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<ExpenditureVolume> expenditureVolumeChart = new ArrayList<ExpenditureVolume>();
 		List<ResearchSummaryView> summaryTable = new ArrayList<ResearchSummaryView>();
 		List<ResearchSummaryPieChart> summaryAwardPiechart = new ArrayList<ResearchSummaryPieChart>();
 		List<ResearchSummaryPieChart> summaryProposalPiechart = new ArrayList<ResearchSummaryPieChart>();
 		try {
 			logger.info("---------- getDashBoardResearchSummary -----------");
+			expenditureVolumeChart = getExpenditureVolumeChart(person_id, expenditureVolumeChart);
+			logger.info("expenditureVolumeChart : " + expenditureVolumeChart);
 			summaryTable = getSummaryTable(person_id, summaryTable);
 			logger.info("summaryTable : " + summaryTable);
 			summaryAwardPiechart = getSummaryAwardPieChart(person_id, summaryAwardPiechart);
@@ -57,6 +61,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			summaryProposalPiechart = getSummaryProposalPieChart(person_id, summaryProposalPiechart);
 			logger.info("summaryProposalPiechart : " + summaryProposalPiechart);
 
+			dashBoardProfile.setExpenditureVolumes(expenditureVolumeChart);
 			dashBoardProfile.setSummaryViews(summaryTable);
 			dashBoardProfile.setSummaryAwardPieChart(summaryAwardPiechart);
 			dashBoardProfile.setSummaryProposalPieChart(summaryProposalPiechart);
@@ -66,6 +71,17 @@ public class DashboardDaoImpl implements DashboardDao {
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<ExpenditureVolume> getExpenditureVolumeChart(String person_id,
+			List<ExpenditureVolume> expenditureVolumeChart) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query expenditureVolume = session.createSQLQuery(
+				"SELECT To_char(t4.start_date, 'yyyy') AS BUDGET_PERIOD, Sum(T4.total_direct_cost) AS Direct_Cost, Sum(T4.total_indirect_cost) AS FA FROM eps_proposal t1 INNER JOIN eps_proposal_budget_ext t2 ON t1.proposal_number = t2.proposal_number INNER JOIN budget t3 ON t2.budget_id = t3.budget_id AND t3.final_version_flag = 'Y' INNER JOIN budget_periods t4 ON t3.budget_id = t4.budget_id WHERE  t1.owned_by_unit IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE  perm_nm = 'View Proposal' AND person_id = :person_id) GROUP  BY TO_CHAR(t4.start_date, 'yyyy') ORDER BY To_Number(TO_CHAR(t4.start_date, 'yyyy'))");
+		expenditureVolume.setString("person_id", person_id);
+		expenditureVolumeChart = expenditureVolume.list();
+		return expenditureVolumeChart;
 	}
 
 	@SuppressWarnings("unchecked")
