@@ -5,8 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
 
-import com.polus.fibicomp.pojo.PersonDTO;
-
 /**
  * LoginService class for login functionality.
  *
@@ -21,10 +19,10 @@ public interface LoginService {
 	 * @param password - Password of the user.
 	 * @param request
 	 * @param response
-	 * @return PersonDTO containing details of the user.
+	 * @return String containing details of the user.
 	 * @throws Exception
 	 */
-	public PersonDTO loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
+	public String loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
 			HttpServletResponse response) throws Exception;
 
 	/**

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.vo.CommonVO;
 
@@ -34,13 +33,12 @@ public class LoginController {
 	private String login_mode;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public PersonDTO loginUser(@RequestBody CommonVO vo, HttpServletRequest request, HttpServletResponse response)
+	public String loginUser(@RequestBody CommonVO vo, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		logger.debug("Received request for login: ");
 		String userName = vo.getUserName();
 		String password = vo.getPassword();
-		PersonDTO personDTO = loginService.loginCheck(login_mode, userName, password, request, response);
-		return personDTO;
+		return loginService.loginCheck(login_mode, userName, password, request, response);
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)

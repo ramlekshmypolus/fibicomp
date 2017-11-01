@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.dao.LoginDao;
 import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.pojo.PrincipalBo;
@@ -19,18 +20,19 @@ public class LoginServiceImpl implements LoginService {
 	private LoginDao loginDao;
 
 	@Override
-	public PersonDTO loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
+	public String loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		PrincipalBo principalBo = null;
-		PersonDTO personDTO = null;
+		PersonDTO personDTO = new PersonDTO();
 		if ("USERID".equalsIgnoreCase(loginMode)) {
 			principalBo = loginDao.authenticate(userName, password);
 		}
 		if (principalBo != null) {
 			personDTO = loginDao.readPersonData(userName);
-			return personDTO;
+			personDTO.setLogin(true);
 		}
-		return personDTO;
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(personDTO);
 	}
 
 	@Override
