@@ -28,7 +28,17 @@ public class PersonDTO {
 	private String unitNumber = "";
 
 	private boolean isUnitAdmin = false;
-	
+
+	private boolean isLogin = false;
+
+	public boolean isLogin() {
+		return isLogin;
+	}
+
+	public void setLogin(boolean isLogin) {
+		this.isLogin = isLogin;
+	}
+
 	public String getHasDual() {
 		return hasDual;
 	}
