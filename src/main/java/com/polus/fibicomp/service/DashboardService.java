@@ -30,9 +30,30 @@ public interface DashboardService {
 	public String getDashBoardData(CommonVO vo) throws Exception;
 
 	/**
+	 * This method is used to retrieve award data in piechart based on sponsor type.
+	 * @param personId - Logged User ID
+	 * @param vo - Object of CommonVO
+	 * @return A list of selected pie chart items based on type.
+	 * @throws Exception
+	 */
+	public String getPieChartDataByType(CommonVO vo) throws Exception;
+
+	/**
 	 * This method is used to get list of pending actions.
 	 * @param personId - Logged User ID
 	 * @return a list of pending actions.
+	 * @throws Exception
 	 */
+
 	public List<ActionItem> getUserNotification(String personId);
+
+	/**
+	 * This method is used to get list of selected type in ResearchSummaryTable.
+	 * @param personId - Logged User ID
+	 * @param researchSummaryIndex - Selected row in Summary table
+	 * @return a String of details of selected item
+	 * @throws Exception
+	 */
+	public String getDetailedSummaryData(String personId, String researchSummaryIndex) throws Exception;
+
 }

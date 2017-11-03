@@ -32,6 +32,12 @@ public class CommonVO {
 
 	private String personId;
 
+	private String sponsorCode;
+
+	private String pieChartIndex;
+
+	private String researchSummaryIndex;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -134,5 +140,29 @@ public class CommonVO {
 
 	public void setPersonId(String personId) {
 		this.personId = personId;
+	}
+
+	public String getSponsorCode() {
+		return sponsorCode;
+	}
+
+	public void setSponsorCode(String sponsorCode) {
+		this.sponsorCode = sponsorCode;
+	}
+
+	public String getPieChartIndex() {
+		return pieChartIndex;
+	}
+
+	public void setPieChartIndex(String pieChartIndex) {
+		this.pieChartIndex = pieChartIndex;
+	}
+
+	public String getResearchSummaryIndex() {
+		return researchSummaryIndex;
+	}
+
+	public void setResearchSummaryIndex(String researchSummaryIndex) {
+		this.researchSummaryIndex = researchSummaryIndex;
 	}
 }

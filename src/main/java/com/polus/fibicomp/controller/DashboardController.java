@@ -44,8 +44,19 @@ public class DashboardController {
 		return dashboardService.getDashBoardData(vo);
 	}
 
+	@RequestMapping(value = "/getPieChartDataByType", method = RequestMethod.POST)
+	public String requestAwardBySponsorTypes(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return dashboardService.getPieChartDataByType(vo);
+	}
+
+	@RequestMapping(value = "/getDetailedResearchSummary", method = RequestMethod.POST)
+	public String requestDetailedResearchSummary(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return dashboardService.getDetailedSummaryData(vo.getPersonId(), vo.getResearchSummaryIndex());
+	}
+
 	@RequestMapping(value = "/getUserNotification", method = RequestMethod.POST)
 	public List<ActionItem> getUserNotification(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.getUserNotification(vo.getPersonId());
 	}
+
 }
