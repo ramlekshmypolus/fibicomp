@@ -74,7 +74,7 @@ public class DashboardDaoImpl implements DashboardDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<ExpenditureVolume> getExpenditureVolumeChart(String person_id,
+	public List<ExpenditureVolume> getExpenditureVolumeChart(String person_id,
 			List<ExpenditureVolume> expenditureVolumeChart) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Query expenditureVolume = session.createSQLQuery(
@@ -168,7 +168,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property1 != null && !property1.isEmpty()) {
 				or.add(Restrictions.like("accountNumber", "%" + property1 + "%").ignoreCase());
 			}
-			if (property2 != null && !property2.isEmpty()) {				
+			if (property2 != null && !property2.isEmpty()) {
 				or.add(Restrictions.like("unitName", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
@@ -508,5 +508,110 @@ public class DashboardDaoImpl implements DashboardDao {
 		criteria.add(Restrictions.eq("principalId", principalId));
 		actionLists = criteria.list();
 		return actionLists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getAwardBySponsorTypes(String personId, String sponsorCode) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<AwardView> awardBySponsorTypes = new ArrayList<AwardView>();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Query awardList = session.createSQLQuery(
+					"SELECT t1.award_number, t1.account_number, t1.title, t2.sponsor_name, t3.full_name AS PI FROM award t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN award_persons t3 ON t1.award_id = t3.award_id AND t3.contact_role_code = 'PI' WHERE  t2.sponsor_type_code = :sponsorCode AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM   mitkc_user_right_mv WHERE  perm_nm = 'View Award' AND person_id = :personId)");
+			awardList.setString("personId", personId).setString("sponsorCode", sponsorCode);
+			awardBySponsorTypes = awardList.list();
+			logger.info("awardsBySponsorTypes : " + awardBySponsorTypes);
+			dashBoardProfile.setAwardViews(awardBySponsorTypes);
+		} catch (Exception e) {
+			logger.error("Error in method getPieChartAwardbySponsorTypes");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getProposalBySponsorTypes(String personId, String sponsorCode) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<ProposalView> proposalBySponsorTypes = new ArrayList<ProposalView>();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Query proposalList = session.createSQLQuery(
+					" SELECT t1.proposal_number, t1.title, t2.sponsor_name, t4.DESCRIPTION as Proposal_Type, t3.full_name AS PI FROM eps_proposal t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN eps_prop_person t3 ON t1.proposal_number = t3.proposal_number AND t3.prop_person_role_id = 'PI' INNER JOIN proposal_type t4 ON t1.PROPOSAL_TYPE_CODE=t4.PROPOSAL_TYPE_CODE WHERE  t2.sponsor_type_code = :sponsorCode AND t1.owned_by_unit IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE  perm_nm = 'View Proposal' AND person_id = :personId) ");
+			proposalList.setString("personId", personId).setString("sponsorCode", sponsorCode);
+			proposalBySponsorTypes = proposalList.list();
+			logger.info("proposalsBySponsorTypes : " + proposalBySponsorTypes);
+			dashBoardProfile.setProposalViews(proposalBySponsorTypes);
+		} catch (Exception e) {
+			logger.error("Error in method getPieChartAwardbySponsorTypes");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getProposalsInProgress(String personId) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<ProposalView> inProgressProposals = new ArrayList<ProposalView>();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Query progressProposalList = session.createSQLQuery(
+					"select t1.proposal_number, t1.title, t5.sponsor_name, t3.TOTAL_COST, t4.full_name AS PI from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN sponsor t5 ON t1.sponsor_code = t5.sponsor_code where t1.status_code=1 and  t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :personId ) ");
+			progressProposalList.setString("personId", personId);
+			inProgressProposals = progressProposalList.list();
+			logger.info("getProposalsInProgress : " + inProgressProposals);
+			dashBoardProfile.setProposalViews(inProgressProposals);
+		} catch (Exception e) {
+			logger.error("Error in method getProposalsInProgress");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getSubmittedProposals(String personId) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<ProposalView> submittedProposals = new ArrayList<ProposalView>();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Query subproposalList = session.createSQLQuery(
+					" select t1.proposal_number, t1.title, t5.sponsor_name, t3.TOTAL_COST, t4.full_name AS PI from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN sponsor t5 ON t1.sponsor_code = t5.sponsor_code where t1.status_code=5 and  t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :personId ) ");
+			subproposalList.setString("personId", personId);
+			submittedProposals = subproposalList.list();
+			logger.info("SubmittedProposals : " + submittedProposals);
+			dashBoardProfile.setProposalViews(submittedProposals);
+		} catch (Exception e) {
+			logger.error("Error in method getProposalsInProgress");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getActiveAwards(String personId) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<AwardView> activeAwards = new ArrayList<AwardView>();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Query activeAwardList = session.createSQLQuery(
+					" SELECT t1.award_number, t1.account_number, t4.sponsor_name, t5.full_name  AS PI, t3.total_cost AS total_amount FROM award t1 INNER JOIN award_budget_ext t2 ON t1.award_id = t2.award_id INNER JOIN budget t3 ON t2.budget_id = t3.budget_id AND t3.final_version_flag = 'Y' INNER JOIN sponsor t4 ON t1.sponsor_code = t4.sponsor_code LEFT OUTER JOIN award_persons t5 ON t1.award_id = t5.award_id AND t5.contact_role_code = 'PI' WHERE t1.award_sequence_status = 'ACTIVE' AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM   mitkc_user_right_mv WHERE  perm_nm = 'View Award'AND person_id = :personId) ");
+			activeAwardList.setString("personId", personId);
+			activeAwards = activeAwardList.list();
+			logger.info("SubmittedProposals : " + activeAwards);
+			dashBoardProfile.setAwardViews(activeAwards);
+		} catch (Exception e) {
+			logger.error("Error in method getProposalsInProgress");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
 	}
 }

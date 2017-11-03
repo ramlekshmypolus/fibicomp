@@ -63,11 +63,54 @@ public interface DashboardDao {
 	 * @return A list of disclosure.
 	 */
 	public DashBoardProfile getDashBoardDataForDisclosures(CommonVO vo);
-
+	
+	/**
+	 * This method is used to retrieve award data in piechart based on sponsor type.
+	 * @param personId - Logged User ID
+	 * @param sponsorCode - sponsor_type_code clicked by user in piechart 
+	 * @return A list of award data based on award type.
+	 * @throws Exception
+	 */
+	public String getAwardBySponsorTypes(String personId, String sponsorCode) throws Exception;
+	
+	/**
+	 * This method is used to retrieve proposal data in piechart based on sponsor type.
+	 * @param personId - Logged User ID
+	 * @param sponsorCode - sponsor_type_code clicked by user in piechart 
+	 * @return A list of award data based on award type.
+	 * @throws Exception
+	 */
+	public String getProposalBySponsorTypes(String personId, String sponsorCode) throws Exception;
+	
 	/**
 	 * This method is used to retrieve list of pending action.
 	 * @param personId - ID of the user.
 	 * @return A list of actions.
 	 */
 	public List<ActionItem> getUserNotification(String personId);
+
+	/**
+	 * This method is used to retrieve list of in_progress proposals.
+	 * @param personId - ID of the user.
+	 * @return A list of Proposals in progress.
+	 * @throws Exception 
+	 */
+	public String getProposalsInProgress(String personId) throws Exception;
+
+	/**
+	 * This method is used to retrieve list of submitted proposals.
+	 * @param personId - ID of the user.
+	 * @return A list of Submitted proposals.
+	 * @throws Exception 
+	 */
+	public String getSubmittedProposals(String personId) throws Exception;
+
+	/**
+	 * This method is used to retrieve list of active awards.
+	 * @param personId - ID of the user.
+	 * @return A list of active awards
+	 * @throws Exception 
+	 */
+	public String getActiveAwards(String personId) throws Exception;
+
 }

@@ -59,4 +59,42 @@ public class DashboardServiceImpl implements DashboardService {
 	public List<ActionItem> getUserNotification(String personId) {
 		return dashboardDao.getUserNotification(personId);
 	}
+
+	@Override
+	public String getPieChartDataByType(CommonVO vo) throws Exception {
+		String pieChartDataByType = null;
+		String personId = vo.getPersonId();
+		String sponsorCode = vo.getSponsorCode();
+		String pieChartIndex = vo.getPieChartIndex();
+		try {
+			if (pieChartIndex.equals("AWARD")) {
+				pieChartDataByType = dashboardDao.getAwardBySponsorTypes(personId, sponsorCode);
+			}
+			if (pieChartIndex.equals("PROPOSAL")) {
+				pieChartDataByType = dashboardDao.getProposalBySponsorTypes(personId, sponsorCode);
+			}
+		} catch (Exception e) {
+			logger.error("Error in method getPieChartDataByType", e);
+		}
+		return pieChartDataByType;
+	}
+
+	@Override
+	public String getDetailedSummaryData(String personId, String researchSummaryIndex) throws Exception {
+		String detailedSummaryData = null;
+		try {
+			if (researchSummaryIndex.equals("PROPOSALSINPROGRESS")) {
+				detailedSummaryData = dashboardDao.getProposalsInProgress(personId);
+			}
+			if (researchSummaryIndex.equals("PROPOSALSSUBMITTED")) {
+				detailedSummaryData = dashboardDao.getSubmittedProposals(personId);
+			}
+			if (researchSummaryIndex.equals("AWARDSACTIVE")) {
+				detailedSummaryData = dashboardDao.getActiveAwards(personId);
+			}
+		} catch (Exception e) {
+			logger.error("Error in method getDetailedSummaryData", e);
+		}
+		return detailedSummaryData;
+	}
 }
