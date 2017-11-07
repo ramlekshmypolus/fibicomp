@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -150,7 +150,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer currentPage = vo.getCurrentPage();
 		String personId = vo.getPersonId();
 
-		Disjunction or = Restrictions.disjunction();
+		Conjunction and = Restrictions.conjunction();
 		try {
 			logger.info("-------- getDashBoardDataForAward ---------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -166,24 +166,24 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			if (property1 != null && !property1.isEmpty()) {
-				or.add(Restrictions.like("accountNumber", "%" + property1 + "%").ignoreCase());
+				and.add(Restrictions.like("accountNumber", "%" + property1 + "%").ignoreCase());
 			}
 			if (property2 != null && !property2.isEmpty()) {
-				or.add(Restrictions.like("unitName", "%" + property2 + "%").ignoreCase());
+				and.add(Restrictions.like("unitName", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
-				or.add(Restrictions.like("sponsor", "%" + property3 + "%").ignoreCase());
+				and.add(Restrictions.like("sponsor", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				or.add(Restrictions.like("fullName", "%" + property4 + "%").ignoreCase());
+				and.add(Restrictions.like("fullName", "%" + property4 + "%").ignoreCase());
 			}
 			if (personId != null && !personId.isEmpty()) {
 				searchCriteria.add(Restrictions.eq("personId", personId));
 				countCriteria.add(Restrictions.eq("personId", personId));
 			}
 
-			searchCriteria.add(or);
-			countCriteria.add(or);
+			searchCriteria.add(and);
+			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
 			logger.info("dashboardCount : " + dashboardCount);
@@ -214,7 +214,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer currentPage = vo.getCurrentPage();
 		String personId = vo.getPersonId();
 
-		Disjunction or = Restrictions.disjunction();
+		Conjunction and = Restrictions.conjunction();
 		try {
 			logger.info("---------- getDashBoardDataForProposal ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -230,24 +230,24 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			if (property1 != null && !property1.isEmpty()) {
-				or.add(Restrictions.like("proposalNumber", "%" + property1 + "%").ignoreCase());
+				and.add(Restrictions.like("proposalNumber", "%" + property1 + "%").ignoreCase());
 			}
 			if (property2 != null && !property2.isEmpty()) {
-				or.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
+				and.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
-				or.add(Restrictions.like("sponsor", "%" + property3 + "%").ignoreCase());
+				and.add(Restrictions.like("sponsor", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				or.add(Restrictions.like("leadUnit", "%" + property4 + "%").ignoreCase());
+				and.add(Restrictions.like("leadUnit", "%" + property4 + "%").ignoreCase());
 			}
 			if (personId != null && !personId.isEmpty()) {
 				searchCriteria.add(Restrictions.eq("personId", personId));
 				countCriteria.add(Restrictions.eq("personId", personId));
 			}
 
-			searchCriteria.add(or);
-			countCriteria.add(or);
+			searchCriteria.add(and);
+			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
 			logger.info("dashboardCount : " + dashboardCount);
@@ -278,7 +278,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer currentPage = vo.getCurrentPage();
 		String personId = vo.getPersonId();
 
-		Disjunction or = Restrictions.disjunction();
+		Conjunction and = Restrictions.conjunction();
 		try {
 			logger.info("--------- getProtocolDashboardData -----------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -294,24 +294,24 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			if (property1 != null && !property1.isEmpty()) {
-				or.add(Restrictions.like("protocolNumber", "%" + property1 + "%").ignoreCase());
+				and.add(Restrictions.like("protocolNumber", "%" + property1 + "%").ignoreCase());
 			}
 			if (property2 != null && !property2.isEmpty()) {
-				or.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
+				and.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
-				or.add(Restrictions.like("leadUnit", "%" + property3 + "%").ignoreCase());
+				and.add(Restrictions.like("leadUnit", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				or.add(Restrictions.like("protocolType", "%" + property4 + "%").ignoreCase());
+				and.add(Restrictions.like("protocolType", "%" + property4 + "%").ignoreCase());
 			}
 			if (personId != null && !personId.isEmpty()) {
 				searchCriteria.add(Restrictions.eq("personId", personId));
 				countCriteria.add(Restrictions.eq("personId", personId));
 			}
 
-			searchCriteria.add(or);
-			countCriteria.add(or);
+			searchCriteria.add(and);
+			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
 			logger.info("dashboardCount : " + dashboardCount);
@@ -342,7 +342,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer currentPage = vo.getCurrentPage();
 		String personId = vo.getPersonId();
 
-		Disjunction or = Restrictions.disjunction();
+		Conjunction and = Restrictions.conjunction();
 		try {
 			logger.info("---------- getDashBoardDataForIacuc -----------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -358,24 +358,24 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			if (property1 != null && !property1.isEmpty()) {
-				or.add(Restrictions.like("protocolNumber", "%" + property1 + "%").ignoreCase());
+				and.add(Restrictions.like("protocolNumber", "%" + property1 + "%").ignoreCase());
 			}
 			if (property2 != null && !property2.isEmpty()) {
-				or.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
+				and.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
-				or.add(Restrictions.like("leadUnit", "%" + property3 + "%").ignoreCase());
+				and.add(Restrictions.like("leadUnit", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				or.add(Restrictions.like("protocolType", "%" + property4 + "%").ignoreCase());
+				and.add(Restrictions.like("protocolType", "%" + property4 + "%").ignoreCase());
 			}
 			if (personId != null && !personId.isEmpty()) {
 				searchCriteria.add(Restrictions.eq("personId", personId));
 				countCriteria.add(Restrictions.eq("personId", personId));
 			}
 
-			searchCriteria.add(or);
-			countCriteria.add(or);
+			searchCriteria.add(and);
+			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
 			logger.info("dashboardCount : " + dashboardCount);
@@ -407,7 +407,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer currentPage = vo.getCurrentPage();
 		String personId = vo.getPersonId();
 
-		Disjunction or = Restrictions.disjunction();
+		Conjunction and = Restrictions.conjunction();
 		try {
 			logger.info("----------- getDashBoardDataForDisclosures ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -423,24 +423,24 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			if (property1 != null && !property1.isEmpty()) {
-				or.add(Restrictions.like("coiDisclosureNumber", "%" + property1 + "%").ignoreCase());
+				and.add(Restrictions.like("coiDisclosureNumber", "%" + property1 + "%").ignoreCase());
 			}
 			if (property2 != null && !property2.isEmpty()) {
-				or.add(Restrictions.like("fullName", "%" + property2 + "%").ignoreCase());
+				and.add(Restrictions.like("fullName", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
-				or.add(Restrictions.like("disclosureDisposition", "%" + property3 + "%").ignoreCase());
+				and.add(Restrictions.like("disclosureDisposition", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				or.add(Restrictions.like("moduleItemKey", "%" + property4 + "%").ignoreCase());
+				and.add(Restrictions.like("moduleItemKey", "%" + property4 + "%").ignoreCase());
 			}
 			if (personId != null && !personId.isEmpty()) {
 				searchCriteria.add(Restrictions.eq("personId", personId));
 				countCriteria.add(Restrictions.eq("personId", personId));
 			}
 
-			searchCriteria.add(or);
-			countCriteria.add(or);
+			searchCriteria.add(and);
+			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
 			logger.info("dashboardCount : " + dashboardCount);
