@@ -524,7 +524,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		try {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query awardList = session.createSQLQuery(
-					"SELECT t1.sequence_number, t1.award_id, t1.document_number, t1.award_number, t1.account_number, t1.title, t2.sponsor_name, t3.full_name AS PI FROM award t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN award_persons t3 ON t1.award_id = t3.award_id AND t3.contact_role_code = 'PI' WHERE  t2.sponsor_type_code = 0 and t1.sequence_number in(select max(sequence_number) from  AWARD where AWARD_NUMBER=t1.AWARD_NUMBER) AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE perm_nm = 'View Award' AND person_id = :personId)");
+					"SELECT t1.sequence_number, t1.award_id, t1.document_number, t1.award_number, t1.account_number, t1.title, t2.sponsor_name, t3.full_name AS PI FROM award t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN award_persons t3 ON t1.award_id = t3.award_id AND t3.contact_role_code = 'PI' WHERE t2.sponsor_type_code = :sponsorCode and t1.sequence_number in(select max(sequence_number) from  AWARD where AWARD_NUMBER=t1.AWARD_NUMBER) AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE perm_nm = 'View Award' AND person_id = :personId)");
 			awardList.setString("personId", personId)
 					 .setString("sponsorCode", sponsorCode);
 			awardBySponsorTypes = awardList.list();
