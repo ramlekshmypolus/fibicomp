@@ -77,8 +77,14 @@ public class DashboardDaoImpl implements DashboardDao {
 	public List<ExpenditureVolume> getExpenditureVolumeChart(String person_id,
 			List<ExpenditureVolume> expenditureVolumeChart) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Query expenditureVolume = session.createSQLQuery(
-				"SELECT To_char(t4.start_date, 'yyyy') AS BUDGET_PERIOD, Sum(T4.total_direct_cost) AS Direct_Cost, Sum(T4.total_indirect_cost) AS FA FROM eps_proposal t1 INNER JOIN eps_proposal_budget_ext t2 ON t1.proposal_number = t2.proposal_number INNER JOIN budget t3 ON t2.budget_id = t3.budget_id AND t3.final_version_flag = 'Y' INNER JOIN budget_periods t4 ON t3.budget_id = t4.budget_id WHERE  t1.owned_by_unit IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE  perm_nm = 'View Proposal' AND person_id = :person_id) GROUP  BY TO_CHAR(t4.start_date, 'yyyy') ORDER BY To_Number(TO_CHAR(t4.start_date, 'yyyy'))");
+		Query expenditureVolume = null;
+		if (oracledb.equals("Y")) {
+			expenditureVolume = session.createSQLQuery(
+					"SELECT to_char(t4.start_date, 'yyyy') AS BUDGET_PERIOD, Sum(T4.total_direct_cost) AS Direct_Cost, Sum(T4.total_indirect_cost) AS FA FROM eps_proposal t1 INNER JOIN eps_proposal_budget_ext t2 ON t1.proposal_number = t2.proposal_number INNER JOIN budget t3 ON t2.budget_id = t3.budget_id AND t3.final_version_flag = 'Y' INNER JOIN budget_periods t4 ON t3.budget_id = t4.budget_id WHERE t1.owned_by_unit IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE perm_nm = 'View Proposal' AND person_id = :person_id) GROUP BY TO_CHAR(t4.start_date, 'yyyy') ORDER BY To_Number(TO_CHAR(t4.start_date, 'yyyy'))");
+		} else {
+			expenditureVolume = session.createSQLQuery(
+					"SELECT year(t4.start_date) AS BUDGET_PERIOD, Sum(T4.total_direct_cost) AS Direct_Cost, Sum(T4.total_indirect_cost) AS FA FROM eps_proposal t1 INNER JOIN eps_proposal_budget_ext t2 ON t1.proposal_number = t2.proposal_number INNER JOIN budget t3 ON t2.budget_id = t3.budget_id AND t3.final_version_flag = 'Y' INNER JOIN budget_periods t4 ON t3.budget_id = t4.budget_id WHERE t1.owned_by_unit IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE  perm_nm = 'View Proposal' AND person_id = :person_id) GROUP BY year(t4.start_date) ORDER BY year(t4.start_date)");
+		}
 		expenditureVolume.setString("person_id", person_id);
 		expenditureVolumeChart = expenditureVolume.list();
 		return expenditureVolumeChart;
@@ -123,7 +129,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			List<ResearchSummaryPieChart> summaryAwardPiechart) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION as sponsor_type,count(1) from AWARD t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.LEAD_UNIT_NUMBER in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Award' and person_id = :person_id ) group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
+				"select t2.SPONSOR_TYPE_CODE, t3.DESCRIPTION as sponsor_type, count(1) from AWARD t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.sequence_number in(select max(sequence_number) from AWARD where AWARD_NUMBER=t1.AWARD_NUMBER) and t1.LEAD_UNIT_NUMBER in(select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Award' and person_id = :person_id) group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
 		query.setString("person_id", person_id);
 		return summaryAwardPiechart = query.list();
 	}
@@ -133,7 +139,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			List<ResearchSummaryPieChart> summaryProposalPiechart) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION as sponsor_type,count(1) from eps_proposal t1  inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :person_id ) group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
+				"select t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION as sponsor_type,count(1) from eps_proposal t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.OWNED_BY_UNIT in(select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :person_id) group by t2.SPONSOR_TYPE_CODE, t3.DESCRIPTION");
 		query.setString("person_id", person_id);
 		return summaryProposalPiechart = query.list();
 	}
@@ -518,7 +524,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		try {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query awardList = session.createSQLQuery(
-					"SELECT t1.award_id, t1.document_number, t1.award_number, t1.account_number, t1.title, t2.sponsor_name, t3.full_name AS PI FROM award t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN award_persons t3 ON t1.award_id = t3.award_id AND t3.contact_role_code = 'PI' WHERE  t2.sponsor_type_code = :sponsorCode AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM   mitkc_user_right_mv WHERE  perm_nm = 'View Award' AND person_id = :personId)");
+					"SELECT t1.sequence_number, t1.award_id, t1.document_number, t1.award_number, t1.account_number, t1.title, t2.sponsor_name, t3.full_name AS PI FROM award t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN award_persons t3 ON t1.award_id = t3.award_id AND t3.contact_role_code = 'PI' WHERE  t2.sponsor_type_code = 0 and t1.sequence_number in(select max(sequence_number) from  AWARD where AWARD_NUMBER=t1.AWARD_NUMBER) AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE perm_nm = 'View Award' AND person_id = :personId)");
 			awardList.setString("personId", personId)
 					 .setString("sponsorCode", sponsorCode);
 			awardBySponsorTypes = awardList.list();
