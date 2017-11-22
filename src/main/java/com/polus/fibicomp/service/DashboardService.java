@@ -56,4 +56,12 @@ public interface DashboardService {
 	 */
 	public String getDetailedSummaryData(String personId, String researchSummaryIndex) throws Exception;
 
+	/**
+	 * This method is used to retrieve proposal data in donutChart based on status(in progress/awarded).
+	 * @param vo - Object of CommonVO
+	 * @return A list of selected donutChart items based on status.
+	 * @throws Exception
+	 */
+	public String getDonutChartDataBySponsor(CommonVO vo);
+
 }

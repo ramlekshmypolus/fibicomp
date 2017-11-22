@@ -45,7 +45,7 @@ public class DashboardController {
 	}
 
 	@RequestMapping(value = "/getPieChartDataByType", method = RequestMethod.POST)
-	public String requestAwardBySponsorTypes(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+	public String requestPieChartDataBySponsorTypes(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.getPieChartDataByType(vo);
 	}
 
@@ -57,6 +57,11 @@ public class DashboardController {
 	@RequestMapping(value = "/getUserNotification", method = RequestMethod.POST)
 	public List<ActionItem> getUserNotification(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.getUserNotification(vo.getPersonId());
+	}
+	
+	@RequestMapping(value = "/getDonutChartDataBySponsor", method = RequestMethod.POST)
+	public String requestDonutChartDataBySponsor(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return dashboardService.getDonutChartDataBySponsor(vo);
 	}
 
 }

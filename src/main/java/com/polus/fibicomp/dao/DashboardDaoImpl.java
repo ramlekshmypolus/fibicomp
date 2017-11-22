@@ -50,6 +50,8 @@ public class DashboardDaoImpl implements DashboardDao {
 		List<ResearchSummaryView> summaryTable = new ArrayList<ResearchSummaryView>();
 		List<ResearchSummaryPieChart> summaryAwardPiechart = new ArrayList<ResearchSummaryPieChart>();
 		List<ResearchSummaryPieChart> summaryProposalPiechart = new ArrayList<ResearchSummaryPieChart>();
+		List<ResearchSummaryPieChart> summaryProposalDonutChart = new ArrayList<ResearchSummaryPieChart>();
+		List<ResearchSummaryPieChart> summaryAwardDonutChart = new ArrayList<ResearchSummaryPieChart>();
 		try {
 			logger.info("---------- getDashBoardResearchSummary -----------");
 			expenditureVolumeChart = getExpenditureVolumeChart(person_id, expenditureVolumeChart);
@@ -60,11 +62,17 @@ public class DashboardDaoImpl implements DashboardDao {
 			logger.info("summaryAwardPiechart : " + summaryAwardPiechart);
 			summaryProposalPiechart = getSummaryProposalPieChart(person_id, summaryProposalPiechart);
 			logger.info("summaryProposalPiechart : " + summaryProposalPiechart);
+			summaryProposalDonutChart = getSummaryInProgressProposalDonutChart(person_id, summaryProposalDonutChart);
+			logger.info("summaryProposalDonutChart : " + summaryProposalDonutChart);
+			summaryAwardDonutChart = getSummaryAwardedProposalDonutChart(person_id, summaryAwardDonutChart);
+			logger.info("summaryAwardDonutChart : " + summaryAwardDonutChart);
 
 			dashBoardProfile.setExpenditureVolumes(expenditureVolumeChart);
 			dashBoardProfile.setSummaryViews(summaryTable);
 			dashBoardProfile.setSummaryAwardPieChart(summaryAwardPiechart);
 			dashBoardProfile.setSummaryProposalPieChart(summaryProposalPiechart);
+			dashBoardProfile.setSummaryProposalDonutChart(summaryProposalDonutChart);
+			dashBoardProfile.setSummaryAwardDonutChart(summaryAwardDonutChart);
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardResearchSummary");
 			e.printStackTrace();
@@ -106,7 +114,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		}
 
 		Query inprogressProposal = session.createSQLQuery(
-				"select 'Inprogress Proposal' as In_Progress_Proposal, count(t1.proposal_number) as count,sum(t3.TOTAL_COST) as total_amount from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' where t1.status_code=1 and  t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :person_id )");
+				"select 'In Progress Proposal' as In_Progress_Proposal, count(t1.proposal_number) as count,sum(t3.TOTAL_COST) as total_amount from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' where t1.status_code=1 and  t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :person_id )");
 		inprogressProposal.setString("person_id", person_id);
 		inPropCount = inprogressProposal.list();
 		if (inPropCount != null && !inPropCount.isEmpty()) {
@@ -617,6 +625,70 @@ public class DashboardDaoImpl implements DashboardDao {
 			dashBoardProfile.setAwardViews(activeAwards);
 		} catch (Exception e) {
 			logger.error("Error in method getProposalsInProgress");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ResearchSummaryPieChart> getSummaryAwardedProposalDonutChart(String person_id,
+			List<ResearchSummaryPieChart> summaryAwardDonutChart) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query query = session.createSQLQuery(
+				"select t1.sponsor_code,t2.SPONSOR_NAME as sponsor,count(1) as count from proposal t1 inner join SPONSOR t2 on t1.sponsor_code = t2.sponsor_code where t1.status_code = 2 and t1.LEAD_UNIT_NUMBER in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :person_id ) group by t1.sponsor_code,t2.SPONSOR_NAME");
+		query.setString("person_id", person_id);
+		return summaryAwardDonutChart = query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ResearchSummaryPieChart> getSummaryInProgressProposalDonutChart(String person_id,
+			List<ResearchSummaryPieChart> summaryProposalDonutChart) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query query = session.createSQLQuery(
+				"select t1.sponsor_code,t2.SPONSOR_NAME as sponsor,count(1) as count from eps_proposal t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code where t1.status_code=1 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :person_id) group by t1.sponsor_code,t2.SPONSOR_NAME");
+		query.setString("person_id", person_id);
+		return summaryProposalDonutChart = query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getInProgressProposalsBySponsorExpanded(String personId, String sponsorCode) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<ProposalView> inProgressProposal = new ArrayList<ProposalView>();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Query proposalQuery = session.createSQLQuery(
+					"select t1.DOCUMENT_NUMBER, t1.proposal_number, t1.title, t4.full_name AS PI, t1.PROPOSAL_TYPE_CODE, t5.DESCRIPTION as Proposal_Type, t7.TOTAL_COST as BUDGET from eps_proposal t1 LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN proposal_type t5 ON t1.PROPOSAL_TYPE_CODE=t5.PROPOSAL_TYPE_CODE LEFT OUTER JOIN eps_proposal_budget_ext t6 ON t1.proposal_number = t6.proposal_number LEFT OUTER JOIN budget t7 ON t6.budget_id = t7.budget_id and t7.final_version_flag = 'Y' where t1.sponsor_code = :sponsorCode and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :personId )");
+			proposalQuery.setString("personId", personId)
+						.setString("sponsorCode", sponsorCode);
+			inProgressProposal = proposalQuery.list();
+			logger.info("inProgressProposal : " + inProgressProposal);
+			dashBoardProfile.setProposalViews(inProgressProposal);
+		} catch (Exception e) {
+			logger.error("Error in method getInProgressProposalsBySponsor");
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getAwardedProposalsBySponsorExpanded(String personId, String sponsorCode) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		List<ProposalView> awardedProposal = new ArrayList<ProposalView>();
+		try {
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Query proposalQuery = session.createSQLQuery(
+					"select t1.DOCUMENT_NUMBER, t1.proposal_number, t1.title, t4.full_name AS PI, t1.ACTIVITY_TYPE_CODE, t5.DESCRIPTION as ACTIVITY_TYPE, T1.PROPOSAL_TYPE_CODE, T6.description as PROPOSAL_TYPE, t1.sponsor_code from proposal t1 INNER JOIN SPONSOR t2 on t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN PROPOSAL_PERSONS t4 ON t1.proposal_id = t4.proposal_id AND t4.CONTACT_ROLE_CODE = 'PI' INNER JOIN ACTIVITY_TYPE t5 on t1.ACTIVITY_TYPE_CODE = t5.ACTIVITY_TYPE_CODE INNER JOIN PROPOSAL_TYPE t6 on T1.PROPOSAL_TYPE_CODE = T6.PROPOSAL_TYPE_CODE where t1.sponsor_code = :sponsorCode and t1.LEAD_UNIT_NUMBER in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :personId ) ");
+			proposalQuery.setString("personId", personId)
+						.setString("sponsorCode", sponsorCode);
+			awardedProposal = proposalQuery.list();
+			logger.info("awardedProposal : " + awardedProposal);
+			dashBoardProfile.setProposalViews(awardedProposal);
+		} catch (Exception e) {
+			logger.error("Error in method getAwardedProposalsBySponsor");
 			e.printStackTrace();
 		}
 		ObjectMapper mapper = new ObjectMapper();
