@@ -113,4 +113,22 @@ public interface DashboardDao {
 	 */
 	public String getActiveAwards(String personId) throws Exception;
 
+	/**
+	 * This method is used to retrieve inProgress proposal data by sponsor in donutChart.
+	 * @param personId - Logged User ID
+	 * @param sponsorCode - sponsor_type_code clicked by user in donutChart 
+	 * @return A list of proposal data based on status = inProgress.
+	 * @throws Exception
+	 */
+	public String getInProgressProposalsBySponsorExpanded(String personId, String sponsorCode) throws Exception;
+
+	/**
+	 * This method is used to retrieve awarded proposal data by sponsor in donutChart.
+	 * @param personId - Logged User ID
+	 * @param sponsorCode - sponsor_type_code clicked by user in donutChart 
+	 * @return A list of proposal data based on status = Awarded.
+	 * @throws Exception
+	 */
+	public String getAwardedProposalsBySponsorExpanded(String personId, String sponsorCode) throws Exception;
+
 }

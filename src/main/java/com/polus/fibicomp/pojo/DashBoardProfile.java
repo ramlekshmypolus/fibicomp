@@ -46,6 +46,10 @@ public class DashBoardProfile {
 	private List<ResearchSummaryPieChart> summaryAwardPieChart;
 
 	private List<ResearchSummaryPieChart> summaryProposalPieChart;
+	
+	private List<ResearchSummaryPieChart> summaryProposalDonutChart;
+	
+	private List<ResearchSummaryPieChart> summaryAwardDonutChart;
 
 	public ArrayList<HashMap<String, Object>> getDashBoardDetailMap() {
 		return dashBoardDetailMap;
@@ -173,5 +177,21 @@ public class DashBoardProfile {
 
 	public void setSummaryProposalPieChart(List<ResearchSummaryPieChart> summaryProposalPieChart) {
 		this.summaryProposalPieChart = summaryProposalPieChart;
+	}
+
+	public List<ResearchSummaryPieChart> getSummaryProposalDonutChart() {
+		return summaryProposalDonutChart;
+	}
+
+	public void setSummaryProposalDonutChart(List<ResearchSummaryPieChart> summaryProposalDonutChart) {
+		this.summaryProposalDonutChart = summaryProposalDonutChart;
+	}
+
+	public List<ResearchSummaryPieChart> getSummaryAwardDonutChart() {
+		return summaryAwardDonutChart;
+	}
+
+	public void setSummaryAwardDonutChart(List<ResearchSummaryPieChart> summaryAwardDonutChart) {
+		this.summaryAwardDonutChart = summaryAwardDonutChart;
 	}
 }

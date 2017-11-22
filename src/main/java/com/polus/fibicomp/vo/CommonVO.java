@@ -37,6 +37,8 @@ public class CommonVO {
 	private String pieChartIndex;
 
 	private String researchSummaryIndex;
+	
+	private String donutChartIndex;
 
 	public String getUserName() {
 		return userName;
@@ -164,5 +166,13 @@ public class CommonVO {
 
 	public void setResearchSummaryIndex(String researchSummaryIndex) {
 		this.researchSummaryIndex = researchSummaryIndex;
+	}
+
+	public String getDonutChartIndex() {
+		return donutChartIndex;
+	}
+
+	public void setDonutChartIntex(String donutChartIndex) {
+		this.donutChartIndex = donutChartIndex;
 	}
 }

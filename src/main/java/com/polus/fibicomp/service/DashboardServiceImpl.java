@@ -97,4 +97,23 @@ public class DashboardServiceImpl implements DashboardService {
 		}
 		return detailedSummaryData;
 	}
+
+	@Override
+	public String getDonutChartDataBySponsor(CommonVO vo) {
+		String donutChartData = null;
+		String personId = vo.getPersonId();
+		String sponsorCode = vo.getSponsorCode();
+		String donutChartIndex = vo.getDonutChartIndex();
+		try {
+			if (donutChartIndex.equals("INPROGRESS")) {
+				donutChartData = dashboardDao.getInProgressProposalsBySponsorExpanded(personId, sponsorCode);
+			}
+			if (donutChartIndex.equals("AWARDED")) {
+				donutChartData = dashboardDao.getAwardedProposalsBySponsorExpanded(personId, sponsorCode);
+			}
+		} catch (Exception e) {
+			logger.error("Error in method getPieChartDataByType", e);
+		}
+		return donutChartData;
+	}
 }
