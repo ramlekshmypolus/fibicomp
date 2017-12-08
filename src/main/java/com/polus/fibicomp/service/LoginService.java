@@ -5,8 +5,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
 
+import com.polus.fibicomp.pojo.PersonDTO;
+
 /**
  * LoginService class for login functionality.
+ *
+ */
+/**
+ * @author Shaji P
  *
  */
 @Service
@@ -19,10 +25,10 @@ public interface LoginService {
 	 * @param password - Password of the user.
 	 * @param request
 	 * @param response
-	 * @return String containing details of the user.
+	 * @return Object of class PersonDTO containing details of the user.
 	 * @throws Exception
 	 */
-	public String loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
+	public PersonDTO loginCheck(String loginMode, String userName, String password, HttpServletRequest request,
 			HttpServletResponse response) throws Exception;
 
 	/**
@@ -31,4 +37,5 @@ public interface LoginService {
 	 * @return A boolean value to indicate role of the user.
 	 */
 	public boolean isUnitAdmin(String personId);
+
 }

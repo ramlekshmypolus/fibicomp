@@ -40,6 +40,14 @@ public class CommonVO {
 	
 	private String donutChartIndex;
 
+	private String awardId;
+
+	private String accessToken;
+
+	private String deviceToken;
+
+	private String deviceType;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -172,7 +180,39 @@ public class CommonVO {
 		return donutChartIndex;
 	}
 
-	public void setDonutChartIntex(String donutChartIndex) {
+	public void setDonutChartIndex(String donutChartIndex) {
 		this.donutChartIndex = donutChartIndex;
+	}
+
+	public String getAwardId() {
+		return awardId;
+	}
+
+	public void setAwardId(String awardId) {
+		this.awardId = awardId;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getDeviceToken() {
+		return deviceToken;
+	}
+
+	public void setDeviceToken(String deviceToken) {
+		this.deviceToken = deviceToken;
+	}
+
+	public String getDeviceType() {
+		return deviceType;
+	}
+
+	public void setDeviceType(String deviceType) {
+		this.deviceType = deviceType;
 	}
 }
