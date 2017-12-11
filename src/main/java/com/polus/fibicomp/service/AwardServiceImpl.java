@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.dao.AwardDao;
+import com.polus.fibicomp.vo.AwardDetailsVO;
 
 @Transactional
 @Service(value = "awardService")
@@ -18,7 +20,9 @@ public class AwardServiceImpl implements AwardService {
 
 	@Override
 	public String getAwardSummaryData(String awardId) throws Exception {
-		return awardDao.fetchAwardSummaryData(awardId);
+		AwardDetailsVO awardDetailsVO = awardDao.fetchAwardSummaryData(awardId);
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(awardDetailsVO);
 	}
 
 }
