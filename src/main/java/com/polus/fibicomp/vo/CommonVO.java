@@ -37,7 +37,7 @@ public class CommonVO {
 	private String pieChartIndex;
 
 	private String researchSummaryIndex;
-	
+
 	private String donutChartIndex;
 
 	private String awardId;
@@ -47,6 +47,10 @@ public class CommonVO {
 	private String deviceToken;
 
 	private String deviceType;
+
+	private String awardNumber;
+
+	private String selectedAwardNumber;
 
 	public String getUserName() {
 		return userName;
@@ -214,5 +218,21 @@ public class CommonVO {
 
 	public void setDeviceType(String deviceType) {
 		this.deviceType = deviceType;
+	}
+
+	public String getAwardNumber() {
+		return awardNumber;
+	}
+
+	public void setAwardNumber(String awardNumber) {
+		this.awardNumber = awardNumber;
+	}
+
+	public String getSelectedAwardNumber() {
+		return selectedAwardNumber;
+	}
+
+	public void setSelectedAwardNumber(String selectedAwardNumber) {
+		this.selectedAwardNumber = selectedAwardNumber;
 	}
 }

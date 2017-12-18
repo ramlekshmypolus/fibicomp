@@ -15,8 +15,10 @@ import com.polus.fibicomp.service.AwardService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev",
-		"http://192.168.1.76:8080/fibi30" })
+/*
+ * @CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30",
+ * "http://demo.fibiweb.com/kc-dev", "http://192.168.1.76:8080/fibi30" })
+ */
 public class AwardController {
 
 	protected static Logger logger = Logger.getLogger(AwardController.class.getName());
@@ -29,4 +31,20 @@ public class AwardController {
 	public String fetchAwardSummary(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return awardService.getAwardSummaryData(vo.getAwardId());
 	}
+
+	@RequestMapping(value = "/getAwardReportsAndTerms", method = RequestMethod.POST)
+	public String getAwardReportsAndTerms(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return awardService.getAwardReportsAndTerms(vo.getAwardId());
+	}
+
+	@RequestMapping(value = "/getAwardHierarchy", method = RequestMethod.POST)
+	public String fetchAwardHierarchy(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return awardService.getAwardHierarchyData(vo.getAwardNumber(), vo.getSelectedAwardNumber());
+	}
+
+	@RequestMapping(value = "/getAwardCommitments", method = RequestMethod.POST)
+	public String fetchAwardCommitments(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return awardService.getAwardCommitmentsData(vo.getAwardId());
+	}
+
 }
