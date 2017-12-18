@@ -2,6 +2,7 @@ package com.polus.fibicomp.vo;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AwardDetailsVO {
 
@@ -59,4 +60,5 @@ public class AwardDetailsVO {
 	public void setAwardSpecialReviews(List<HashMap<String, Object>> awardSpecialReviews) {
 		this.awardSpecialReviews = awardSpecialReviews;
 	}
+
 }
