@@ -68,16 +68,16 @@ public class AwardDaoImpl implements AwardDao {
 		logger.info("awardDetailsVO : " + awardTermsAndReportsVO);
 		return awardTermsAndReportsVO;
 	}
-	
+
 	@Override
 	public AwardHierarchyVO fetchAwardHierarchyData(String awardNumber, String selectedAwardNumber) {
 		AwardHierarchyVO awardHierarchyVO = new AwardHierarchyVO();
 		getHierarchyDetails(awardNumber, awardHierarchyVO, selectedAwardNumber);
-		//getBudgetVersionDetails(awardNumber, awardHierarchyVO);
+		// getBudgetVersionDetails(awardNumber, awardHierarchyVO);
 		logger.info("awardHierarchyVO : " + awardHierarchyVO);
 		return awardHierarchyVO;
 	}
-	
+
 	@Override
 	public CommitmentsVO fetchAwardCommitmentsData(String awardId) {
 		CommitmentsVO commitmentsVO = new CommitmentsVO();
@@ -87,7 +87,7 @@ public class AwardDaoImpl implements AwardDao {
 		logger.info("commitmentsVO : " + commitmentsVO);
 		return commitmentsVO;
 	}
-	
+
 	public void getAwardSummaryDetails(String awardId, AwardDetailsVO awardDetailsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		SessionImpl sessionImpl = (SessionImpl) session;
@@ -132,7 +132,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("root_award_number", rset.getString("root_award_number"));
 				awardDetails.add(detailsField);
 			}
-			awardDetailsVO.setAwardDetails(awardDetails);			
+			awardDetailsVO.setAwardDetails(awardDetails);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -164,7 +164,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("unit_name", rset.getString("unit_name"));
 				awardPersons.add(detailsField);
 			}
-			awardDetailsVO.setAwardPersons(awardPersons);			
+			awardDetailsVO.setAwardPersons(awardPersons);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -200,7 +200,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("contact_type", rset.getString("contact_type"));
 				awardSponsorContact.add(detailsField);
 			}
-			awardDetailsVO.setAwardSponsorContact(awardSponsorContact);			
+			awardDetailsVO.setAwardSponsorContact(awardSponsorContact);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -232,7 +232,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("phone_nbr", rset.getString("phone_nbr"));
 				awardUnitContact.add(detailsField);
 			}
-			awardDetailsVO.setAwardUnitContact(awardUnitContact);			
+			awardDetailsVO.setAwardUnitContact(awardUnitContact);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -268,7 +268,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("total_direct_cost_total", rset.getString("total_direct_cost_total"));
 				awardFundedProposals.add(detailsField);
 			}
-			awardDetailsVO.setAwardFundedProposals(awardFundedProposals);			
+			awardDetailsVO.setAwardFundedProposals(awardFundedProposals);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -303,7 +303,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("expiration_date", rset.getString("expiration_date"));
 				awardSpecialReviews.add(detailsField);
 			}
-			awardDetailsVO.setAwardSpecialReviews(awardSpecialReviews);			
+			awardDetailsVO.setAwardSpecialReviews(awardSpecialReviews);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -334,7 +334,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("amount", rset.getString("amount"));
 				awardApprovdEquipment.add(detailsField);
 			}
-			awardTermsAndReportsVO.setAwardApprovdEquipment(awardApprovdEquipment);			
+			awardTermsAndReportsVO.setAwardApprovdEquipment(awardApprovdEquipment);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -366,7 +366,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("amount", rset.getString("amount"));
 				approvedTravel.add(detailsField);
 			}
-			awardTermsAndReportsVO.setApprovedTravel(approvedTravel);			
+			awardTermsAndReportsVO.setApprovedTravel(approvedTravel);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -396,7 +396,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("sponsor_term", rset.getString("sponsor_term"));
 				awardTerms.add(detailsField);
 			}
-			awardTermsAndReportsVO.setAwardTerms(awardTerms);			
+			awardTermsAndReportsVO.setAwardTerms(awardTerms);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -427,7 +427,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("payment_method", rset.getString("payment_method"));
 				awardPayment.add(detailsField);
 			}
-			awardTermsAndReportsVO.setAwardPayment(awardPayment);			
+			awardTermsAndReportsVO.setAwardPayment(awardPayment);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -447,7 +447,7 @@ public class AwardDaoImpl implements AwardDao {
 			callstm.execute();
 
 			ResultSet rset = (ResultSet) callstm.getObject(1);
-			//List<HashMap<String, Object>> awardReport = new ArrayList<HashMap<String, Object>>();
+			// List<HashMap<String, Object>> awardReport = new ArrayList<HashMap<String, Object>>();
 			Map<String, List<HashMap<String, Object>>> awardReport = new HashMap<String, List<HashMap<String, Object>>>();
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
@@ -471,7 +471,7 @@ public class AwardDaoImpl implements AwardDao {
 					awardReport.get(rset.getString("report_class")).add(detailsField);
 				}
 			}
-			awardTermsAndReportsVO.setAwardReport(awardReport);			
+			awardTermsAndReportsVO.setAwardReport(awardReport);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -506,7 +506,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("amount", rset.getString("amount"));
 				awardPaymntSchedule.add(detailsField);
 			}
-			awardTermsAndReportsVO.setAwardPaymntSchedule(awardPaymntSchedule);			
+			awardTermsAndReportsVO.setAwardPaymntSchedule(awardPaymntSchedule);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -544,12 +544,12 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("due_date", rset.getString("due_date"));
 				awardPaymntInvoice.add(detailsField);
 			}
-			awardTermsAndReportsVO.setAwardPaymntInvoice(awardPaymntInvoice);;			
+			awardTermsAndReportsVO.setAwardPaymntInvoice(awardPaymntInvoice);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void getHierarchyDetails(String awardNumber, AwardHierarchyVO awardHierarchyVO, String selectedAwardNumber) {
 		AwardHierarchy returnAwardHierarchy = new AwardHierarchy();
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -567,18 +567,25 @@ public class AwardDaoImpl implements AwardDao {
 			ResultSet rset = (ResultSet) callstm.getObject(1);
 			HashMap<String, AwardHierarchy> hmAwards = new HashMap<String, AwardHierarchy>();
 			AwardHierarchy parentHierarchy = new AwardHierarchy();
+			String parentAwardnumber = null;
 			while (rset.next()) {
 				AwardHierarchy awardHierarchy = new AwardHierarchy();
 				awardHierarchy.setAwardNumber((String) rset.getString("award_number"));
 				awardHierarchy.setSelected(selectedAwardNumber.equalsIgnoreCase((String) rset.getString("award_number")) ? true : false);
+				awardHierarchy.setOpen(true);
 				awardHierarchy.setParentAwardNumber((String) rset.getString("parent_award_number"));
 				awardHierarchy.setPrincipalInvestigator((String) rset.getString("pi_name"));
 				awardHierarchy.setAccountNumber((String) rset.getString("account_number"));
 				awardHierarchy.setStatusCode(Integer.parseInt((rset.getString("status_code").toString())));
 				awardHierarchy.setAwardId(rset.getString("award_id"));
 				awardHierarchy.setRootAwardNumber(rset.getString("root_award_number"));
-				//awardHierarchy.setColorCode((String) rset.getString("color_code"));
+				awardHierarchy.setName((String) rset.getString("award_number") + " : " + (String) rset.getString("pi_name"));
+				// awardHierarchy.setColorCode((String) rset.getString("color_code"));
 				awardHierarchy.setLevel(Integer.valueOf(rset.getString("level")));
+
+				if (selectedAwardNumber.equalsIgnoreCase((String) rset.getString("award_number"))) {
+					parentAwardnumber = (String) rset.getString("parent_award_number");
+				}
 				if (!hmAwards.isEmpty()) {
 					parentHierarchy = hmAwards.get((String) rset.getString("parent_award_number"));
 					if (parentHierarchy != null) {
@@ -592,13 +599,14 @@ public class AwardDaoImpl implements AwardDao {
 				}
 				hmAwards.put((String) rset.getString("award_number"), awardHierarchy);
 			}
+			logger.info("parent numbe :" + parentAwardnumber);
 			returnAwardHierarchy = hmAwards.get(awardNumber);
 			awardHierarchyVO.setAwardHierarchy(returnAwardHierarchy);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void getBudgetVersionDetails(String awardNumber, AwardHierarchyVO hierarchyVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		SessionImpl sessionImpl = (SessionImpl) session;
@@ -636,7 +644,6 @@ public class AwardDaoImpl implements AwardDao {
 			e.printStackTrace();
 		}
 	}
-	
 
 	public void getCostShareData(String awardId, CommitmentsVO commitmentsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -702,7 +709,7 @@ public class AwardDaoImpl implements AwardDao {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void getBenefitsRates(String awardId, CommitmentsVO commitmentsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		SessionImpl sessionImpl = (SessionImpl) session;
