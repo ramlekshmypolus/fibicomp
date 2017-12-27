@@ -19,6 +19,8 @@ public class AwardHierarchy {
 	public int level;
 	public ArrayList<AwardHierarchy> children;
 	public String rootAwardNumber;
+	public String name;
+	public boolean isOpen;
 
 	public String getPrincipalInvestigator() {
 		return principalInvestigator;
@@ -106,6 +108,22 @@ public class AwardHierarchy {
 
 	public void setRootAwardNumber(String rootAwardNumber) {
 		this.rootAwardNumber = rootAwardNumber;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isOpen() {
+		return isOpen;
+	}
+
+	public void setOpen(boolean isOpen) {
+		this.isOpen = isOpen;
 	}
 
 }
