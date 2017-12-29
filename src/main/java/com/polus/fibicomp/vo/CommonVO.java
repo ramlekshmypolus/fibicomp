@@ -1,7 +1,10 @@
 package com.polus.fibicomp.vo;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
- * Value object for service arguement.
+ * Value object for service argument.
  *
  */
 public class CommonVO {
@@ -51,6 +54,16 @@ public class CommonVO {
 	private String awardNumber;
 
 	private String selectedAwardNumber;
+
+	private String documentNo;
+
+	private String actionType;
+
+	private String questionnaireId;
+
+	private String comments;
+
+	private List<HashMap<String, String>> answerList;
 
 	public String getUserName() {
 		return userName;
@@ -234,5 +247,45 @@ public class CommonVO {
 
 	public void setSelectedAwardNumber(String selectedAwardNumber) {
 		this.selectedAwardNumber = selectedAwardNumber;
+	}
+
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
+	}
+
+	public String getQuestionnaireId() {
+		return questionnaireId;
+	}
+
+	public void setQuestionnaireId(String questionnaireId) {
+		this.questionnaireId = questionnaireId;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public List<HashMap<String, String>> getAnswerList() {
+		return answerList;
+	}
+
+	public void setAnswerList(List<HashMap<String, String>> answerList) {
+		this.answerList = answerList;
 	}
 }

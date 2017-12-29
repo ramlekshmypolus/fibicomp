@@ -38,4 +38,17 @@ public interface LoginService {
 	 */
 	public boolean isUnitAdmin(String personId);
 
+	/**
+	 * This method is to authenticate a mobile user
+	 * @param loginMode - Login mode of the user.
+	 * @param userName - userName of the user.
+	 * @param password - Password of the user.
+	 * @param request
+	 * @param response
+	 * @return JSON in mobile-profile format
+	 * @throws Exception
+	 */
+	public String fibiMobileLogin(String login_mode, String userName, String password, HttpServletRequest request,
+			HttpServletResponse response) throws Exception;
+
 }

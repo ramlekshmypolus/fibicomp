@@ -64,4 +64,60 @@ public interface DashboardService {
 	 */
 	public String getDonutChartDataBySponsor(CommonVO vo);
 
+	/**
+	 * This method is used to retrieve dashboard summary table data for FibiMobile.
+	 * @param personId
+	 * @return research summary table for fibiMobile
+	 * @throws Exception 
+	 */
+	public String getFibiResearchSummary(String personId) throws Exception;
+
+	/**
+	 * This method is used for searching proposal/award/protocol data using specific fields for FibiMobile.
+	 * @param vo - object of CommonVO
+	 * @return Search Result
+	 * @throws Exception 
+	 */
+	public String getFibiSearch(CommonVO vo) throws Exception;
+
+	/**
+	 * This method is used to retrieve proposal action list data for fibiMobile.
+	 * @param vo
+	 * @return list of actions
+	 * @throws Exception 
+	 */
+	public String getFibiActionList(CommonVO vo) throws Exception;
+
+	/**
+	 * This method is used to retrieve detailed proposal data for FibiMobile.
+	 * @param proposalNumber - Proposal Number
+	 * @return Details of Proposal Summary, Personnel Details and Budget
+	 * @throws Exception 
+	 */
+	public String getFibiProposalDetails(String proposalNumber) throws Exception;
+
+	/**
+	 * This method is used to accept/reject a proposal from mobile application.
+	 * @param documentNo - Proposal Number
+	 * @return Success or Failure Message
+	 * @throws Exception 
+	 */
+	public String manageFibiProposal(String documentNo) throws Exception;
+
+	/**
+	 * This method is used to retrieve questionnaire for FibiMobile.
+	 * @param vo - object of CommonVO
+	 * @return List of questions
+	 * @throws Exception 
+	 */
+	public String getFibiQuestionnaire(CommonVO vo) throws Exception;
+
+	/**
+	 * This method is used to submit answers for questionnaire in FibiMobile.
+	 * @param vo
+	 * @return Success or Failure Message
+	 * @throws Exception 
+	 */
+	public String submitQuestionnaire(CommonVO vo) throws Exception;
+
 }
