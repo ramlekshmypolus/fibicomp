@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
+import com.polus.fibicomp.view.ResearchSummaryView;
 import com.polus.fibicomp.vo.CommonVO;
 
 /**
@@ -130,5 +131,19 @@ public interface DashboardDao {
 	 * @throws Exception
 	 */
 	public String getAwardedProposalsBySponsorExpanded(String personId, String sponsorCode) throws Exception;
+
+	/**
+	 * @param person_id - Logged User ID
+	 * @param summaryTable
+	 * @return List of Research Summary View
+	 */
+	public List<ResearchSummaryView> getSummaryTable(String person_id, List<ResearchSummaryView> summaryTable);
+
+	/**
+	 * @param personId
+	 * @param summaryTable for Research summary data for Mobile
+	 * @return List of summary object
+	 */
+	public List<Object[]> getFibiSummaryTable(String personId, List<Object[]> summaryTable);
 
 }

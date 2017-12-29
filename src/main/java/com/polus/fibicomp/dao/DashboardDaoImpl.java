@@ -694,4 +694,31 @@ public class DashboardDaoImpl implements DashboardDao {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(dashBoardProfile);
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Object[]> getFibiSummaryTable(String personId, List<Object[]> summaryTable) {
+
+		List<Object[]> subPropCount = null;
+		List<Object[]> inPropCount = null;
+
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query submittedProposal = session.createSQLQuery(
+				"select 'Submitted Proposal' as Submitted_Proposal, count(t1.proposal_number) as count,sum(t3.TOTAL_COST) as total_amount from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' where t1.status_code=5 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :person_id )");
+		submittedProposal.setString("person_id", personId);
+		subPropCount = submittedProposal.list();
+		if (subPropCount != null && !subPropCount.isEmpty()) {
+			summaryTable.addAll(subPropCount);
+		}
+
+		Query inprogressProposal = session.createSQLQuery(
+				"select 'In Progress Proposal' as In_Progress_Proposal, count(t1.proposal_number) as count,sum(t3.TOTAL_COST) as total_amount from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' where t1.status_code=1 and  t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :person_id )");
+		inprogressProposal.setString("person_id", personId);
+		inPropCount = inprogressProposal.list();
+		if (inPropCount != null && !inPropCount.isEmpty()) {
+			summaryTable.addAll(inPropCount);
+		}
+
+		return summaryTable;	
+	}	
 }

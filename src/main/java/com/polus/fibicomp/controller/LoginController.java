@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.service.LoginService;
+import com.polus.fibicomp.view.MobileProfile;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev", "http://192.168.1.76:8080/fibi30" })
+@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev",
+		"http://192.168.1.76:8080/fibi30" })
 public class LoginController {
 
 	protected static Logger logger = Logger.getLogger(LoginController.class.getName());
@@ -37,18 +39,18 @@ public class LoginController {
 	private String login_mode;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<String> loginUser(@RequestBody CommonVO vo, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public ResponseEntity<String> loginUser(@RequestBody CommonVO vo, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		logger.debug("Received request for login: ");
 		HttpStatus status = HttpStatus.OK;
 		String userName = vo.getUserName();
 		String password = vo.getPassword();
 		PersonDTO personDTO = loginService.loginCheck(login_mode, userName, password, request, response);
-		if(!personDTO.isLogin()) {
+		if (!personDTO.isLogin()) {
 			status = HttpStatus.BAD_REQUEST;
 		}
 		ObjectMapper mapper = new ObjectMapper();
-		String responseData =  mapper.writeValueAsString(personDTO);
+		String responseData = mapper.writeValueAsString(personDTO);
 		return new ResponseEntity<String>(responseData, status);
 	}
 
@@ -61,5 +63,35 @@ public class LoginController {
 			session.invalidate();
 		}
 		return "SUCCESS";
+	}
+
+	@RequestMapping(value = "/fibiLogin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String fibiMobileLogin(@RequestBody CommonVO vo, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		logger.debug("Received request for Mobile login: ");
+		String userName = vo.getUserName();
+		String password = vo.getPassword();
+		return loginService.fibiMobileLogin(login_mode, userName, password, request, response);
+	}
+
+	@RequestMapping(value = "/fibiLogout", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String fibiMobileLogout(@RequestBody CommonVO vo, ModelMap model, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		MobileProfile mobileProfile = new MobileProfile();
+		mobileProfile.setStatus(false);
+		try {
+			String status = logout(model, request, response);
+			if("SUCCESS".equalsIgnoreCase(status)) {
+				mobileProfile.setStatus(true);
+				mobileProfile.setMessage("Logged out successfully");
+			} else {
+				mobileProfile.setMessage("Logout failed");
+			}
+		} catch (Exception e) {
+			logger.error("Error in method LoginController.fibiMobileLogout", e);
+			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(mobileProfile);
 	}
 }

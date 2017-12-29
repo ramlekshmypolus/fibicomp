@@ -31,6 +31,8 @@ public class PersonDTO {
 
 	private boolean isLogin = false;
 
+	private String accessToken = "p6creG39TOQL3Je";
+
 	public boolean isLogin() {
 		return isLogin;
 	}
@@ -125,5 +127,13 @@ public class PersonDTO {
 
 	public void setUnitAdmin(boolean isUnitAdmin) {
 		this.isUnitAdmin = isUnitAdmin;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 }
