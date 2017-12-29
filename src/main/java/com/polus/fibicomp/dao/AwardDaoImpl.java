@@ -162,6 +162,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("contact_role_code", rset.getString("contact_role_code"));
 				detailsField.put("unit_number", rset.getString("unit_number"));
 				detailsField.put("unit_name", rset.getString("unit_name"));
+				detailsField.put("user_name", rset.getString("prncpl_nm"));
 				awardPersons.add(detailsField);
 			}
 			awardDetailsVO.setAwardPersons(awardPersons);
@@ -384,9 +385,8 @@ public class AwardDaoImpl implements AwardDao {
 			callstm.registerOutParameter(1, OracleTypes.CURSOR);
 			callstm.setString(2, awardId);
 			callstm.execute();
-
 			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardTerms = new ArrayList<HashMap<String, Object>>();
+			Map<String, List<HashMap<String, Object>>> awardTerms = new HashMap<String, List<HashMap<String, Object>>>();
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -394,7 +394,13 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("sponsor_term_type_code", rset.getString("sponsor_term_type_code"));
 				detailsField.put("sponsor_term_type", rset.getString("sponsor_term_type"));
 				detailsField.put("sponsor_term", rset.getString("sponsor_term"));
-				awardTerms.add(detailsField);
+				List<HashMap<String, Object>> details = new ArrayList<HashMap<String, Object>>();
+				details.add(detailsField);
+				if (!awardTerms.containsKey(rset.getString("sponsor_term_type"))) {
+					awardTerms.put(rset.getString("sponsor_term_type"), details);
+				} else {
+					awardTerms.get(rset.getString("sponsor_term_type")).add(detailsField);
+				}
 			}
 			awardTermsAndReportsVO.setAwardTerms(awardTerms);
 		} catch (SQLException e) {

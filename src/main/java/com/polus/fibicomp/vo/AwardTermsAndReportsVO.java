@@ -8,7 +8,7 @@ public class AwardTermsAndReportsVO {
 	
 	private List<HashMap<String, Object>> awardApprovdEquipment;
 	private List<HashMap<String, Object>> approvedTravel;
-	private List<HashMap<String, Object>> awardTerms;
+	private Map<String, List<HashMap<String, Object>>> awardTerms;
 	private List<HashMap<String, Object>> awardPayment;
 	private Map<String, List<HashMap<String, Object>>> awardReport;
 	private List<HashMap<String, Object>> awardPaymntSchedule;
@@ -29,15 +29,7 @@ public class AwardTermsAndReportsVO {
 	public void setApprovedTravel(List<HashMap<String, Object>> approvedTravel) {
 		this.approvedTravel = approvedTravel;
 	}
-
-	public List<HashMap<String, Object>> getAwardTerms() {
-		return awardTerms;
-	}
-
-	public void setAwardTerms(List<HashMap<String, Object>> awardTerms) {
-		this.awardTerms = awardTerms;
-	}
-
+	
 	public List<HashMap<String, Object>> getAwardPayment() {
 		return awardPayment;
 	}
@@ -68,5 +60,13 @@ public class AwardTermsAndReportsVO {
 
 	public void setAwardPaymntInvoice(List<HashMap<String, Object>> awardPaymntInvoice) {
 		this.awardPaymntInvoice = awardPaymntInvoice;
+	}
+
+	public Map<String, List<HashMap<String, Object>>> getAwardTerms() {
+		return awardTerms;
+	}
+
+	public void setAwardTerms(Map<String, List<HashMap<String, Object>>> awardTerms) {
+		this.awardTerms = awardTerms;
 	}
 }
