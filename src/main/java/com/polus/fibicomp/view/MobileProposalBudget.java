@@ -2,6 +2,8 @@ package com.polus.fibicomp.view;
 
 public class MobileProposalBudget {
 
+	private String totalCost;
+
 	private String directCost;
 
 	private String indirectCost;
@@ -10,8 +12,14 @@ public class MobileProposalBudget {
 
 	private String costSharing;
 
-	private String totalCOst;
+	public String getTotalCost() {
+		return totalCost;
+	}
 
+	public void setTotalCost(String totalCost) {
+		this.totalCost = totalCost;
+	}
+	
 	public String getDirectCost() {
 		return directCost;
 	}
@@ -44,11 +52,4 @@ public class MobileProposalBudget {
 		this.costSharing = costSharing;
 	}
 
-	public String getTotalCOst() {
-		return totalCOst;
-	}
-
-	public void setTotalCOst(String totalCOst) {
-		this.totalCOst = totalCOst;
-	}
 }

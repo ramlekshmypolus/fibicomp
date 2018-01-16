@@ -96,7 +96,7 @@ public interface DashboardDao {
 	 * @return A list of Proposals in progress.
 	 * @throws Exception 
 	 */
-	public String getProposalsInProgress(String personId) throws Exception;
+	public DashBoardProfile getProposalsInProgress(String personId) throws Exception;
 
 	/**
 	 * This method is used to retrieve list of submitted proposals.
@@ -104,7 +104,7 @@ public interface DashboardDao {
 	 * @return A list of Submitted proposals.
 	 * @throws Exception 
 	 */
-	public String getSubmittedProposals(String personId) throws Exception;
+	public DashBoardProfile getSubmittedProposals(String personId) throws Exception;
 
 	/**
 	 * This method is used to retrieve list of active awards.
@@ -112,7 +112,7 @@ public interface DashboardDao {
 	 * @return A list of active awards
 	 * @throws Exception 
 	 */
-	public String getActiveAwards(String personId) throws Exception;
+	public DashBoardProfile getActiveAwards(String personId) throws Exception;
 
 	/**
 	 * This method is used to retrieve inProgress proposal data by sponsor in donutChart.

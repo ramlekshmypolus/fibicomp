@@ -90,19 +90,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getAwardSummaryDetails(String awardId, AwardDetailsVO awardDetailsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> awardDetails = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_details";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardDetails = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_details(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_details";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -130,6 +138,9 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("award_status", rset.getString("award_status"));
 				detailsField.put("last_update", rset.getString("last_update"));
 				detailsField.put("root_award_number", rset.getString("root_award_number"));
+				detailsField.put("person_id", rset.getString("person_id"));
+				detailsField.put("full_name", rset.getString("full_name"));
+				detailsField.put("prncpl_nm", rset.getString("prncpl_nm"));
 				awardDetails.add(detailsField);
 			}
 			awardDetailsVO.setAwardDetails(awardDetails);
@@ -143,16 +154,24 @@ public class AwardDaoImpl implements AwardDao {
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
 		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_person_details";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		ResultSet rset = null;
+		List<HashMap<String, Object>> awardPersons = new ArrayList<HashMap<String, Object>>();
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardPersons = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equals("Y")) {
+				String procedureName = "get_fibi_award_person_details";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				callstm = connection.prepareCall(functionCall);
+				callstm.registerOutParameter(1, OracleTypes.CURSOR);
+				callstm.setString(2, awardId);
+				callstm.execute();
+				rset = (ResultSet) callstm.getObject(1);
+			} else if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				callstm = connection.prepareCall("{call get_fibi_award_person_details(?)}");
+				callstm.setInt(1, award_id);
+				callstm.execute();
+				rset = callstm.getResultSet();
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -176,16 +195,24 @@ public class AwardDaoImpl implements AwardDao {
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
 		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_spnsor_contact";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		ResultSet rset = null;
+		List<HashMap<String, Object>> awardSponsorContact = new ArrayList<HashMap<String, Object>>();
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardSponsorContact = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equals("Y")) {
+				String procedureName = "get_fibi_award_spnsor_contact";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				callstm = connection.prepareCall(functionCall);
+				callstm.registerOutParameter(1, OracleTypes.CURSOR);
+				callstm.setString(2, awardId);
+				callstm.execute();
+				rset = (ResultSet) callstm.getObject(1);
+			} else if (oracledb.equals("N")) {
+				int award_id = Integer.parseInt(awardId);
+				callstm = connection.prepareCall("{call get_fibi_award_spnsor_contact(?)}");
+				callstm.setInt(1, award_id);
+				callstm.execute();
+				rset = callstm.getResultSet();
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -212,16 +239,24 @@ public class AwardDaoImpl implements AwardDao {
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
 		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_unit_contact";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		ResultSet rset = null;
+		List<HashMap<String, Object>> awardUnitContact = new ArrayList<HashMap<String, Object>>();
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardUnitContact = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equals("Y")) {
+				String procedureName = "get_fibi_award_unit_contact";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				callstm = connection.prepareCall(functionCall);
+				callstm.registerOutParameter(1, OracleTypes.CURSOR);
+				callstm.setString(2, awardId);
+				callstm.execute();
+				rset = (ResultSet) callstm.getObject(1);
+			} else if (oracledb.equals("N")) {
+				int award_id = Integer.parseInt(awardId);
+				callstm = connection.prepareCall("{call get_fibi_award_unit_contact(?)}");
+				callstm.setInt(1, award_id);
+				callstm.execute();
+				rset = callstm.getResultSet();
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -244,16 +279,24 @@ public class AwardDaoImpl implements AwardDao {
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
 		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_funded_proposal";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		ResultSet rset = null;
+		List<HashMap<String, Object>> awardFundedProposals = new ArrayList<HashMap<String, Object>>();
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardFundedProposals = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equals("Y")) {
+				String procedureName = "get_fibi_award_funded_proposal";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				callstm = connection.prepareCall(functionCall);
+				callstm.registerOutParameter(1, OracleTypes.CURSOR);
+				callstm.setString(2, awardId);
+				callstm.execute();
+				rset = (ResultSet) callstm.getObject(1);
+			} else if (oracledb.equals("N")) {
+				int award_id = Integer.parseInt(awardId);
+				callstm = connection.prepareCall("{call get_fibi_award_funded_proposal(?)}");
+				callstm.setInt(1, award_id);
+				callstm.execute();
+				rset = callstm.getResultSet();
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -280,15 +323,23 @@ public class AwardDaoImpl implements AwardDao {
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
 		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_special_review";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
+			if (oracledb.equals("Y")) {
+				String procedureName = "get_fibi_award_special_review";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				callstm = connection.prepareCall(functionCall);
+				callstm.registerOutParameter(1, OracleTypes.CURSOR);
+				callstm.setString(2, awardId);
+				callstm.execute();
+				rset = (ResultSet) callstm.getObject(1);
+			} else if (oracledb.equals("N")) {
+				int award_id = Integer.parseInt(awardId);
+				callstm = connection.prepareCall("{call get_fibi_award_special_review(?)}");
+				callstm.setInt(1, award_id);
+				callstm.execute();
+				rset = callstm.getResultSet();
+			}
 			List<HashMap<String, Object>> awardSpecialReviews = new ArrayList<HashMap<String, Object>>();
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
@@ -312,19 +363,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getApprovdEquipmentDetails(String awardId, AwardTermsAndReportsVO awardTermsAndReportsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> awardApprovdEquipment = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_approvd_equpmnt";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardApprovdEquipment = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_approvd_equpmnt(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_approvd_equpmnt";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -343,19 +402,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getApprovedTravelDetails(String awardId, AwardTermsAndReportsVO awardTermsAndReportsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> approvedTravel = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_approvd_travel";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> approvedTravel = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_approvd_travel(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_approvd_travel";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -375,18 +442,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getTermsDetails(String awardId, AwardTermsAndReportsVO awardTermsAndReportsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Map<String, List<HashMap<String, Object>>> awardTerms = new HashMap<String, List<HashMap<String, Object>>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_terms";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			Map<String, List<HashMap<String, Object>>> awardTerms = new HashMap<String, List<HashMap<String, Object>>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_terms(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_terms";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -410,19 +486,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getPaymentDetails(String awardId, AwardTermsAndReportsVO awardTermsAndReportsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> awardPayment = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_payment";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardPayment = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_payment(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_payment";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -441,20 +525,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getReportDetails(String awardId, AwardTermsAndReportsVO awardTermsAndReportsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Map<String, List<HashMap<String, Object>>> awardReport = new HashMap<String, List<HashMap<String, Object>>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_report";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			// List<HashMap<String, Object>> awardReport = new ArrayList<HashMap<String, Object>>();
-			Map<String, List<HashMap<String, Object>>> awardReport = new HashMap<String, List<HashMap<String, Object>>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_report(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_report";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -485,19 +576,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getPaymentSchedule(String awardId, AwardTermsAndReportsVO awardTermsAndReportsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> awardPaymntSchedule = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_paymnt_schedule";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardPaymntSchedule = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_paymnt_schedule(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_paymnt_schedule";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -520,19 +619,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getPaymentAndInvoiceRequirement(String awardId, AwardTermsAndReportsVO awardTermsAndReportsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> awardPaymntInvoice = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection connection = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String procedureName = "get_fibi_award_payment_invoice";
-		String functionCall = "{call " + procedureName + "(?,?)}";
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = connection.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> awardPaymntInvoice = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_payment_invoice(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_payment_invoice";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -562,22 +669,29 @@ public class AwardDaoImpl implements AwardDao {
 		SessionImpl sessionImpl = (SessionImpl) session;
 		Connection con = sessionImpl.connection();
 		CallableStatement callstm = null;
-		String aProcedureName = "get_fibi_award_hierarchy";
-		String functionCall = "{call " + aProcedureName + "(?,?)}";
+		ResultSet rset = null;
+		HashMap<String, AwardHierarchy> hmAwards = new HashMap<String, AwardHierarchy>();
+		AwardHierarchy parentHierarchy = new AwardHierarchy();
 		try {
-			callstm = con.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardNumber);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			HashMap<String, AwardHierarchy> hmAwards = new HashMap<String, AwardHierarchy>();
-			AwardHierarchy parentHierarchy = new AwardHierarchy();
-			String parentAwardnumber = null;
+			if (oracledb.equalsIgnoreCase("Y")) {
+				String aProcedureName = "get_fibi_award_hierarchy";
+				String functionCall = "{call " + aProcedureName + "(?,?)}";
+				callstm = con.prepareCall(functionCall);
+				callstm.registerOutParameter(1, OracleTypes.CURSOR);
+				callstm.setString(2, awardNumber);
+				callstm.execute();
+				rset = (ResultSet) callstm.getObject(1);
+			} else if (oracledb.equalsIgnoreCase("N")) {
+				callstm = con.prepareCall("{call get_fibi_award_hierarchy(?)}");
+				callstm.setString(1, awardNumber);
+				callstm.execute();
+				rset = callstm.getResultSet();
+			}
 			while (rset.next()) {
 				AwardHierarchy awardHierarchy = new AwardHierarchy();
 				awardHierarchy.setAwardNumber((String) rset.getString("award_number"));
-				awardHierarchy.setSelected(selectedAwardNumber.equalsIgnoreCase((String) rset.getString("award_number")) ? true : false);
+				awardHierarchy.setSelected(
+						selectedAwardNumber.equalsIgnoreCase((String) rset.getString("award_number")) ? true : false);
 				awardHierarchy.setOpen(true);
 				awardHierarchy.setParentAwardNumber((String) rset.getString("parent_award_number"));
 				awardHierarchy.setPrincipalInvestigator((String) rset.getString("pi_name"));
@@ -585,13 +699,16 @@ public class AwardDaoImpl implements AwardDao {
 				awardHierarchy.setStatusCode(Integer.parseInt((rset.getString("status_code").toString())));
 				awardHierarchy.setAwardId(rset.getString("award_id"));
 				awardHierarchy.setRootAwardNumber(rset.getString("root_award_number"));
-				awardHierarchy.setName((String) rset.getString("award_number") + " : " + (String) rset.getString("pi_name"));
-				// awardHierarchy.setColorCode((String) rset.getString("color_code"));
+				String accountNumber;
+				if ((String) rset.getString("account_number") == null) {
+					accountNumber = " ";
+				} else {
+					accountNumber = " : " + (String) rset.getString("account_number");
+				}
+				awardHierarchy.setName((String) rset.getString("award_number") + accountNumber+ " : "
+						+ (String) rset.getString("pi_name"));
 				awardHierarchy.setLevel(Integer.valueOf(rset.getString("level")));
 
-				if (selectedAwardNumber.equalsIgnoreCase((String) rset.getString("award_number"))) {
-					parentAwardnumber = (String) rset.getString("parent_award_number");
-				}
 				if (!hmAwards.isEmpty()) {
 					parentHierarchy = hmAwards.get((String) rset.getString("parent_award_number"));
 					if (parentHierarchy != null) {
@@ -605,7 +722,6 @@ public class AwardDaoImpl implements AwardDao {
 				}
 				hmAwards.put((String) rset.getString("award_number"), awardHierarchy);
 			}
-			logger.info("parent numbe :" + parentAwardnumber);
 			returnAwardHierarchy = hmAwards.get(awardNumber);
 			awardHierarchyVO.setAwardHierarchy(returnAwardHierarchy);
 		} catch (SQLException e) {
@@ -653,19 +769,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getCostShareData(String awardId, CommitmentsVO commitmentsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> costShareDetails = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
-		Connection con = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String aProcedureName = "get_fibi_award_cost_share";
-		String functionCall = "{call " + aProcedureName + "(?,?)}";
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = con.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> costShareDetails = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_cost_share(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_cost_share";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -685,19 +809,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getFandAData(String awardId, CommitmentsVO commitmentsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> fAndADetails = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
-		Connection con = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String aProcedureName = "get_fibi_award_fa_rates";
-		String functionCall = "{call " + aProcedureName + "(?,?)}";
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = con.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> fAndADetails = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_fa_rates(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_fa_rates";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));
@@ -718,19 +850,27 @@ public class AwardDaoImpl implements AwardDao {
 
 	public void getBenefitsRates(String awardId, CommitmentsVO commitmentsVO) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> benefitsRates = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
-		Connection con = sessionImpl.connection();
-		CallableStatement callstm = null;
-		String aProcedureName = "get_fibi_award_benefits_rates";
-		String functionCall = "{call " + aProcedureName + "(?,?)}";
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
 		try {
-			callstm = con.prepareCall(functionCall);
-			callstm.registerOutParameter(1, OracleTypes.CURSOR);
-			callstm.setString(2, awardId);
-			callstm.execute();
-
-			ResultSet rset = (ResultSet) callstm.getObject(1);
-			List<HashMap<String, Object>> benefitsRates = new ArrayList<HashMap<String, Object>>();
+			if (oracledb.equalsIgnoreCase("N")) {
+				int award_id = Integer.parseInt(awardId);
+				statement = connection.prepareCall("{call get_fibi_award_benefits_rates(?)}");
+				statement.setInt(1, award_id);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_fibi_award_benefits_rates";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.setString(2, awardId);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
 			while (rset.next()) {
 				HashMap<String, Object> detailsField = new HashMap<String, Object>();
 				detailsField.put("award_id", rset.getString("award_id"));

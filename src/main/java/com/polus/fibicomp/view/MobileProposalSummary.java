@@ -20,15 +20,17 @@ public class MobileProposalSummary {
 
 	private String sponsor;
 
+	private String primeSponsor;
+
 	private String status;
 
 	private String activityType;
 
 	private String actionKey;
 	
-	private String startDate;
+	private String projectStartDate;
 	
-	private String endDate;
+	private String projectEndDate;
 
 	public String getProposalNo() {
 		return proposalNo;
@@ -102,6 +104,14 @@ public class MobileProposalSummary {
 		this.sponsor = sponsor;
 	}
 
+	public String getPrimeSponsor() {
+		return primeSponsor;
+	}
+
+	public void setPrimeSponsor(String primeSponsor) {
+		this.primeSponsor = primeSponsor;
+	}
+	
 	public String getStatus() {
 		return status;
 	}
@@ -126,19 +136,20 @@ public class MobileProposalSummary {
 		this.actionKey = actionKey;
 	}
 
-	public String getStartDate() {
-		return startDate;
+	public String getProjectStartDate() {
+		return projectStartDate;
 	}
 
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
+	public void setProjectStartDate(String projectStartDate) {
+		this.projectStartDate = projectStartDate;
 	}
 
-	public String getEndDate() {
-		return endDate;
+	public String getProjectEndDate() {
+		return projectEndDate;
 	}
 
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
+	public void setProjectEndDate(String projectEndDate) {
+		this.projectEndDate = projectEndDate;
 	}
+
 }

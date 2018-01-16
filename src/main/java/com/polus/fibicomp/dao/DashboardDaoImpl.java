@@ -570,28 +570,38 @@ public class DashboardDaoImpl implements DashboardDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public String getProposalsInProgress(String personId) throws Exception {
+	public DashBoardProfile getProposalsInProgress(String personId) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		List<ProposalView> inProgressProposals = new ArrayList<ProposalView>();
 		try {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query progressProposalList = session.createSQLQuery(
-					"select t1.document_number, t1.proposal_number, t1.title, t5.sponsor_name, t3.TOTAL_COST, t4.full_name AS PI from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN sponsor t5 ON t1.sponsor_code = t5.sponsor_code where t1.status_code=1 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :personId )");
+					"select t1.document_number, t1.proposal_number, t1.title, t5.sponsor_name, t3.TOTAL_COST, t4.full_name AS PI ,t1.OWNED_BY_UNIT as unit_number,t6.UNIT_NAME from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN sponsor t5 ON t1.sponsor_code = t5.sponsor_code inner join unit t6 on  t1.OWNED_BY_UNIT= t6.UNIT_NUMBER where t1.status_code=1 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :personId )");
 			progressProposalList.setString("personId", personId);
-			inProgressProposals = progressProposalList.list();
+			List<Object[]> proposals = progressProposalList.list();
+			for (Object[] proposal : proposals) {
+				ProposalView proposalView = new ProposalView();
+				proposalView.setDocumentNumber(proposal[0].toString());
+				proposalView.setProposalNumber(proposal[1].toString());
+				proposalView.setTitle(proposal[2].toString());
+				proposalView.setSponsor(proposal[3].toString());
+				proposalView.setTotalCost(proposal[4].toString());
+				proposalView.setFullName(proposal[5].toString());
+				proposalView.setDeptName(proposal[6].toString());
+				inProgressProposals.add(proposalView);
+			}
 			logger.info("getProposalsInProgress : " + inProgressProposals);
 			dashBoardProfile.setProposalViews(inProgressProposals);
 		} catch (Exception e) {
 			logger.error("Error in method getProposalsInProgress");
 			e.printStackTrace();
 		}
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(dashBoardProfile);
+		return dashBoardProfile;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public String getSubmittedProposals(String personId) throws Exception {
+	public DashBoardProfile getSubmittedProposals(String personId) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		List<ProposalView> submittedProposals = new ArrayList<ProposalView>();
 		try {
@@ -599,20 +609,30 @@ public class DashboardDaoImpl implements DashboardDao {
 			Query subproposalList = session.createSQLQuery(
 					"select t1.document_number, t1.proposal_number, t1.title, t5.sponsor_name, t3.TOTAL_COST, t4.full_name AS PI from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN sponsor t5 ON t1.sponsor_code = t5.sponsor_code where t1.status_code=5 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :personId )");
 			subproposalList.setString("personId", personId);
-			submittedProposals = subproposalList.list();
+			List<Object[]> subProposals = subproposalList.list();
+			for (Object[] proposal : subProposals) {
+				ProposalView proposalView = new ProposalView();
+				proposalView.setDocumentNumber(proposal[0].toString());
+				proposalView.setProposalNumber(proposal[1].toString());
+				proposalView.setTitle(proposal[2].toString());
+				proposalView.setSponsor(proposal[3].toString());
+				proposalView.setTotalCost(proposal[4].toString());
+				proposalView.setFullName(proposal[5].toString());
+				proposalView.setDeptName(proposal[6].toString());
+				submittedProposals.add(proposalView);
+			}
 			logger.info("SubmittedProposals : " + submittedProposals);
 			dashBoardProfile.setProposalViews(submittedProposals);
 		} catch (Exception e) {
 			logger.error("Error in method getProposalsInProgress");
 			e.printStackTrace();
 		}
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(dashBoardProfile);
+		return dashBoardProfile;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public String getActiveAwards(String personId) throws Exception {
+	public DashBoardProfile getActiveAwards(String personId) throws Exception {
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		List<AwardView> activeAwards = new ArrayList<AwardView>();
 		try {
@@ -627,8 +647,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			logger.error("Error in method getProposalsInProgress");
 			e.printStackTrace();
 		}
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(dashBoardProfile);
+		return dashBoardProfile;
 	}
 
 	@SuppressWarnings("unchecked")
