@@ -16,8 +16,8 @@ import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev",
-		"http://192.168.1.76:8080/fibi30" })
+/*@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev",
+		"http://192.168.1.76:8080/fibi30" })*/
 public class FibiMobileDashboardController {
 	protected static Logger logger = Logger.getLogger(FibiMobileDashboardController.class.getName());
 
@@ -62,5 +62,10 @@ public class FibiMobileDashboardController {
 	@RequestMapping(value = "/submitFibiQuestionnaire", method = RequestMethod.POST)
 	public String requestSubmitQuestionnaire(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.submitQuestionnaire(vo);
+	}
+
+	@RequestMapping(value = "/getFibiResearchSummary", method = RequestMethod.POST)
+	public String requestFibiResearchSummary(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return dashboardService.getFibiResearchSummary(vo.getPersonId(), vo.getResearchSummaryIndex());
 	}
 }

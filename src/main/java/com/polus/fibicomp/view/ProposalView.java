@@ -66,6 +66,12 @@ public class ProposalView implements Serializable {
 	@Column(name = "FULL_NAME")
 	private String fullName;
 
+	@Column(name = "TOTALCOST")
+	private String totalCost;
+
+	@Column(name = "OWNED_BY_UNIT")
+	private String deptName;
+
 	public String getProposalNumber() {
 		return proposalNumber;
 	}
@@ -188,5 +194,21 @@ public class ProposalView implements Serializable {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public String getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(String totalCost) {
+		this.totalCost = totalCost;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
 	}
 }

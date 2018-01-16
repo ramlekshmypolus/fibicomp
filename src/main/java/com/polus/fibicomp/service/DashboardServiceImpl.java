@@ -92,22 +92,24 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getDetailedSummaryData(String personId, String researchSummaryIndex) throws Exception {
-		String detailedSummaryData = null;
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
 			if (researchSummaryIndex.equals("PROPOSALSINPROGRESS")) {
-				detailedSummaryData = dashboardDao.getProposalsInProgress(personId);
+				dashBoardProfile = dashboardDao.getProposalsInProgress(personId);
 			}
 			if (researchSummaryIndex.equals("PROPOSALSSUBMITTED")) {
-				detailedSummaryData = dashboardDao.getSubmittedProposals(personId);
+				dashBoardProfile = dashboardDao.getSubmittedProposals(personId);
 			}
 			if (researchSummaryIndex.equals("AWARDSACTIVE")) {
-				detailedSummaryData = dashboardDao.getActiveAwards(personId);
+				dashBoardProfile = dashboardDao.getActiveAwards(personId);
 			}
 		} catch (Exception e) {
 			logger.error("Error in method getDetailedSummaryData", e);
 		}
-		return detailedSummaryData;
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(dashBoardProfile);
 	}
+
 
 	@Override
 	public String getDonutChartDataBySponsor(CommonVO vo) {
@@ -326,11 +328,12 @@ public class DashboardServiceImpl implements DashboardService {
 			summary.setLeadUnit("University");
 			summary.setSponsorCode("101");
 			summary.setSponsor("UIA");
+			summary.setPrimeSponsor("UIA-Prime");
 			summary.setStatus("Pending Aproval");
 			summary.setActivityType("No Activity");
 			summary.setActionKey("CER");
-			summary.setStartDate("10/10/2017");
-			summary.setEndDate("10/01/2021");
+			summary.setProjectStartDate("10/10/2017");
+			summary.setProjectEndDate("10/01/2021");
 			
 			personnelDetails.setPiFullName("admin admin");
 			personnelDetails.setEmail("hello@yahoo.com");
@@ -356,10 +359,10 @@ public class DashboardServiceImpl implements DashboardService {
 			detail2.setLeadUnit("School of Tennis");
 			coi.add(detail2);
 			
+			budget.setTotalCost("58725");
 			budget.setCostSharing("9568");
 			budget.setDirectCost("25245");
 			budget.setIndirectCost("21224");
-			budget.setTotalCOst("58725");
 			budget.setUnderRecovery("12256");
 			//static data ends
 			personnel.put("pi", personnelDetails);
@@ -511,6 +514,31 @@ public class DashboardServiceImpl implements DashboardService {
 		} catch (Exception e) {
 			logger.error("Error in method DashboardServiceImpl.submitQuestionnaire.", e);
 			e.printStackTrace();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(mobileProfile);
+	}
+	
+	@Override
+	public String getFibiResearchSummary(String personId, String researchSummaryIndex) throws Exception {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		MobileProfile mobileProfile = new MobileProfile();
+		mobileProfile.setStatus(false);
+		mobileProfile.setMessage("Error fetching research summary");
+		try {
+			if (researchSummaryIndex.equals("PROPOSALSINPROGRESS")) {
+				dashBoardProfile = dashboardDao.getProposalsInProgress(personId);
+				mobileProfile.setStatus(true);
+				mobileProfile.setMessage("Research summary details fetched successfully");
+			}
+			if (researchSummaryIndex.equals("PROPOSALSSUBMITTED")) {
+				dashBoardProfile = dashboardDao.getSubmittedProposals(personId);
+				mobileProfile.setStatus(true);
+				mobileProfile.setMessage("Research summary details fetched successfully");
+			}
+			mobileProfile.setData(dashBoardProfile);
+		} catch (Exception e) {
+			logger.error("Error in method getFibiDetailedResearchSummary", e);
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(mobileProfile);

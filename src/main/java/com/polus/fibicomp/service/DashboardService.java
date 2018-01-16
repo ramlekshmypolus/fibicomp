@@ -119,5 +119,14 @@ public interface DashboardService {
 	 * @throws Exception 
 	 */
 	public String submitQuestionnaire(CommonVO vo) throws Exception;
-
+	
+	/**
+	 * This method is used to get list of selected type in ResearchSummaryTable.
+	 * @param personId - Logged User ID
+	 * @param researchSummaryIndex - Selected row in Summary table
+	 * @return a String of details of selected item
+	 * @throws Exception
+	 */
+	public String getFibiResearchSummary(String personId, String researchSummaryIndex) throws Exception;						
+	
 }
