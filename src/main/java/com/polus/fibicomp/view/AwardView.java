@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "AWARD_MV")
@@ -62,6 +63,9 @@ public class AwardView implements Serializable {
 
 	@Column(name = "PERSON_ID")
 	private String personId;
+
+	@Transient
+	private String total_cost;
 
 	public Integer getAwardId() {
 		return awardId;
@@ -185,5 +189,13 @@ public class AwardView implements Serializable {
 
 	public void setPersonId(String personId) {
 		this.personId = personId;
+	}
+
+	public String getTotal_cost() {
+		return total_cost;
+	}
+
+	public void setTotal_cost(String total_cost) {
+		this.total_cost = total_cost;
 	}
 }

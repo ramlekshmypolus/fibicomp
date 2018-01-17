@@ -25,6 +25,7 @@ import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
 import com.polus.fibicomp.view.ExpenditureVolume;
 import com.polus.fibicomp.view.IacucView;
+import com.polus.fibicomp.view.MobileProposalView;
 import com.polus.fibicomp.view.ProposalView;
 import com.polus.fibicomp.view.ProtocolView;
 import com.polus.fibicomp.view.ResearchSummaryPieChart;
@@ -624,7 +625,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			logger.info("SubmittedProposals : " + submittedProposals);
 			dashBoardProfile.setProposalViews(submittedProposals);
 		} catch (Exception e) {
-			logger.error("Error in method getProposalsInProgress");
+			logger.error("Error in method getSubmittedProposals");
 			e.printStackTrace();
 		}
 		return dashBoardProfile;
@@ -640,11 +641,23 @@ public class DashboardDaoImpl implements DashboardDao {
 			Query activeAwardList = session.createSQLQuery(
 					"SELECT t1.award_id, t1.document_number, t1.award_number, t1.account_number, t1.title, t4.sponsor_name, t5.full_name  AS PI, t3.total_cost AS total_amount FROM award t1 INNER JOIN award_budget_ext t2 ON t1.award_id = t2.award_id INNER JOIN budget t3 ON t2.budget_id = t3.budget_id AND t3.final_version_flag = 'Y' INNER JOIN sponsor t4 ON t1.sponsor_code = t4.sponsor_code LEFT OUTER JOIN award_persons t5 ON t1.award_id = t5.award_id AND t5.contact_role_code = 'PI' WHERE t1.award_sequence_status = 'ACTIVE' AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE  perm_nm = 'View Award' AND person_id = :personId)");
 			activeAwardList.setString("personId", personId);
-			activeAwards = activeAwardList.list();
-			logger.info("SubmittedProposals : " + activeAwards);
+			List<Object[]> activeAwardsList = activeAwardList.list();
+			for(Object[] award: activeAwardsList){
+				AwardView awardView = new AwardView();
+				awardView.setAwardId(Integer.valueOf(award[0].toString()));
+				awardView.setDocumentNumber(award[1].toString());
+				awardView.setAwardNumber(award[2].toString());
+				awardView.setAccountNumber(award[3].toString());
+				awardView.setTitle(award[4].toString());
+				awardView.setSponsor(award[5].toString());
+				awardView.setFullName(award[6].toString());
+				awardView.setTotal_cost(award[7].toString());
+				activeAwards.add(awardView);
+			}
+			logger.info("Active Awards : " + activeAwards);
 			dashBoardProfile.setAwardViews(activeAwards);
 		} catch (Exception e) {
-			logger.error("Error in method getProposalsInProgress");
+			logger.error("Error in method getActiveAwards");
 			e.printStackTrace();
 		}
 		return dashBoardProfile;
@@ -739,5 +752,64 @@ public class DashboardDaoImpl implements DashboardDao {
 		}
 
 		return summaryTable;	
-	}	
+	}
+
+	@Override
+	public List<MobileProposalView> getProposalsByParams(CommonVO vo) {
+		String property1 = vo.getProperty1();
+		String property2 = vo.getProperty2();
+		String property3 = vo.getProperty3();
+		String property4 = vo.getProperty4();
+		String personId = vo.getPersonId();
+		List<MobileProposalView> proposalViews = null;
+
+		Conjunction and = Restrictions.conjunction();
+		try {
+			logger.info("---------- getProposalsByParams ------------");
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Criteria searchCriteria = session.createCriteria(ProposalView.class);
+			searchCriteria.addOrder(Order.desc("updateTimeStamp"));
+			if (property1 != null && !property1.isEmpty()) {
+				and.add(Restrictions.like("proposalNumber", "%" + property1 + "%").ignoreCase());
+			}
+			if (property2 != null && !property2.isEmpty()) {
+				and.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
+			}
+			if (property3 != null && !property3.isEmpty()) {
+				and.add(Restrictions.like("leadUnit", "%" + property3 + "%").ignoreCase());
+			}
+			if (property4 != null && !property4.isEmpty()) {
+				and.add(Restrictions.like("sponsor", "%" + property4 + "%").ignoreCase());
+			}
+			if (personId != null && !personId.isEmpty()) {
+				searchCriteria.add(Restrictions.eq("personId", personId));
+			}
+			searchCriteria.add(and);
+
+			@SuppressWarnings("unchecked")
+			List<ProposalView> proposals = searchCriteria.list();
+			if (proposals != null && !proposals.isEmpty()) {
+				proposalViews = new ArrayList<MobileProposalView>();
+				for (ProposalView proposal : proposals) {
+					MobileProposalView mobileProposal = new MobileProposalView();
+					mobileProposal.setDocumentNo(proposal.getDocumentNumber());
+					mobileProposal.setLeadUnit(proposal.getLeadUnit());
+					mobileProposal.setLeadUnitNo(proposal.getLeadUnitNumber());
+					mobileProposal.setPi(proposal.getPersonId());
+					mobileProposal.setProposalNo(proposal.getProposalNumber());
+					mobileProposal.setSponsor(proposal.getSponsor());
+					mobileProposal.setStatus(proposal.getStatus());
+					mobileProposal.setTitle(proposal.getTitle());
+					mobileProposal.setVersionNo(String.valueOf(proposal.getVersionNumber()));
+					//mobileProposal.setCertified(proposal.isCertified());
+					proposalViews.add(mobileProposal);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error in method getDashBoardDataForProposal", e);
+			e.printStackTrace();
+		}
+		return proposalViews;
+	}
+
 }

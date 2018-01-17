@@ -167,7 +167,7 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public String getFibiSearch(CommonVO vo) throws Exception {
+	public String getProposalsBySearchCriteria(CommonVO vo) throws Exception {
 		MobileProfile mobileProfile = new MobileProfile();
 		String requestType = vo.getTabIndex();
 		mobileProfile.setStatus(false);
@@ -176,44 +176,13 @@ public class DashboardServiceImpl implements DashboardService {
 			if (requestType.equals("AWARD")) {
 			}
 			if (requestType.equals("PROPOSAL")) {
-				//List<ProposalView> view = dashboardDao.getFibiSearchForProposal(vo);
-				//if (view.size() > 0) {
-				
-				//static data starts
-				
-				List<MobileProposalView> view = new ArrayList<MobileProposalView>();
-				MobileProposalView profile1 = new MobileProposalView();
-				MobileProposalView profile2 = new MobileProposalView();
-				profile1.setActionKey("CER");
-				profile1.setDocumentNo("3176");
-				profile1.setLeadUnit("University");
-				profile1.setLeadUnitNo("0001");
-				profile1.setPi("Jane Doe");
-				profile1.setProposalNo("14");
-				profile1.setSponsor("UIA - Navy");
-				profile1.setStatus("Active");
-				profile1.setTitle("Clinical trial reserch");
-				profile1.setVersionNo("0");
-				view.add(profile1);
-				
-				profile2.setActionKey("FYI");
-				profile2.setDocumentNo("3128");
-				profile2.setLeadUnit("University");
-				profile2.setLeadUnitNo("0001");
-				profile2.setPi("admin admin");
-				profile2.setProposalNo("12");
-				profile2.setSponsor("UIA - Army");
-				profile2.setStatus("Active");
-				profile2.setTitle("Sample analysis reserch");
-				profile2.setVersionNo("0");
-				view.add(profile2);
-				//static data ends
-				
-					mobileProfile.setData(view);
+				List<MobileProposalView> proposalViews = dashboardDao.getProposalsByParams(vo);
+				if (proposalViews != null && !proposalViews.isEmpty()) {
+					mobileProfile.setData(proposalViews);
 					mobileProfile.setStatus(true);
 					mobileProfile.setMessage("Data found for the given search key");
-					logger.info("view : " + view);
-				//}
+					logger.info("searched proposal datas : " + proposalViews);
+				}
 			}
 			if (requestType.equals("IRB")) {
 			}

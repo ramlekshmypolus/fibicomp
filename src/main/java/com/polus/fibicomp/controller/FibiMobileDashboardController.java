@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,7 +35,7 @@ public class FibiMobileDashboardController {
 
 	@RequestMapping(value = "/searchFibiDataByModuleCode", method = RequestMethod.POST)
 	public String requestFibiSearch(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		return dashboardService.getFibiSearch(vo);
+		return dashboardService.getProposalsBySearchCriteria(vo);
 	}
 
 	@RequestMapping(value = "/getFibiActionList", method = RequestMethod.POST)
