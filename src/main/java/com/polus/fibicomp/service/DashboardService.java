@@ -78,7 +78,7 @@ public interface DashboardService {
 	 * @return Search Result
 	 * @throws Exception 
 	 */
-	public String getFibiSearch(CommonVO vo) throws Exception;
+	public String getProposalsBySearchCriteria(CommonVO vo) throws Exception;
 
 	/**
 	 * This method is used to retrieve proposal action list data for fibiMobile.

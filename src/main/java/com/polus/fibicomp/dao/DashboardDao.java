@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
+import com.polus.fibicomp.view.MobileProposalView;
 import com.polus.fibicomp.view.ResearchSummaryView;
 import com.polus.fibicomp.vo.CommonVO;
 
@@ -145,5 +146,12 @@ public interface DashboardDao {
 	 * @return List of summary object
 	 */
 	public List<Object[]> getFibiSummaryTable(String personId, List<Object[]> summaryTable);
+
+	/**
+	 * This method is used to get list of proposal.
+	 * @param vo - Object of CommonVO class.
+	 * @return A list of proposal.
+	 */
+	public List<MobileProposalView> getProposalsByParams(CommonVO vo);
 
 }

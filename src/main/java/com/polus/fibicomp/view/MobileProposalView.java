@@ -20,7 +20,7 @@ public class MobileProposalView {
 
 	private String status;
 
-	private String actionKey;
+	private boolean certified;
 
 	public String getProposalNo() {
 		return proposalNo;
@@ -94,11 +94,11 @@ public class MobileProposalView {
 		this.status = status;
 	}
 
-	public String getActionKey() {
-		return actionKey;
+	public boolean isCertified() {
+		return certified;
 	}
 
-	public void setActionKey(String actionKey) {
-		this.actionKey = actionKey;
+	public void setCertified(boolean certified) {
+		this.certified = certified;
 	}
 }
