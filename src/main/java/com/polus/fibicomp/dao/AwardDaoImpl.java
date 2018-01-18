@@ -700,13 +700,18 @@ public class AwardDaoImpl implements AwardDao {
 				awardHierarchy.setAwardId(rset.getString("award_id"));
 				awardHierarchy.setRootAwardNumber(rset.getString("root_award_number"));
 				String accountNumber;
+				String piName;
 				if ((String) rset.getString("account_number") == null) {
-					accountNumber = " ";
+					accountNumber = "";
 				} else {
 					accountNumber = " : " + (String) rset.getString("account_number");
 				}
-				awardHierarchy.setName((String) rset.getString("award_number") + accountNumber+ " : "
-						+ (String) rset.getString("pi_name"));
+				if ((String) rset.getString("pi_name") == null) {
+					piName = "";
+				} else {
+					piName = " : " + (String) rset.getString("pi_name");
+				}
+				awardHierarchy.setName((String) rset.getString("award_number") + accountNumber + piName);
 				awardHierarchy.setLevel(Integer.valueOf(rset.getString("level")));
 
 				if (!hmAwards.isEmpty()) {

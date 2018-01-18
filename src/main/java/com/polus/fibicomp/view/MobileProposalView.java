@@ -22,6 +22,12 @@ public class MobileProposalView {
 
 	private boolean certified;
 
+	private String proposalPersonRoleId;
+
+	private boolean certificationRequired;
+
+	private String roleName;
+
 	public String getProposalNo() {
 		return proposalNo;
 	}
@@ -100,5 +106,29 @@ public class MobileProposalView {
 
 	public void setCertified(boolean certified) {
 		this.certified = certified;
+	}
+
+	public String getProposalPersonRoleId() {
+		return proposalPersonRoleId;
+	}
+
+	public void setProposalPersonRoleId(String proposalPersonRoleId) {
+		this.proposalPersonRoleId = proposalPersonRoleId;
+	}
+
+	public boolean isCertificationRequired() {
+		return certificationRequired;
+	}
+
+	public void setCertificationRequired(boolean certificationRequired) {
+		this.certificationRequired = certificationRequired;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 }

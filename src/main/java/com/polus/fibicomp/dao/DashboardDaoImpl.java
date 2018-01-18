@@ -588,7 +588,7 @@ public class DashboardDaoImpl implements DashboardDao {
 				proposalView.setSponsor(proposal[3].toString());
 				proposalView.setTotalCost(proposal[4].toString());
 				proposalView.setFullName(proposal[5].toString());
-				proposalView.setDeptName(proposal[6].toString());
+				proposalView.setDeptName(proposal[7].toString());
 				inProgressProposals.add(proposalView);
 			}
 			logger.info("getProposalsInProgress : " + inProgressProposals);
@@ -608,7 +608,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		try {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query subproposalList = session.createSQLQuery(
-					"select t1.document_number, t1.proposal_number, t1.title, t5.sponsor_name, t3.TOTAL_COST, t4.full_name AS PI from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN sponsor t5 ON t1.sponsor_code = t5.sponsor_code where t1.status_code=5 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :personId )");
+					"select t1.document_number, t1.proposal_number, t1.title, t5.sponsor_name, t3.TOTAL_COST, t4.full_name AS PI, t1.OWNED_BY_UNIT as unit_number,t6.UNIT_NAME from eps_proposal t1 inner join eps_proposal_budget_ext t2 on t1.proposal_number=t2.proposal_number inner join budget t3 on t2.budget_id=t3.budget_id and t3.final_version_flag='Y' LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN sponsor t5 ON t1.sponsor_code = t5.sponsor_code inner join unit t6 on  t1.OWNED_BY_UNIT= t6.UNIT_NUMBER where t1.status_code=5 and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Proposal' and person_id = :personId)");
 			subproposalList.setString("personId", personId);
 			List<Object[]> subProposals = subproposalList.list();
 			for (Object[] proposal : subProposals) {
@@ -619,7 +619,7 @@ public class DashboardDaoImpl implements DashboardDao {
 				proposalView.setSponsor(proposal[3].toString());
 				proposalView.setTotalCost(proposal[4].toString());
 				proposalView.setFullName(proposal[5].toString());
-				proposalView.setDeptName(proposal[6].toString());
+				proposalView.setDeptName(proposal[7].toString());
 				submittedProposals.add(proposalView);
 			}
 			logger.info("SubmittedProposals : " + submittedProposals);
@@ -647,11 +647,19 @@ public class DashboardDaoImpl implements DashboardDao {
 				awardView.setAwardId(Integer.valueOf(award[0].toString()));
 				awardView.setDocumentNumber(award[1].toString());
 				awardView.setAwardNumber(award[2].toString());
-				awardView.setAccountNumber(award[3].toString());
+				if (award[3] != null) {
+					awardView.setAccountNumber(award[3].toString());
+				}
 				awardView.setTitle(award[4].toString());
-				awardView.setSponsor(award[5].toString());
-				awardView.setFullName(award[6].toString());
-				awardView.setTotal_cost(award[7].toString());
+				if(award[5] != null){
+					awardView.setSponsor(award[5].toString());
+				}
+				if(award[6] != null){
+					awardView.setFullName(award[6].toString());
+				}
+				if(award[7] != null){
+					awardView.setTotal_cost(award[7].toString());
+				}
 				activeAwards.add(awardView);
 			}
 			logger.info("Active Awards : " + activeAwards);
@@ -801,7 +809,10 @@ public class DashboardDaoImpl implements DashboardDao {
 					mobileProposal.setStatus(proposal.getStatus());
 					mobileProposal.setTitle(proposal.getTitle());
 					mobileProposal.setVersionNo(String.valueOf(proposal.getVersionNumber()));
-					//mobileProposal.setCertified(proposal.isCertified());
+					mobileProposal.setCertified(proposal.isCertified());
+					mobileProposal.setCertificationRequired(proposal.isCertificationRequired());
+					mobileProposal.setProposalPersonRoleId(proposal.getProposalPersonRoleId());
+					mobileProposal.setRoleName(proposal.getRoleName());
 					proposalViews.add(mobileProposal);
 				}
 			}
