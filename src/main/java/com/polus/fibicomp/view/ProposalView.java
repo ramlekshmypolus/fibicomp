@@ -5,10 +5,13 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "PROPOSALS_MV")
@@ -71,6 +74,20 @@ public class ProposalView implements Serializable {
 
 	@Column(name = "OWNED_BY_UNIT")
 	private String deptName;
+
+	@Column(name = "CERTIFIED")
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private boolean certified;
+
+	@Column(name = "PROP_PERSON_ROLE_ID")
+	private String proposalPersonRoleId;
+
+	@Column(name = "CERTIFICATION_REQUIRED")
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private boolean certificationRequired;
+
+	@Column(name = "ROLE_NAME")
+	private String roleName;
 
 	public String getProposalNumber() {
 		return proposalNumber;
@@ -210,5 +227,37 @@ public class ProposalView implements Serializable {
 
 	public void setDeptName(String deptName) {
 		this.deptName = deptName;
+	}
+
+	public boolean isCertified() {
+		return certified;
+	}
+
+	public void setCertified(boolean certified) {
+		this.certified = certified;
+	}
+
+	public String getProposalPersonRoleId() {
+		return proposalPersonRoleId;
+	}
+
+	public void setProposalPersonRoleId(String proposalPersonRoleId) {
+		this.proposalPersonRoleId = proposalPersonRoleId;
+	}
+
+	public boolean isCertificationRequired() {
+		return certificationRequired;
+	}
+
+	public void setCertificationRequired(boolean certificationRequired) {
+		this.certificationRequired = certificationRequired;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 }
