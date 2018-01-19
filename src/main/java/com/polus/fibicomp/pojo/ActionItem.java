@@ -57,6 +57,9 @@ public class ActionItem implements Serializable {
 	@Column(name = "DLGN_PRNCPL_ID")
 	private String delegatorPrincipalId;
 
+	@Column(name = "DOC_HDR_STAT_CD")
+	private String docRouteStatus;
+
 	public String getId() {
 		return id;
 	}
@@ -171,5 +174,13 @@ public class ActionItem implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getDocRouteStatus() {
+		return docRouteStatus;
+	}
+
+	public void setDocRouteStatus(String docRouteStatus) {
+		this.docRouteStatus = docRouteStatus;
 	}
 }

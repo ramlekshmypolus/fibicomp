@@ -9,6 +9,7 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import com.polus.fibicomp.util.JpaCharBooleanConversion;
@@ -69,11 +70,8 @@ public class ProposalView implements Serializable {
 	@Column(name = "FULL_NAME")
 	private String fullName;
 
-	@Column(name = "TOTALCOST")
+	@Transient
 	private String totalCost;
-
-	@Column(name = "OWNED_BY_UNIT")
-	private String deptName;
 
 	@Column(name = "CERTIFIED")
 	@Convert(converter = JpaCharBooleanConversion.class)
@@ -219,14 +217,6 @@ public class ProposalView implements Serializable {
 
 	public void setTotalCost(String totalCost) {
 		this.totalCost = totalCost;
-	}
-
-	public String getDeptName() {
-		return deptName;
-	}
-
-	public void setDeptName(String deptName) {
-		this.deptName = deptName;
 	}
 
 	public boolean isCertified() {
