@@ -28,6 +28,8 @@ public class MobileProposalView {
 
 	private String roleName;
 
+	private String actionRequestCode;
+
 	public String getProposalNo() {
 		return proposalNo;
 	}
@@ -130,5 +132,13 @@ public class MobileProposalView {
 
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
+	}
+
+	public String getActionRequestCode() {
+		return actionRequestCode;
+	}
+
+	public void setActionRequestCode(String actionRequestCode) {
+		this.actionRequestCode = actionRequestCode;
 	}
 }
