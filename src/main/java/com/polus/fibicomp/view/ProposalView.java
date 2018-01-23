@@ -77,15 +77,8 @@ public class ProposalView implements Serializable {
 	@Convert(converter = JpaCharBooleanConversion.class)
 	private boolean certified;
 
-	@Column(name = "PROP_PERSON_ROLE_ID")
-	private String proposalPersonRoleId;
-
-	@Column(name = "CERTIFICATION_REQUIRED")
-	@Convert(converter = JpaCharBooleanConversion.class)
-	private boolean certificationRequired;
-
-	@Column(name = "ROLE_NAME")
-	private String roleName;
+	@Column(name = "PROP_PERSON_ROLE_CODE")
+	private String proposalPersonRoleCode;
 
 	public String getProposalNumber() {
 		return proposalNumber;
@@ -227,27 +220,12 @@ public class ProposalView implements Serializable {
 		this.certified = certified;
 	}
 
-	public String getProposalPersonRoleId() {
-		return proposalPersonRoleId;
+	public String getProposalPersonRoleCode() {
+		return proposalPersonRoleCode;
 	}
 
-	public void setProposalPersonRoleId(String proposalPersonRoleId) {
-		this.proposalPersonRoleId = proposalPersonRoleId;
+	public void setProposalPersonRoleCode(String proposalPersonRoleCode) {
+		this.proposalPersonRoleCode = proposalPersonRoleCode;
 	}
 
-	public boolean isCertificationRequired() {
-		return certificationRequired;
-	}
-
-	public void setCertificationRequired(boolean certificationRequired) {
-		this.certificationRequired = certificationRequired;
-	}
-
-	public String getRoleName() {
-		return roleName;
-	}
-
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
 }

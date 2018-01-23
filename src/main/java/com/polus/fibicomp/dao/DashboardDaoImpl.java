@@ -1,8 +1,12 @@
 package com.polus.fibicomp.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -19,8 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
+import com.polus.fibicomp.pojo.ParameterBo;
+import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
 import com.polus.fibicomp.view.ExpenditureVolume;
@@ -810,9 +817,18 @@ public class DashboardDaoImpl implements DashboardDao {
 					mobileProposal.setTitle(proposal.getTitle());
 					mobileProposal.setVersionNo(String.valueOf(proposal.getVersionNumber()));
 					mobileProposal.setCertified(proposal.isCertified());
-					mobileProposal.setCertificationRequired(proposal.isCertificationRequired());
-					mobileProposal.setProposalPersonRoleId(proposal.getProposalPersonRoleId());
-					mobileProposal.setRoleName(proposal.getRoleName());
+					mobileProposal.setProposalPersonRoleId(proposal.getProposalPersonRoleCode());
+					if (proposal.getStatusCode() == 1) {
+						String hierarchyName = getSponsorHierarchy(proposal.getSponsorCode());
+						Criteria roleCriteria = session.createCriteria(ProposalPersonRole.class);
+						roleCriteria.add(Restrictions.eq("code", proposal.getProposalPersonRoleCode()));
+						roleCriteria.add(Restrictions.eq("sponsorHierarchyName", hierarchyName));
+						ProposalPersonRole personRole = (ProposalPersonRole) roleCriteria.uniqueResult();
+						if (personRole != null) {
+							mobileProposal.setCertificationRequired(personRole.getCertificationRequired());
+							mobileProposal.setRoleName(personRole.getDescription());
+						}
+					}
 					proposalViews.add(mobileProposal);
 				}
 			}
@@ -821,6 +837,64 @@ public class DashboardDaoImpl implements DashboardDao {
 			e.printStackTrace();
 		}
 		return proposalViews;
+	}
+
+	public String getSponsorHierarchy(String sponsorCode) {
+		if (areAllSponsorsMultiPi()) {
+			return Constants.NIH_MULTIPLE_PI_HIERARCHY;
+		}
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		for (String hierarchyName : getRoleHierarchies()) {
+			Query countQuery = session.createSQLQuery(
+					"select count(1) from sponsor_hierarchy s where sponsor_code=:sponsorCode and hierarchy_name=:hierarchyName");
+			countQuery.setString("sponsorCode", sponsorCode);
+			countQuery.setString("hierarchyName", hierarchyName);
+			BigDecimal count = (BigDecimal) countQuery.uniqueResult();
+			if (count.intValue() > 0) {
+				return hierarchyName;
+			}
+		}
+		return Constants.DEFAULT_SPONSOR_HIERARCHY_NAME;
+	}
+
+	public Boolean areAllSponsorsMultiPi() {
+		Boolean isMultiPI = false;
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ParameterBo.class);
+		criteria.add(Restrictions.eq("namespaceCode", Constants.MODULE_NAMESPACE_PROPOSAL_DEVELOPMENT));
+		criteria.add(Restrictions.eq("componentCode", Constants.PARAMETER_COMPONENT_DOCUMENT));
+		criteria.add(Restrictions.eq("name", Constants.ALL_SPONSOR_HIERARCHY_NIH_MULTI_PI));
+		criteria.add(Restrictions.eq("applicationId", Constants.KC));
+		ParameterBo parameterBo = (ParameterBo) criteria.uniqueResult();
+		String value = parameterBo != null ? parameterBo.getValue() : null;
+		if (value == null) {
+			isMultiPI = false;
+		} else if (value.equalsIgnoreCase("N")) {
+			isMultiPI = false;
+		} else {
+			isMultiPI = true;
+		}
+		return isMultiPI;
+	}
+
+	protected Collection<String> getRoleHierarchies() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ParameterBo.class);
+		criteria.add(Restrictions.eq("namespaceCode", Constants.KC_GENERIC_PARAMETER_NAMESPACE));
+		criteria.add(Restrictions.eq("componentCode", Constants.KC_ALL_PARAMETER_DETAIL_TYPE_CODE));
+		criteria.add(Restrictions.eq("name", Constants.SPONSOR_HIERARCHIES_PARM));
+		criteria.add(Restrictions.eq("applicationId", Constants.KC));
+		ParameterBo parameterBo = (ParameterBo) criteria.uniqueResult();
+		String strValues = parameterBo.getValue();
+		if (strValues == null || StringUtils.isBlank(strValues)) {
+			return Collections.emptyList();
+		}
+		final Collection<String> values = new ArrayList<String>();
+		for (String value : strValues.split(",")) {
+			values.add(value.trim());
+		}
+
+		return Collections.unmodifiableCollection(values);
 	}
 
 }

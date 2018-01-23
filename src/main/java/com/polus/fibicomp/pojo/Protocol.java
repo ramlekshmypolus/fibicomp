@@ -9,16 +9,16 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedNativeQueries;
 import org.hibernate.annotations.NamedNativeQuery;
+import org.hibernate.annotations.Parameter;
 
 import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
@@ -34,9 +34,11 @@ public class Protocol implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@GenericGenerator(name = "SEQ_PROTOCOL", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "SEQ_PROTOCOL_ID"),
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PROTOCOL")
-	@SequenceGenerator(name = "SEQ_PROTOCOL", sequenceName = "SEQ_PROTOCOL_ID", allocationSize = 50)
+	@GeneratedValue(generator = "SEQ_PROTOCOL")
 	@Column(name = "PROTOCOL_ID")
 	private Long protocolId;
 
