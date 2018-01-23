@@ -6,11 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
@@ -23,9 +24,11 @@ public class PrincipalBo implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@GenericGenerator(name = "SEQ_PRINCIPAL", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "KRIM_PRNCPL_ID_S"),
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PRINCIPAL")
-	@SequenceGenerator(name = "SEQ_PRINCIPAL", sequenceName = "KRIM_PRNCPL_ID_S", allocationSize = 50)
+	@GeneratedValue(generator = "SEQ_PRINCIPAL")
 	@Column(name = "PRNCPL_ID")
 	private String principalId;
 

@@ -14,6 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 @Entity
 @Table(name = "UNIT_ADMINISTRATOR")
 @IdClass(UnitAdministrator.UnitAdministratorId.class)
@@ -176,6 +181,36 @@ public class UnitAdministrator implements Serializable {
 			this.unitAdministratorTypeCode = unitAdministratorTypeCode;
 		}
 
+		@Override
+		public String toString() {
+			return new ToStringBuilder(this).append("unitNumber", this.unitNumber).append("personId", this.personId)
+					.append("unitAdministratorTypeCode", this.unitAdministratorTypeCode).toString();
+		}
+
+		@Override
+		public boolean equals(Object other) {
+			if (other == null)
+				return false;
+			if (other == this)
+				return true;
+			if (other.getClass() != this.getClass())
+				return false;
+			final UnitAdministratorId rhs = (UnitAdministratorId) other;
+			return new EqualsBuilder().append(this.unitNumber, rhs.unitNumber).append(this.personId, rhs.personId)
+					.append(this.unitAdministratorTypeCode, rhs.unitAdministratorTypeCode).isEquals();
+		}
+
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder(17, 37).append(this.unitNumber).append(this.personId)
+					.append(this.unitAdministratorTypeCode).toHashCode();
+		}
+
+		public int compareTo(UnitAdministratorId other) {
+			return new CompareToBuilder().append(this.unitNumber, other.unitNumber)
+					.append(this.personId, other.personId)
+					.append(this.unitAdministratorTypeCode, other.unitAdministratorTypeCode).toComparison();
+		}
 	}
 
 }
