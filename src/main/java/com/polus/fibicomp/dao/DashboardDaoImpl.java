@@ -27,6 +27,7 @@ import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
 import com.polus.fibicomp.pojo.ParameterBo;
+import com.polus.fibicomp.pojo.PrincipalBo;
 import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
@@ -806,34 +807,43 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (proposals != null && !proposals.isEmpty()) {
 				proposalViews = new ArrayList<MobileProposalView>();
 				for (ProposalView proposal : proposals) {
-					MobileProposalView mobileProposal = new MobileProposalView();
-					mobileProposal.setDocumentNo(proposal.getDocumentNumber());
-					mobileProposal.setLeadUnit(proposal.getLeadUnit());
-					mobileProposal.setLeadUnitNo(proposal.getLeadUnitNumber());
-					mobileProposal.setPi(proposal.getPersonId());
-					mobileProposal.setProposalNo(proposal.getProposalNumber());
-					mobileProposal.setSponsor(proposal.getSponsor());
-					mobileProposal.setStatus(proposal.getStatus());
-					mobileProposal.setTitle(proposal.getTitle());
-					mobileProposal.setVersionNo(String.valueOf(proposal.getVersionNumber()));
-					mobileProposal.setCertified(proposal.isCertified());
-					mobileProposal.setProposalPersonRoleId(proposal.getProposalPersonRoleCode());
-					if (proposal.getStatusCode() == 1) {
-						String hierarchyName = getSponsorHierarchy(proposal.getSponsorCode());
-						Criteria roleCriteria = session.createCriteria(ProposalPersonRole.class);
-						roleCriteria.add(Restrictions.eq("code", proposal.getProposalPersonRoleCode()));
-						roleCriteria.add(Restrictions.eq("sponsorHierarchyName", hierarchyName));
-						ProposalPersonRole personRole = (ProposalPersonRole) roleCriteria.uniqueResult();
-						if (personRole != null) {
-							mobileProposal.setCertificationRequired(personRole.getCertificationRequired());
-							mobileProposal.setRoleName(personRole.getDescription());
+					if (proposal.getProposalPersonRoleCode() == null || proposal.getProposalPersonRoleCode().equals("PI")) {
+						MobileProposalView mobileProposal = new MobileProposalView();
+						mobileProposal.setDocumentNo(proposal.getDocumentNumber());
+						mobileProposal.setLeadUnit(proposal.getLeadUnit());
+						mobileProposal.setLeadUnitNo(proposal.getLeadUnitNumber());
+						mobileProposal.setPi(proposal.getFullName());
+						mobileProposal.setProposalNo(proposal.getProposalNumber());
+						mobileProposal.setSponsor(proposal.getSponsor());
+						mobileProposal.setStatus(proposal.getStatus());
+						mobileProposal.setTitle(proposal.getTitle());
+						mobileProposal.setVersionNo(String.valueOf(proposal.getVersionNumber()));
+						mobileProposal.setCertified(proposal.isCertified());
+						mobileProposal.setProposalPersonRoleId(proposal.getProposalPersonRoleCode());
+						if (proposal.getStatusCode() == 1 && proposal.getProposalPersonRoleCode() != null) {
+							String hierarchyName = getSponsorHierarchy(proposal.getSponsorCode());
+							Criteria roleCriteria = session.createCriteria(ProposalPersonRole.class);
+							roleCriteria.add(Restrictions.eq("code", proposal.getProposalPersonRoleCode()));
+							roleCriteria.add(Restrictions.eq("sponsorHierarchyName", hierarchyName));
+							ProposalPersonRole personRole = (ProposalPersonRole) roleCriteria.uniqueResult();
+							if (personRole != null) {
+								mobileProposal.setCertificationRequired(personRole.getCertificationRequired());
+								mobileProposal.setRoleName(personRole.getDescription());
+							}
+							mobileProposal.setActionRequestCode("C");
 						}
+						if (proposal.getStatusCode() == 2) {
+							mobileProposal.setActionRequestCode("A");
+						}
+						mobileProposal.setPersonId(proposal.getPersonId());
+						mobileProposal.setPersonName(hibernateTemplate.get(PrincipalBo.class, proposal.getPersonId()).getPrincipalName());
+						mobileProposal.setProposalPersonRoleId(proposal.getProposalPersonRoleCode());
+						proposalViews.add(mobileProposal);
 					}
-					proposalViews.add(mobileProposal);
 				}
 			}
 		} catch (Exception e) {
-			logger.error("Error in method getDashBoardDataForProposal", e);
+			logger.error("Error in method getProposalsByParams", e);
 			e.printStackTrace();
 		}
 		return proposalViews;
@@ -895,6 +905,37 @@ public class DashboardDaoImpl implements DashboardDao {
 		}
 
 		return Collections.unmodifiableCollection(values);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MobileProposalView> getProposalsForCertification(String personId) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProposalView.class);
+		criteria.add(Restrictions.eq("personId", personId));
+		criteria.add(Restrictions.eq("certified", false));
+		criteria.add(Restrictions.eq("statusCode", 1));
+		List<ProposalView> proposalViews = criteria.list();
+		List<MobileProposalView> mobileProposalViews = new ArrayList<MobileProposalView>();
+		if (proposalViews != null && !proposalViews.isEmpty()) {
+			for (ProposalView view : proposalViews) {
+				if (view.getProposalPersonRoleCode() != null && view.getProposalPersonRoleCode().equals("PI")) {
+					MobileProposalView proposalView = new MobileProposalView();
+					proposalView.setDocumentNo(view.getDocumentNumber());
+					proposalView.setTitle(view.getTitle());
+					proposalView.setLeadUnit(view.getLeadUnit());
+					proposalView.setProposalNo(view.getProposalNumber());
+					proposalView.setPi(view.getFullName());
+					proposalView.setSponsor(view.getSponsor());
+					proposalView.setPersonId(view.getPersonId());
+					proposalView.setPersonName(hibernateTemplate.get(PrincipalBo.class, personId).getPrincipalName());
+					proposalView.setProposalPersonRoleId(view.getProposalPersonRoleCode());
+					proposalView.setActionRequestCode("C");
+					mobileProposalViews.add(proposalView);
+				}
+			}
+		}
+		return mobileProposalViews;
 	}
 
 }

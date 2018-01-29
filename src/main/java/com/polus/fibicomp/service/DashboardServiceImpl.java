@@ -512,4 +512,25 @@ public class DashboardServiceImpl implements DashboardService {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(mobileProfile);
 	}
+
+	@Override
+	public String getProposalsForCertification(String personId) {
+		MobileProfile mobileProfile = new MobileProfile();
+		mobileProfile.setStatus(false);
+		mobileProfile.setMessage("Error fetching certification data");
+		List<MobileProposalView> mobileProposalViews = dashboardDao.getProposalsForCertification(personId);
+		if (mobileProposalViews != null && !mobileProposalViews.isEmpty()) {
+			mobileProfile.setData(mobileProposalViews);
+			mobileProfile.setStatus(true);
+			mobileProfile.setMessage("Datas retrived sucessfully");
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(mobileProfile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
 }
