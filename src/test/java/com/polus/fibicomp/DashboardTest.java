@@ -1,31 +1,29 @@
 package com.polus.fibicomp;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.polus.fibicomp.dao.DashboardDao;
-import com.polus.fibicomp.dao.DashboardDaoImpl;
 
 public class DashboardTest {
 
 	protected static Logger logger = Logger.getLogger(DashboardTest.class.getName());
 
 	public static void main(String[] args) throws SQLException {
-		// TODO Auto-generated method stub
 
 		// AnnotationConfigApplicationContext ctx = new
 		// AnnotationConfigApplicationContext(FibiRepoConfig.class);
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		ctx.scan("com.polus.fibicomp.*");// This will load the configured
+		//AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		//ctx.scan("com.polus.fibicomp.*");// This will load the configured
 											// components UserService,
 											// UserRepository,
-		ctx.refresh();
+		//ctx.refresh();
 
-		System.out.println(ctx);
-		@SuppressWarnings("unused")
-		DashboardDao dashboardDao = ctx.getBean("dashboardDao", DashboardDaoImpl.class);
+		//System.out.println(ctx);
+		//@SuppressWarnings("unused")
+		//DashboardDao dashboardDao = ctx.getBean("dashboardDao", DashboardDaoImpl.class);
 		/*
 		 * DashboardService dashboardService = ctx.getBean("dashboardService",
 		 * DashboardServiceImpl.class); PersonDTO personDTO = new PersonDTO();
@@ -38,8 +36,7 @@ public class DashboardTest {
 		/*
 		 * try { String res =
 		 * dashboardService.getDashBoardResearchSummary(personDTO);
-		 * System.out.println("res : " + res); } catch (Exception e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); }
+		 * System.out.println("res : " + res); } catch (Exception e) { catch block e.printStackTrace(); }
 		 */
 
 		/*
@@ -109,6 +106,18 @@ public class DashboardTest {
 		// allUser.getFirstName());
 		// }
 		// dashboardDao.getAllAwardViews();
+		System.out.println("test");
+		List<String> tests = new ArrayList<>();
+		tests.add("abc");
+		tests.add("dfes");
+		tests.add("dsfgdfg");
+		tests.add("sdfsf");
+		StringJoiner sj = new StringJoiner(", ");
+		for (String txt : tests) {
+			sj.add(txt);
+		}
+		System.out.println("sj : " + sj.toString());
+		
 	}
 
 }

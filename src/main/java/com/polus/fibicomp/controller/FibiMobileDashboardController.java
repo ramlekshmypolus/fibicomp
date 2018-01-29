@@ -67,4 +67,10 @@ public class FibiMobileDashboardController {
 	public String requestFibiResearchSummary(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.getFibiResearchSummary(vo.getPersonId(), vo.getResearchSummaryIndex());
 	}
+
+	@RequestMapping(value = "/getProposalsForCertification", method = RequestMethod.POST)
+	public String getProposalsForCertification(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return dashboardService.getProposalsForCertification(vo.getPersonId());
+	}
+
 }

@@ -154,4 +154,11 @@ public interface DashboardDao {
 	 */
 	public List<MobileProposalView> getProposalsByParams(CommonVO vo);
 
+	/**
+	 * This method is used to get list of proposals for certification.
+	 * @param personId - Logged User ID
+	 * @return a String of details of selected item
+	 */
+	public List<MobileProposalView> getProposalsForCertification(String personId);
+
 }

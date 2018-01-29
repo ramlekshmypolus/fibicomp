@@ -128,5 +128,12 @@ public interface DashboardService {
 	 * @throws Exception
 	 */
 	public String getFibiResearchSummary(String personId, String researchSummaryIndex) throws Exception;						
-	
+
+	/**
+	 * This method is used to get list of proposals for certification.
+	 * @param personId - Logged User ID
+	 * @return a String of details of selected item
+	 */
+	public String getProposalsForCertification(String personId);
+
 }

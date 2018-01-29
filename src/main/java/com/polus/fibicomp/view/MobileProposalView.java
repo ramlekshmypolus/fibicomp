@@ -30,6 +30,10 @@ public class MobileProposalView {
 
 	private String actionRequestCode;
 
+	private String personId;
+
+	private String personName;
+
 	public String getProposalNo() {
 		return proposalNo;
 	}
@@ -140,5 +144,21 @@ public class MobileProposalView {
 
 	public void setActionRequestCode(String actionRequestCode) {
 		this.actionRequestCode = actionRequestCode;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	public String getPersonName() {
+		return personName;
+	}
+
+	public void setPersonName(String personName) {
+		this.personName = personName;
 	}
 }
