@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.pojo.Unit;
 
 @Service
 public interface CommitteeDao {
+
+	public CommitteeType fetchCommitteeType(Integer committeeTypeCode);
 
 	public List<ProtocolReviewType> fetchAllReviewType();
 

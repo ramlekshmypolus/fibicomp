@@ -2,11 +2,16 @@ package com.polus.fibicomp.committee.vo;
 
 import java.util.List;
 
+import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.pojo.Unit;
 
 public class CommitteeVo {
+
+	private Integer committeeTypeCode;
+
+	private Committee committee;
 
 	private List<ProtocolReviewType> reviewTypes;
 
@@ -36,5 +41,21 @@ public class CommitteeVo {
 
 	public void setResearchAreas(List<ResearchArea> researchAreas) {
 		this.researchAreas = researchAreas;
+	}
+
+	public Committee getCommittee() {
+		return committee;
+	}
+
+	public void setCommittee(Committee committee) {
+		this.committee = committee;
+	}
+
+	public Integer getCommitteeTypeCode() {
+		return committeeTypeCode;
+	}
+
+	public void setCommitteeTypeCode(Integer committeeTypeCode) {
+		this.committeeTypeCode = committeeTypeCode;
 	}
 }

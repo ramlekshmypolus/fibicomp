@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.dao.CommitteeDao;
+import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.committee.vo.CommitteeVo;
@@ -43,6 +45,35 @@ public class CommitteeServiceImpl implements CommitteeService {
 			e.printStackTrace();
 		}
 		// logger.info("reviewTypes : " + response);
+		return response;
+	}
+
+	@Override
+	public String createCommittee(Integer committeeTypeCode) {
+		CommitteeVo committeeVo = new CommitteeVo();
+		Committee committee = new Committee();
+		committeeVo.setCommitteeTypeCode(committeeTypeCode);
+		CommitteeType committeeType = committeeDao.fetchCommitteeType(committeeTypeCode);
+		committee.setCommitteeTypeCode(committeeType.getCommitteeTypeCode());
+		committee.setCommitteeType(committeeType);
+		committeeVo.setCommittee(committee);
+
+		List<ProtocolReviewType> reviewTypes = committeeDao.fetchAllReviewType();
+		committeeVo.setReviewTypes(reviewTypes);
+		List<Unit> units = committeeDao.fetchAllHomeUnits();
+		committeeVo.setHomeUnits(units);
+		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
+		committeeVo.setResearchAreas(researchAreas);
+
+		String response = "";
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			response = mapper.writeValueAsString(committeeVo);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return response;
 	}
 
