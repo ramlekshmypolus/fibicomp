@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="PROTOCOL_ACTION_TYPE")
-public class ProtocolActionType implements Serializable{
+@Table(name = "PROTOCOL_ACTION_TYPE")
+public class ProtocolActionType implements Serializable {
 
 	/**
 	 * 
@@ -18,32 +18,32 @@ public class ProtocolActionType implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="PROTOCOL_ACTION_TYPE_CODE")
+	@Column(name = "PROTOCOL_ACTION_TYPE_CODE")
 	private String protocolActionTypecode;
-	
-	@Column(name="DESCRIPTION")
+
+	@Column(name = "DESCRIPTION")
 	private String description;
-	
-	@Column(name="TRIGGER_SUBMISSION")
+
+	@Column(name = "TRIGGER_SUBMISSION")
 	private char triggerSubmission;
-	
-	@Column(name="TRIGGER_CORRESPONDENCE")
+
+	@Column(name = "TRIGGER_CORRESPONDENCE")
 	private char triggerCorrespondence;
-	
-	@Column(name="UPDATE_TIMESTAMP")
+
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
-	
-	@Column(name="UPDATE_USER")
+
+	@Column(name = "UPDATE_USER")
 	private String updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
-	
-	@Column(name="FINAL_ACTION_FOR_BATCH_CORRESP")
+
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "FINAL_ACTION_FOR_BATCH_CORRESP")
 	private char finalActionForBatchcorresp;
-	
-	@Column(name="OBJ_ID")
-	private String  objId;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public String getProtocolActionTypecode() {
 		return protocolActionTypecode;

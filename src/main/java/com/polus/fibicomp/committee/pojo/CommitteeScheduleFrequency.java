@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_COMM_SCHEDULE_FREQUENCY")
-public class CommitteeScheduleFrequency implements Serializable{
+@Table(name = "FIBI_COMM_SCHEDULE_FREQUENCY")
+public class CommitteeScheduleFrequency implements Serializable {
 
 	/**
 	 * 
@@ -18,26 +18,26 @@ public class CommitteeScheduleFrequency implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="FREQUENCY_CODE")
+	@Column(name = "FREQUENCY_CODE")
 	private Integer frequencyCode;
-	
-	@Column(name="DESCRIPTION")
-	private String description;
-	
-	@Column(name="NO_OF_DAYS")
-	private Integer noOfDays;
-	
-	@Column(name="UPDATE_TIMESTAMP")
-	private Timestamp updateTimestamp;
-	
-	@Column(name="UPDATE_USER")
-	private String updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "DESCRIPTION")
+	private String description;
+
+	@Column(name = "NO_OF_DAYS")
+	private Integer noOfDays;
+
+	@Column(name = "UPDATE_TIMESTAMP")
+	private Timestamp updateTimestamp;
+
+	@Column(name = "UPDATE_USER")
+	private String updateUser;
+
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public Integer getFrequencyCode() {
 		return frequencyCode;

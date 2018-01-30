@@ -9,31 +9,31 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_SCHEDULE_ACT_ITEM_TYPE")
-public class ScheduleActItemType implements Serializable{
+@Table(name = "FIBI_SCHEDULE_ACT_ITEM_TYPE")
+public class ScheduleActItemType implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="SCHEDULE_ACT_ITEM_TYPE_CODE")
-	private Integer  scheduleActItemTypecode;
-	
-	@Column(name="DESCRIPTION")
+	@Column(name = "SCHEDULE_ACT_ITEM_TYPE_CODE")
+	private Integer scheduleActItemTypecode;
+
+	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@Column(name="UPDATE_TIMESTAMP")
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
 
-	@Column(name="UPDATE_USER")
+	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public Integer getScheduleActItemTypecode() {
 		return scheduleActItemTypecode;

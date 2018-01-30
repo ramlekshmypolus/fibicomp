@@ -3,7 +3,6 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -13,8 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_COMM_MEMBERSHIPS")
-public class CommitteeMemberships implements Serializable{
+@Table(name = "FIBI_COMM_MEMBERSHIPS")
+public class CommitteeMemberships implements Serializable {
 
 	/**
 	 * 
@@ -22,61 +21,61 @@ public class CommitteeMemberships implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="COMM_MEMBERSHIP_ID")
+	@Column(name = "COMM_MEMBERSHIP_ID")
 	private Integer commMembershipId;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name="FK_FIBI_COMM_MEMBERSHIPS"), name="COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
 
-	@Column(name="MEMBERSHIP_ID")
+	@Column(name = "MEMBERSHIP_ID")
 	private String membershipId;
 
-	@Column(name="SEQUENCE_NUMBER")
+	@Column(name = "SEQUENCE_NUMBER")
 	private Integer sequenceNumber;
 
-	@Column(name="PERSON_ID")
+	@Column(name = "PERSON_ID")
 	private String personId;
 
-	@Column(name="PERSON_NAME")
+	@Column(name = "PERSON_NAME")
 	private String personName;
 
-	@Column(name="NON_EMPLOYEE_FLAG")
+	@Column(name = "NON_EMPLOYEE_FLAG")
 	private String nonEmployeeFlag;
-	
-	@Column(name="PAID_MEMBER_FLAG")
-	private String  paidMemberFlag;
 
-	@Column(name="TERM_START_DATE")
-	private Timestamp  termStartDate;
-	
-	@Column(name="TERM_END_DATE")
+	@Column(name = "PAID_MEMBER_FLAG")
+	private String paidMemberFlag;
+
+	@Column(name = "TERM_START_DATE")
+	private Timestamp termStartDate;
+
+	@Column(name = "TERM_END_DATE")
 	private Timestamp termEndDate;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name="FK_FIBI_COMM_MEMBERSHIPS_2"),name="MEMBERSHIP_TYPE_CODE", referencedColumnName = "MEMBERSHIP_TYPE_CODE")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS_2"), name = "MEMBERSHIP_TYPE_CODE", referencedColumnName = "MEMBERSHIP_TYPE_CODE")
 	private CommitteeMembershipType committeeMembershipType;
 
-	@Column(name="COMMENTS")
+	@Column(name = "COMMENTS")
 	private String comments;
-	
-	@Column(name="UPDATE_TIMESTAMP")
-	private Timestamp  updateTimestamp;
 
-	@Column(name="UPDATE_USER")
-	private String  updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
+	@Column(name = "UPDATE_TIMESTAMP")
+	private Timestamp updateTimestamp;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
-	
-	@Column(name="CONTACT_NOTES")
-	private char[]  contactNotes;
+	@Column(name = "UPDATE_USER")
+	private String updateUser;
 
-	@Column(name="TRAINING_NOTES")
-	private char[]  trainingNotes;
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
+
+	@Column(name = "CONTACT_NOTES")
+	private char[] contactNotes;
+
+	@Column(name = "TRAINING_NOTES")
+	private char[] trainingNotes;
 
 	public Integer getCommMembershipId() {
 		return commMembershipId;

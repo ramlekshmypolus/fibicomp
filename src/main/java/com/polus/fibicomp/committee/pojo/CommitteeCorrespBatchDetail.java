@@ -3,21 +3,17 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.core.sym.Name;
-
 @Entity
-@Table(name="FIBI_COMM_CORRESP_BATCH_DETAIL")
-public class CommitteeCorrespBatchDetail implements Serializable{
+@Table(name = "FIBI_COMM_CORRESP_BATCH_DETAIL")
+public class CommitteeCorrespBatchDetail implements Serializable {
 
 	/**
 	 * 
@@ -25,33 +21,33 @@ public class CommitteeCorrespBatchDetail implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="CORRESP_BATCH_DETAIL_ID")
+	@Column(name = "CORRESP_BATCH_DETAIL_ID")
 	private Integer correspBatchDetailId;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name="FK_FIBI_COMM_CORRESP_BATCH_DTL"), name="CORRESP_BATCH_ID", referencedColumnName = "CORRESP_BATCH_ID")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_CORRESP_BATCH_DTL"), name = "CORRESP_BATCH_ID", referencedColumnName = "CORRESP_BATCH_ID")
 	private CommitteeCorrespBatch committeeCorrespBatch;
 
-	@Column(name="PROTOCOL_NUMBER")
+	@Column(name = "PROTOCOL_NUMBER")
 	private String protocolNumber;
 
-	@Column(name="SEQUENCE_NUMBER")
+	@Column(name = "SEQUENCE_NUMBER")
 	private Integer sequenceNumber;
 
-	@Column(name="ACTION_ID")
+	@Column(name = "ACTION_ID")
 	private Integer actionId;
 
-	@Column(name="UPDATE_TIMESTAMP")
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
 
-	@Column(name="UPDATE_USER")
+	@Column(name = "UPDATE_USER")
 	private String updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public Integer getCorrespBatchDetailId() {
 		return correspBatchDetailId;

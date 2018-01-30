@@ -9,31 +9,31 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_COMM_SCHEDULE_ATTACH_TYPE")
-public class CommitteeScheduleAttachType implements Serializable{
+@Table(name = "FIBI_COMM_SCHEDULE_ATTACH_TYPE")
+public class CommitteeScheduleAttachType implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="ATTACHMENT_TYPE_CODE")
+	@Column(name = "ATTACHMENT_TYPE_CODE")
 	private Integer attachmentTypecode;
-	
-	@Column(name="DESCRIPTION")
+
+	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@Column(name="UPDATE_TIMESTAMP")
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
 
-	@Column(name="UPDATE_USER")
+	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public Integer getAttachmentTypecode() {
 		return attachmentTypecode;

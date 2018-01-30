@@ -2,7 +2,6 @@ package com.polus.fibicomp.committee.pojo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,31 +9,31 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_SCHEDULE_STATUS")
-public class ScheduleStatus implements Serializable{
-	
+@Table(name = "FIBI_SCHEDULE_STATUS")
+public class ScheduleStatus implements Serializable {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="SCHEDULE_STATUS_CODE")
+	@Column(name = "SCHEDULE_STATUS_CODE")
 	private Integer scheduleStatusCode;
-	
-	@Column(name="DESCRIPTION")
+
+	@Column(name = "DESCRIPTION")
 	private String description;
-	
-	@Column(name="UPDATE_TIMESTAMP")
+
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
-	
-	@Column(name="UPDATE_USER")
+
+	@Column(name = "UPDATE_USER")
 	private String updateUser;
-	
-	@Column(name="VER_NBR")
+
+	@Column(name = "VER_NBR")
 	private Integer verNbr;
-	
-	@Column(name="OBJ_ID")
+
+	@Column(name = "OBJ_ID")
 	private String objId;
 
 	public Integer getScheduleStatusCode() {
