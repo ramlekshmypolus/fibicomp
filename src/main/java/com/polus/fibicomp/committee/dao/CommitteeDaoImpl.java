@@ -1,5 +1,8 @@
 package com.polus.fibicomp.committee.dao;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -15,6 +18,9 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
@@ -78,6 +84,37 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		CommitteeType committeeType = null;
 		committeeType = hibernateTemplate.get(CommitteeType.class, committeeTypeCode);
 		return committeeType;
+	}
+
+	@Override
+	public Date getCurrentDate() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		return c.getTime();
+	}
+
+	@Override
+	public Timestamp getCurrentTimestamp() {
+		return new Timestamp(this.getCurrentDate().getTime());
+	}
+
+	@Override
+	public String convertObjectToJSON(Object object) {
+		String response = "";
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			response = mapper.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+
+	@Override
+	public Committee saveCommittee(Committee committee) {
+		hibernateTemplate.saveOrUpdate(committee);
+		return committee;
 	}
 
 }
