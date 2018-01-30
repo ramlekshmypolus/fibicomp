@@ -6,10 +6,14 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
 @Table(name = "FIBI_COMM_RESEARCH_AREAS")
@@ -21,7 +25,10 @@ public class CommitteeResearchAreas implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "COMM_RESEARCH_AREAS_ID")
+	@GenericGenerator(name = "researchIdGererator", strategy = "increment", parameters = {
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@GeneratedValue(generator = "researchIdGererator")
+	@Column(name = "COMM_RESEARCH_AREAS_ID", updatable = false, nullable = false)
 	private Integer commResearchAreasId;
 
 	@ManyToOne(optional = false)

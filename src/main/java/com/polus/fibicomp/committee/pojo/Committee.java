@@ -2,6 +2,9 @@ package com.polus.fibicomp.committee.pojo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -10,7 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "FIBI_COMMITTEE")
@@ -72,11 +77,15 @@ public class Committee implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	@Column(name = "VER_NBR")
+	@Version
+	@Column(name = "VER_NBR", length = 8)
 	private Integer verNbr;
 
-	@Column(name = "OBJ_ID")
+	@Column(name = "OBJ_ID", length = 36, unique = true)
 	private String objId;
+
+	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeResearchAreas> researchAreas;
 
 	public String getCommitteeId() {
 		return committeeId;
@@ -224,5 +233,13 @@ public class Committee implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public List<CommitteeResearchAreas> getResearchAreas() {
+		return researchAreas;
+	}
+
+	public void setResearchAreas(List<CommitteeResearchAreas> researchAreas) {
+		this.researchAreas = researchAreas;
 	}
 }

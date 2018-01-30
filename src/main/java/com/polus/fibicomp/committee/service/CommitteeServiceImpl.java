@@ -1,16 +1,17 @@
 package com.polus.fibicomp.committee.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
@@ -29,7 +30,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 	@Override
 	public String fetchInitialDatas() {
 		CommitteeVo committeeVo = new CommitteeVo();
-		String response = "";
 		List<ProtocolReviewType> reviewTypes = committeeDao.fetchAllReviewType();
 		committeeVo.setReviewTypes(reviewTypes);
 		List<Unit> units = committeeDao.fetchAllHomeUnits();
@@ -37,14 +37,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
 		committeeVo.setResearchAreas(researchAreas);
 
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			response = mapper.writeValueAsString(committeeVo);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// logger.info("reviewTypes : " + response);
+		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
 	}
 
@@ -56,6 +49,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		CommitteeType committeeType = committeeDao.fetchCommitteeType(committeeTypeCode);
 		committee.setCommitteeTypeCode(committeeType.getCommitteeTypeCode());
 		committee.setCommitteeType(committeeType);
+		committee.setResearchAreas(new ArrayList<CommitteeResearchAreas>());
 		committeeVo.setCommittee(committee);
 
 		List<ProtocolReviewType> reviewTypes = committeeDao.fetchAllReviewType();
@@ -65,15 +59,28 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
 		committeeVo.setResearchAreas(researchAreas);
 
-		String response = "";
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			response = mapper.writeValueAsString(committeeVo);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	@Override
+	public String saveCommittee(CommitteeVo vo) {
+		Committee committee = vo.getCommittee();
+		String updateType = vo.getUpdateType();
+		if (updateType != null && updateType.equals("SAVE")) {
+			committee.setVerNbr(1);
+			committee.setCreateTimestamp(committeeDao.getCurrentTimestamp());
+			committee.setCreateUser(vo.getCurrentUser());
+			committee.setObjId(UUID.randomUUID().toString());
+			committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
+			committee.setUpdateUser(vo.getCurrentUser());
 		}
-		
+		committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
+		committee.setUpdateUser(vo.getCurrentUser());
+		//committee = committeeDao.saveCommittee(committee);
+		vo.setCommittee(committee);
+		String response = committeeDao.convertObjectToJSON(vo);
+		logger.info("response : " + response);
 		return response;
 	}
 

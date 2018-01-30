@@ -31,6 +31,13 @@ public class CommitteeController {
 		return initialDatas;
 	}
 
+	@RequestMapping(value = "/saveCommittee", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String saveCommittee(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for saveCommittee");
+		String initialDatas = committeeService.saveCommittee(vo);
+		return initialDatas;
+	}
+
 	@RequestMapping(value = "/fetchInitialDatas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String fetchInitialDatas(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for fetchInitialDatas");

@@ -19,6 +19,10 @@ public class CommitteeVo {
 
 	private List<ResearchArea> researchAreas;
 
+	private String updateType;
+
+	private String currentUser;
+
 	public List<ProtocolReviewType> getReviewTypes() {
 		return reviewTypes;
 	}
@@ -57,5 +61,21 @@ public class CommitteeVo {
 
 	public void setCommitteeTypeCode(Integer committeeTypeCode) {
 		this.committeeTypeCode = committeeTypeCode;
+	}
+
+	public String getUpdateType() {
+		return updateType;
+	}
+
+	public void setUpdateType(String updateType) {
+		this.updateType = updateType;
+	}
+
+	public String getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUser(String currentUser) {
+		this.currentUser = currentUser;
 	}
 }
