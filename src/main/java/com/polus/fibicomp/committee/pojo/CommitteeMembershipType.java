@@ -9,31 +9,31 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_COMM_MEMBERSHIP_TYPE")
-public class CommitteeMembershipType implements Serializable{
+@Table(name = "FIBI_COMM_MEMBERSHIP_TYPE")
+public class CommitteeMembershipType implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="MEMBERSHIP_TYPE_CODE")
+	@Column(name = "MEMBERSHIP_TYPE_CODE")
 	private String membershipTypeCode;
 
-	@Column(name="DESCRIPTION")
+	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@Column(name="UPDATE_TIMESTAMP")
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
 
-	@Column(name="UPDATE_USER")
+	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public String getMembershipTypeCode() {
 		return membershipTypeCode;

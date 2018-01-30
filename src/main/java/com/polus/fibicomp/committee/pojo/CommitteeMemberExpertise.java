@@ -3,7 +3,6 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -13,35 +12,35 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_COMM_MEMBER_EXPERTISE")
-public class CommitteeMemberExpertise implements Serializable{
+@Table(name = "FIBI_COMM_MEMBER_EXPERTISE")
+public class CommitteeMemberExpertise implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="COMM_MEMBER_EXPERTISE_ID")
+	@Column(name = "COMM_MEMBER_EXPERTISE_ID")
 	private Integer commMemberExpertiseId;
-	
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name="FK_FIBI_COMM_MEMBER_EXPERTISE"), name="COMM_MEMBERSHIP_ID", referencedColumnName="COMM_MEMBERSHIP_ID")
-	private CommitteeMemberships committeeMemberships;
-	
-	@Column(name="RESEARCH_AREA_CODE")
-	private String researchAreaCode;
-	
-	@Column(name="UPDATE_TIMESTAMP")
-	private Timestamp updateTimestamp;
-	
-	@Column(name="UPDATE_USER")
-	private String updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBER_EXPERTISE"), name = "COMM_MEMBERSHIP_ID", referencedColumnName = "COMM_MEMBERSHIP_ID")
+	private CommitteeMemberships committeeMemberships;
+
+	@Column(name = "RESEARCH_AREA_CODE")
+	private String researchAreaCode;
+
+	@Column(name = "UPDATE_TIMESTAMP")
+	private Timestamp updateTimestamp;
+
+	@Column(name = "UPDATE_USER")
+	private String updateUser;
+
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public Integer getCommMemberExpertiseId() {
 		return commMemberExpertiseId;
@@ -50,7 +49,7 @@ public class CommitteeMemberExpertise implements Serializable{
 	public void setCommMemberExpertiseId(Integer commMemberExpertiseId) {
 		this.commMemberExpertiseId = commMemberExpertiseId;
 	}
-	
+
 	public CommitteeMemberships getCommitteeMemberships() {
 		return committeeMemberships;
 	}

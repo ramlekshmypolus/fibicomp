@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_COMM_MEMBERSHIP_STATUS")
-public class CommitteeMembershipStatus implements Serializable{
+@Table(name = "FIBI_COMM_MEMBERSHIP_STATUS")
+public class CommitteeMembershipStatus implements Serializable {
 
 	/**
 	 * 
@@ -18,23 +18,23 @@ public class CommitteeMembershipStatus implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="MEMBERSHIP_STATUS_CODE")
+	@Column(name = "MEMBERSHIP_STATUS_CODE")
 	private Integer membershipStatusCode;
-	
-	@Column(name="DESCRIPTION")
+
+	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@Column(name="UPDATE_TIMESTAMP")
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
-	
-	@Column(name="UPDATE_USER")
-	private String updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "UPDATE_USER")
+	private String updateUser;
+
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public Integer getMembershipStatusCode() {
 		return membershipStatusCode;
@@ -87,5 +87,5 @@ public class CommitteeMembershipStatus implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 }

@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="PROTO_CORRESP_TYPE")
-public class ProtoCorrespType implements Serializable{
+@Table(name = "PROTO_CORRESP_TYPE")
+public class ProtoCorrespType implements Serializable {
 
 	/**
 	 * 
@@ -18,26 +18,26 @@ public class ProtoCorrespType implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="PROTO_CORRESP_TYPE_CODE")
+	@Column(name = "PROTO_CORRESP_TYPE_CODE")
 	private String protoCorrespTypecode;
-	
-	@Column(name="DESCRIPTION")
-	private String description;
-	
-	@Column(name="MODULE_ID")
-	private String moduleId;
-	
-	@Column(name="UPDATE_TIMESTAMP")
-	private Timestamp updateTimestamp;
-	
-	@Column(name="UPDATE_USER")
-	private String updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "DESCRIPTION")
+	private String description;
+
+	@Column(name = "MODULE_ID")
+	private String moduleId;
+
+	@Column(name = "UPDATE_TIMESTAMP")
+	private Timestamp updateTimestamp;
+
+	@Column(name = "UPDATE_USER")
+	private String updateUser;
+
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public String getProtoCorrespTypecode() {
 		return protoCorrespTypecode;

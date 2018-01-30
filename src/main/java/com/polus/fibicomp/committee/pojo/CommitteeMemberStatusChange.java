@@ -9,46 +9,45 @@ import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="FIBI_COMM_MEMBER_STATUS_CHANGE")
-public class CommitteeMemberStatusChange implements Serializable{
+@Table(name = "FIBI_COMM_MEMBER_STATUS_CHANGE")
+public class CommitteeMemberStatusChange implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="COMM_MEMBER_STATUS_CHANGE_ID")
+	@Column(name = "COMM_MEMBER_STATUS_CHANGE_ID")
 	private Integer commMemberStatusChangeId;
-	
+
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name="FK_FIBI_COMM_MBR_STATUS_CHNG_3"),name="COMM_MEMBERSHIP_ID", referencedColumnName="COMM_MEMBERSHIP_ID")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MBR_STATUS_CHNG_3"), name = "COMM_MEMBERSHIP_ID", referencedColumnName = "COMM_MEMBERSHIP_ID")
 	private CommitteeMemberships committeeMemberships;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name="FK_FIBI_COMM_MBR_STATUS_CHNG_2"),name="MEMBERSHIP_STATUS_CODE", referencedColumnName="MEMBERSHIP_STATUS_CODE")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MBR_STATUS_CHNG_2"), name = "MEMBERSHIP_STATUS_CODE", referencedColumnName = "MEMBERSHIP_STATUS_CODE")
 	private CommitteeMembershipStatus committeeMembershipStatus;
 
-	@Column(name="START_DATE")
+	@Column(name = "START_DATE")
 	private Timestamp startDate;
 
-	@Column(name="END_DATE")
+	@Column(name = "END_DATE")
 	private Timestamp endDate;
 
-	@Column(name="UPDATE_TIMESTAMP")
+	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
-	
-	@Column(name="UPDATE_USER")
-	private String updateUser;
-	
-	@Column(name="VER_NBR")
-	private Integer  verNbr;
 
-	@Column(name="OBJ_ID")
-	private String  objId;
+	@Column(name = "UPDATE_USER")
+	private String updateUser;
+
+	@Column(name = "VER_NBR")
+	private Integer verNbr;
+
+	@Column(name = "OBJ_ID")
+	private String objId;
 
 	public Integer getCommMemberStatusChangeId() {
 		return commMemberStatusChangeId;
