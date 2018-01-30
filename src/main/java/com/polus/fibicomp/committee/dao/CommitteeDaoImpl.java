@@ -15,6 +15,7 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.pojo.Unit;
@@ -70,6 +71,13 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		@SuppressWarnings("unchecked")
 		List<ResearchArea> researchAreas = criteria.list();
 		return researchAreas;
+	}
+
+	@Override
+	public CommitteeType fetchCommitteeType(Integer committeeTypeCode) {
+		CommitteeType committeeType = null;
+		committeeType = hibernateTemplate.get(CommitteeType.class, committeeTypeCode);
+		return committeeType;
 	}
 
 }
