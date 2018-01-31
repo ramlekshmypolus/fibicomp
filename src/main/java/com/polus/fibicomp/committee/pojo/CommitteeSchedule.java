@@ -1,6 +1,7 @@
 package com.polus.fibicomp.committee.pojo;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ public class CommitteeSchedule implements Serializable {
 	private Committee committee;
 
 	@Column(name = "SCHEDULED_DATE")
-	private Timestamp scheduledDate;
+	private Date scheduledDate;
 
 	@Column(name = "PLACE")
 	private String place;
@@ -38,23 +39,23 @@ public class CommitteeSchedule implements Serializable {
 	private Timestamp time;
 
 	@Column(name = "PROTOCOL_SUB_DEADLINE")
-	private Timestamp protocolSubDeadline;
+	private Date protocolSubDeadline;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE"), name = "SCHEDULE_STATUS_CODE", referencedColumnName = "SCHEDULE_STATUS_CODE")
 	private ScheduleStatus scheduleStatus;
 
 	@Column(name = "MEETING_DATE")
-	private Timestamp meetingDate;
+	private Date meetingDate;
 
 	@Column(name = "START_TIME")
-	private Timestamp startTime;
+	private Date startTime;
 
 	@Column(name = "END_TIME")
-	private Timestamp endTime;
+	private Date endTime;
 
 	@Column(name = "AGENDA_PROD_REV_DATE")
-	private Timestamp agendaProdRevDate;
+	private Date agendaProdRevDate;
 
 	@Column(name = "MAX_PROTOCOLS")
 	private Integer maxProtocols;
@@ -69,13 +70,16 @@ public class CommitteeSchedule implements Serializable {
 	private String updateUser;
 
 	@Column(name = "VER_NBR")
-	private Integer verNbr;
+	private Integer versionNumber;
 
 	@Column(name = "OBJ_ID")
-	private String objId;
+	private String objectId;
 
 	@Column(name = "AVAILABLE_TO_REVIEWERS")
 	private String availableToReviewers;
+
+	@Column(name = "SCHEDULE_STATUS_CODE")
+	private Integer scheduleStatusCode;
 
 	public Integer getScheduleId() {
 		return scheduleId;
@@ -93,14 +97,6 @@ public class CommitteeSchedule implements Serializable {
 		this.committee = committee;
 	}
 
-	public Timestamp getScheduledDate() {
-		return scheduledDate;
-	}
-
-	public void setScheduledDate(Timestamp scheduledDate) {
-		this.scheduledDate = scheduledDate;
-	}
-
 	public String getPlace() {
 		return place;
 	}
@@ -109,60 +105,12 @@ public class CommitteeSchedule implements Serializable {
 		this.place = place;
 	}
 
-	public Timestamp getTime() {
-		return time;
-	}
-
-	public void setTime(Timestamp time) {
-		this.time = time;
-	}
-
-	public Timestamp getProtocolSubDeadline() {
-		return protocolSubDeadline;
-	}
-
-	public void setProtocolSubDeadline(Timestamp protocolSubDeadline) {
-		this.protocolSubDeadline = protocolSubDeadline;
-	}
-
 	public ScheduleStatus getScheduleStatus() {
 		return scheduleStatus;
 	}
 
 	public void setScheduleStatus(ScheduleStatus scheduleStatus) {
 		this.scheduleStatus = scheduleStatus;
-	}
-
-	public Timestamp getMeetingDate() {
-		return meetingDate;
-	}
-
-	public void setMeetingDate(Timestamp meetingDate) {
-		this.meetingDate = meetingDate;
-	}
-
-	public Timestamp getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Timestamp startTime) {
-		this.startTime = startTime;
-	}
-
-	public Timestamp getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Timestamp endTime) {
-		this.endTime = endTime;
-	}
-
-	public Timestamp getAgendaProdRevDate() {
-		return agendaProdRevDate;
-	}
-
-	public void setAgendaProdRevDate(Timestamp agendaProdRevDate) {
-		this.agendaProdRevDate = agendaProdRevDate;
 	}
 
 	public Integer getMaxProtocols() {
@@ -197,22 +145,6 @@ public class CommitteeSchedule implements Serializable {
 		this.updateUser = updateUser;
 	}
 
-	public Integer getVerNbr() {
-		return verNbr;
-	}
-
-	public void setVerNbr(Integer verNbr) {
-		this.verNbr = verNbr;
-	}
-
-	public String getObjId() {
-		return objId;
-	}
-
-	public void setObjId(String objId) {
-		this.objId = objId;
-	}
-
 	public String getAvailableToReviewers() {
 		return availableToReviewers;
 	}
@@ -223,5 +155,85 @@ public class CommitteeSchedule implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Date getScheduledDate() {
+		return scheduledDate;
+	}
+
+	public void setScheduledDate(Date scheduledDate) {
+		this.scheduledDate = scheduledDate;
+	}
+
+	public Date getProtocolSubDeadline() {
+		return protocolSubDeadline;
+	}
+
+	public void setProtocolSubDeadline(Date protocolSubDeadline) {
+		this.protocolSubDeadline = protocolSubDeadline;
+	}
+
+	public Integer getScheduleStatusCode() {
+		return scheduleStatusCode;
+	}
+
+	public void setScheduleStatusCode(Integer scheduleStatusCode) {
+		this.scheduleStatusCode = scheduleStatusCode;
+	}
+
+	public Date getMeetingDate() {
+		return meetingDate;
+	}
+
+	public void setMeetingDate(Date meetingDate) {
+		this.meetingDate = meetingDate;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public Date getAgendaProdRevDate() {
+		return agendaProdRevDate;
+	}
+
+	public void setAgendaProdRevDate(Date agendaProdRevDate) {
+		this.agendaProdRevDate = agendaProdRevDate;
+	}
+
+	public Timestamp getTime() {
+		return time;
+	}
+
+	public void setTime(Timestamp time) {
+		this.time = time;
+	}
+
+	public Integer getVersionNumber() {
+		return versionNumber;
+	}
+
+	public void setVersionNumber(Integer versionNumber) {
+		this.versionNumber = versionNumber;
+	}
+
+	public String getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
 	}
 }

@@ -28,6 +28,7 @@ public class CommitteeController {
 	public String createCommittee(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for createCommittee");
 		String initialDatas = committeeService.createCommittee(vo.getCommitteeTypeCode());
+		logger.info("initialDatas : " + initialDatas);
 		return initialDatas;
 	}
 
@@ -35,6 +36,28 @@ public class CommitteeController {
 	public String saveCommittee(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for saveCommittee");
 		String initialDatas = committeeService.saveCommittee(vo);
+		logger.info("initialDatas : " + initialDatas);
+		return initialDatas;
+	}
+
+	@RequestMapping(value = "/loadCommitteeById", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String loadCommitteeById(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for saveCommittee");
+		String initialDatas = committeeService.saveCommittee(vo);
+		logger.info("initialDatas : " + initialDatas);
+		return initialDatas;
+	}
+
+	@RequestMapping(value = "/addSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String addSchedule(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for addSchedule");
+		String initialDatas = "";
+		try {
+			initialDatas = committeeService.addSchedule(vo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.info("initialDatas : " + initialDatas);
 		return initialDatas;
 	}
 

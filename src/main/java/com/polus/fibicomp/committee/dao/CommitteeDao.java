@@ -10,6 +10,7 @@ import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
+import com.polus.fibicomp.committee.pojo.ScheduleStatus;
 import com.polus.fibicomp.pojo.Unit;
 
 @Service
@@ -30,5 +31,9 @@ public interface CommitteeDao {
 	public String convertObjectToJSON(Object object);
 
 	public Committee saveCommittee(Committee committee);
+
+	public Committee fetchCommitteeById(String committeeId);
+
+	public ScheduleStatus fetchScheduleStatusByStatus(String scheduleStatus);
 
 }

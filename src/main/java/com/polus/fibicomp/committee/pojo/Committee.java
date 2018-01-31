@@ -2,6 +2,7 @@ package com.polus.fibicomp.committee.pojo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -86,6 +87,16 @@ public class Committee implements Serializable {
 
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeResearchAreas> researchAreas;
+
+	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeSchedule> committeeSchedules;
+
+	public Committee() {
+		setResearchAreas(new ArrayList<CommitteeResearchAreas>());
+		//setCommitteeMemberships(new ArrayList<CommitteeMemberships>());
+        setCommitteeSchedules(new ArrayList<CommitteeSchedule>());
+		setCommitteeTypeCode(1);
+	}
 
 	public String getCommitteeId() {
 		return committeeId;
@@ -241,5 +252,13 @@ public class Committee implements Serializable {
 
 	public void setResearchAreas(List<CommitteeResearchAreas> researchAreas) {
 		this.researchAreas = researchAreas;
+	}
+
+	public List<CommitteeSchedule> getCommitteeSchedules() {
+		return committeeSchedules;
+	}
+
+	public void setCommitteeSchedules(List<CommitteeSchedule> committeeSchedules) {
+		this.committeeSchedules = committeeSchedules;
 	}
 }
