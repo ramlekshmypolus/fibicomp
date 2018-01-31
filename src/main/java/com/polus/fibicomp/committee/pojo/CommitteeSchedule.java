@@ -42,7 +42,7 @@ public class CommitteeSchedule implements Serializable {
 	private Date protocolSubDeadline;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE"), name = "SCHEDULE_STATUS_CODE", referencedColumnName = "SCHEDULE_STATUS_CODE")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE"), name = "SCHEDULE_STATUS_CODE", referencedColumnName = "SCHEDULE_STATUS_CODE", insertable = false, updatable = false)
 	private ScheduleStatus scheduleStatus;
 
 	@Column(name = "MEETING_DATE")
