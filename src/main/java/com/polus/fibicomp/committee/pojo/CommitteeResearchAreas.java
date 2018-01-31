@@ -39,16 +39,16 @@ public class CommitteeResearchAreas implements Serializable {
 	private String researchAreaCode;
 
 	@Column(name = "UPDATE_TIMESTAMP")
-	private Timestamp UPDATE_TIMESTAMP;
+	private Timestamp updateTimestamp;
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
 	@Column(name = "VER_NBR")
-	private Integer verNbr;
+	private Integer versionNumber;
 
 	@Column(name = "OBJ_ID")
-	private String objId;
+	private String objectId;
 
 	public Integer getCommResearchAreasId() {
 		return commResearchAreasId;
@@ -74,14 +74,6 @@ public class CommitteeResearchAreas implements Serializable {
 		this.researchAreaCode = researchAreaCode;
 	}
 
-	public Timestamp getUPDATE_TIMESTAMP() {
-		return UPDATE_TIMESTAMP;
-	}
-
-	public void setUPDATE_TIMESTAMP(Timestamp uPDATE_TIMESTAMP) {
-		UPDATE_TIMESTAMP = uPDATE_TIMESTAMP;
-	}
-
 	public String getUpdateUser() {
 		return updateUser;
 	}
@@ -90,23 +82,32 @@ public class CommitteeResearchAreas implements Serializable {
 		this.updateUser = updateUser;
 	}
 
-	public Integer getVerNbr() {
-		return verNbr;
-	}
-
-	public void setVerNbr(Integer verNbr) {
-		this.verNbr = verNbr;
-	}
-
-	public String getObjId() {
-		return objId;
-	}
-
-	public void setObjId(String objId) {
-		this.objId = objId;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public Integer getVersionNumber() {
+		return versionNumber;
+	}
+
+	public void setVersionNumber(Integer versionNumber) {
+		this.versionNumber = versionNumber;
+	}
+
+	public String getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
+	}
+
+	public Timestamp getUpdateTimestamp() {
+		return updateTimestamp;
+	}
+
+	public void setUpdateTimestamp(Timestamp updateTimestamp) {
+		this.updateTimestamp = updateTimestamp;
+	}
+
 }
