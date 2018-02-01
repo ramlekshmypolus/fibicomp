@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 @Entity
@@ -80,16 +81,22 @@ public class Committee implements Serializable {
 
 	@Version
 	@Column(name = "VER_NBR", length = 8)
-	private Integer verNbr;
+	private Integer versionNumber;
 
 	@Column(name = "OBJ_ID", length = 36, unique = true)
-	private String objId;
+	private String objectId;
 
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeResearchAreas> researchAreas;
 
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeSchedule> committeeSchedules;
+
+	@Transient
+	private String homeUnitName;
+
+	@Transient
+	private String reviewTypeDescription;
 
 	public Committee() {
 		setResearchAreas(new ArrayList<CommitteeResearchAreas>());
@@ -218,22 +225,6 @@ public class Committee implements Serializable {
 		this.updateUser = updateUser;
 	}
 
-	public Integer getVerNbr() {
-		return verNbr;
-	}
-
-	public void setVerNbr(Integer verNbr) {
-		this.verNbr = verNbr;
-	}
-
-	public String getObjId() {
-		return objId;
-	}
-
-	public void setObjId(String objId) {
-		this.objId = objId;
-	}
-
 	public Integer getCommitteeTypeCode() {
 		return committeeTypeCode;
 	}
@@ -260,5 +251,37 @@ public class Committee implements Serializable {
 
 	public void setCommitteeSchedules(List<CommitteeSchedule> committeeSchedules) {
 		this.committeeSchedules = committeeSchedules;
+	}
+
+	public String getHomeUnitName() {
+		return homeUnitName;
+	}
+
+	public void setHomeUnitName(String homeUnitName) {
+		this.homeUnitName = homeUnitName;
+	}
+
+	public String getReviewTypeDescription() {
+		return reviewTypeDescription;
+	}
+
+	public void setReviewTypeDescription(String reviewTypeDescription) {
+		this.reviewTypeDescription = reviewTypeDescription;
+	}
+
+	public Integer getVersionNumber() {
+		return versionNumber;
+	}
+
+	public void setVersionNumber(Integer versionNumber) {
+		this.versionNumber = versionNumber;
+	}
+
+	public String getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
 	}
 }
