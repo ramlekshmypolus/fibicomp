@@ -36,4 +36,6 @@ public interface CommitteeDao {
 
 	public ScheduleStatus fetchScheduleStatusByStatus(String scheduleStatus);
 
+	public List<Committee> loadAllCommittee();
+
 }

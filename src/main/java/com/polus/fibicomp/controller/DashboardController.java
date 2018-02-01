@@ -57,7 +57,7 @@ public class DashboardController {
 	public List<ActionItem> getUserNotification(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.getUserNotification(vo.getPersonId());
 	}
-	
+
 	@RequestMapping(value = "/getDonutChartDataBySponsor", method = RequestMethod.POST)
 	public String requestDonutChartDataBySponsor(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.getDonutChartDataBySponsor(vo);

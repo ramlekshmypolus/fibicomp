@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
 import com.polus.fibicomp.view.ExpenditureVolume;
@@ -50,6 +51,8 @@ public class DashBoardProfile {
 	private List<ResearchSummaryPieChart> summaryProposalDonutChart;
 	
 	private List<ResearchSummaryPieChart> summaryAwardDonutChart;
+
+	private List<Committee> committees;
 
 	public ArrayList<HashMap<String, Object>> getDashBoardDetailMap() {
 		return dashBoardDetailMap;
@@ -193,5 +196,13 @@ public class DashBoardProfile {
 
 	public void setSummaryAwardDonutChart(List<ResearchSummaryPieChart> summaryAwardDonutChart) {
 		this.summaryAwardDonutChart = summaryAwardDonutChart;
+	}
+
+	public List<Committee> getCommittees() {
+		return committees;
+	}
+
+	public void setCommittees(List<Committee> committees) {
+		this.committees = committees;
 	}
 }

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE_MINUTES")
@@ -89,11 +90,12 @@ public class CommitteeScheduleMinutes implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	@Column(name = "VER_NBR")
-	private Integer ver_Nbr;
+	@Version
+	@Column(name = "VER_NBR", length = 8)
+	private Integer versionNumber;
 
-	@Column(name = "OBJ_ID")
-	private String objId;
+	@Column(name = "OBJ_ID", length = 36, unique = true)
+	private String objectId;
 
 	public Integer getCommScheduleMinutesid() {
 		return commScheduleMinutesid;
@@ -247,22 +249,6 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.updateUser = updateUser;
 	}
 
-	public Integer getVer_Nbr() {
-		return ver_Nbr;
-	}
-
-	public void setVer_Nbr(Integer ver_Nbr) {
-		this.ver_Nbr = ver_Nbr;
-	}
-
-	public String getObjId() {
-		return objId;
-	}
-
-	public void setObjId(String objId) {
-		this.objId = objId;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -289,5 +275,21 @@ public class CommitteeScheduleMinutes implements Serializable {
 
 	public void setMinuteEntryTypecode(Integer minuteEntryTypecode) {
 		this.minuteEntryTypecode = minuteEntryTypecode;
+	}
+
+	public Integer getVersionNumber() {
+		return versionNumber;
+	}
+
+	public void setVersionNumber(Integer versionNumber) {
+		this.versionNumber = versionNumber;
+	}
+
+	public String getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
 	}
 }
