@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
@@ -36,7 +37,9 @@ import com.polus.fibicomp.committee.schedule.TrimDatesScheduleSequenceDecorator;
 import com.polus.fibicomp.committee.schedule.WeekScheduleSequenceDecorator;
 import com.polus.fibicomp.committee.schedule.YearlyScheduleDetails;
 import com.polus.fibicomp.committee.vo.CommitteeVo;
+import com.polus.fibicomp.pojo.Rolodex;
 import com.polus.fibicomp.pojo.Unit;
+import com.polus.fibicomp.view.PersonDetailsView;
 
 @Transactional
 @Service(value = "committeeService")
@@ -85,6 +88,12 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
 		committeeVo.setResearchAreas(researchAreas);
 
+		committeeVo.setEmployees(committeeDao.getAllEmployees());
+		//committeeVo.setNonEmployees(committeeDao.getAllNonEmployees());
+		committeeVo.setNonEmployees(new ArrayList<Rolodex>());
+		committeeVo.setCommitteeMembershipTypes(committeeDao.getMembershipTypes());
+		committeeVo.setMembershipRoles(committeeDao.getMembershipRoles());
+
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
 	}
@@ -99,7 +108,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 			committee.setObjectId(UUID.randomUUID().toString());
 			committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
 			committee.setUpdateUser(vo.getCurrentUser());
-			List<CommitteeResearchAreas> researchAreas = committee.getResearchAreas();
+			/*List<CommitteeResearchAreas> researchAreas = committee.getResearchAreas();
 			if (researchAreas != null && !researchAreas.isEmpty()) {
 				for (CommitteeResearchAreas researchArea : researchAreas) {
 					researchArea.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
@@ -114,13 +123,13 @@ public class CommitteeServiceImpl implements CommitteeService {
 					schedule.setUpdateUser(vo.getCurrentUser());
 					schedule.setObjectId(UUID.randomUUID().toString());
 				}
-			}
+			}*/
 		} else {
 			committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
 			committee.setUpdateUser(vo.getCurrentUser());
 		}
-		
-		// committee = committeeDao.saveCommittee(committee);
+
+		committee = committeeDao.saveCommittee(committee);
 		vo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(vo);
 		logger.info("response : " + response);
@@ -247,12 +256,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 		return response;
 	}
 
-	/**
-	 * @param date
-	 * @param min
-	 * @return
-	 * @throws ParseException
-	 */
 	protected Time24HrFmt getTime24hFmt(Date date, int min) throws ParseException {
 		Date dt = DateUtils.round(date, Calendar.DAY_OF_MONTH);
 		dt = DateUtils.addMinutes(dt, min);
@@ -263,14 +266,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 		return new Time24HrFmt(str);
 	}
 
-	/**
-	 * Helper method to add schedule to list.
-	 * 
-	 * @param dates
-	 * @param committee
-	 * @param location
-	 * @param skippedDates
-	 */
 	protected void addScheduleDatesToCommittee(List<Date> dates, Committee committee, String location,
 			List<java.sql.Date> skippedDates, CommitteeVo committeeVo) {
 		for (Date date : dates) {
@@ -305,13 +300,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 		}
 	}
 
-	/**
-	 * Helper method to test if date is available (non conflicting).
-	 * 
-	 * @param committeeSchedules
-	 * @param date
-	 * @return
-	 */
 	protected Boolean isDateAvailable(List<CommitteeSchedule> committeeSchedules, java.sql.Date date) {
 		boolean retVal = true;
 		for (CommitteeSchedule committeeSchedule : committeeSchedules) {
@@ -324,25 +312,131 @@ public class CommitteeServiceImpl implements CommitteeService {
 		return retVal;
 	}
 
-	/**
-	 * Helper method to calculate advanced submission days.
-	 * 
-	 * @param startDate
-	 * @param days
-	 * @return
-	 */
 	protected java.sql.Date calculateAdvancedSubmissionDays(Date startDate, Integer days) {
 		Date deadlineDate = DateUtils.addDays(startDate, -days);
 		return new java.sql.Date(deadlineDate.getTime());
 	}
 
-	/**
-	 * Helper method to retrieve default ScheduleStatus object.
-	 * 
-	 * @return
-	 */
 	protected ScheduleStatus getDefaultScheduleStatus() {
 		return committeeDao.fetchScheduleStatusByStatus(SCHEDULED);
 	}
+
+	@Override
+	public String saveAreaOfResearch(CommitteeVo committeeVo) {
+		Committee committee = committeeVo.getCommittee();
+		List<CommitteeResearchAreas> researchAreas = committee.getResearchAreas();
+		if (researchAreas != null && !researchAreas.isEmpty()) {
+			for (CommitteeResearchAreas researchArea : researchAreas) {
+				if (researchArea.getCommResearchAreasId() == null) {
+					researchArea.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
+					researchArea.setUpdateUser(committeeVo.getCurrentUser());
+					researchArea.setObjectId(UUID.randomUUID().toString());
+					researchArea.setCommittee(committee);
+				}
+			}
+			committee = committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+		}
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	@Override
+	public void deleteAreaOfResearch(Integer researchAreaId) {
+		committeeDao.deleteAreaOfResearch(researchAreaId);		
+	}
+
+	@Override
+	public void deleteSchedule(Integer scheduleId) {
+		committeeDao.deleteSchedule(scheduleId);		
+	}
+
+	@Override
+	public String addCommitteeMembership(CommitteeVo committeeVo) {
+		//CommitteeVo vo = new CommitteeVo();
+		CommitteeMemberships membership = new CommitteeMemberships();
+		Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
+		//Committee committee = committeeVo.getCommittee();
+		membership.setCommittee(committee);
+		PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeVo.getPersonId());
+		membership.setPersonDetails(personDetails);
+		membership.setPersonId(personDetails.getPrncplId());
+		membership.setPersonName(personDetails.getFullName());
+		membership.setMembershipId("0");
+
+		committee.getCommitteeMemberships().add(membership);
+		/*List<CommitteeMemberships> committeeMemberships = committee.getCommitteeMemberships();
+		if (committeeMemberships != null && !committeeMemberships.isEmpty()) {
+			committeeMemberships.add(membership);
+			committee.setCommitteeMemberships(committeeMemberships);
+		} if (committeeMemberships == null || committeeMemberships.isEmpty()) {
+			List<CommitteeMemberships> memberships = new ArrayList<CommitteeMemberships>();
+			memberships.add(membership);
+			committee.setCommitteeMemberships(memberships);
+		}*/
+		committeeVo.setCommittee(committee);
+		committeeVo.setCommitteeMembershipTypes(committeeDao.getMembershipTypes());
+		committeeVo.setMembershipRoles(committeeDao.getMembershipRoles());
+
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	@Override
+	public String saveCommitteeMembers(CommitteeVo committeeVo) {
+		Committee committee = committeeVo.getCommittee();
+		List<CommitteeMemberships> committeeMemberships = committee.getCommitteeMemberships();
+		if (committeeMemberships != null && !committeeMemberships.isEmpty()) {
+			for (CommitteeMemberships committeeMember : committeeMemberships) {
+				if (committeeMember.getCommMembershipId() == null) {
+					committeeMember.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
+					committeeMember.setUpdateUser(committeeVo.getCurrentUser());
+					//committeeMember.setObjectId(UUID.randomUUID().toString());
+				}
+			}
+			committee = committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+		}
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	/*@Override
+	public String loadAllResearchAreas() {
+		CommitteeVo committeeVo = new CommitteeVo();
+		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
+		committeeVo.setResearchAreas(researchAreas);
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	@Override
+	public String loadAllUnitsAndReviewTypes() {
+		CommitteeVo committeeVo = new CommitteeVo();
+		List<ProtocolReviewType> reviewTypes = committeeDao.fetchAllReviewType();
+		committeeVo.setReviewTypes(reviewTypes);
+		List<Unit> units = committeeDao.fetchAllHomeUnits();
+		committeeVo.setHomeUnits(units);
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	@Override
+	public String getAllEmployees() {
+		CommitteeVo committeeVo = new CommitteeVo();
+		List<PersonDetailsView> employeesList = committeeDao.getAllEmployees();
+		committeeVo.setEmployees(employeesList);
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	@Override
+	public String getAllNonEmployees() {
+		CommitteeVo committeeVo = new CommitteeVo();
+		List<Rolodex> nonEmployeesList = committeeDao.getAllNonEmployees();
+		committeeVo.setNonEmployees(nonEmployeesList);
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}*/
 
 }

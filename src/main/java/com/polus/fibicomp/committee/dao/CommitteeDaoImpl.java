@@ -21,11 +21,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
+import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
+import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
+import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
+import com.polus.fibicomp.pojo.Rolodex;
 import com.polus.fibicomp.pojo.Unit;
+import com.polus.fibicomp.view.PersonDetailsView;
 
 @Transactional
 @Service(value = "committeeDao")
@@ -154,6 +160,82 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		@SuppressWarnings("unchecked")
 		List<Committee> committees = criteria.list();
 		return committees;
+	}
+
+	@Override
+	public void deleteAreaOfResearch(Integer researchAreaId) {
+		hibernateTemplate.delete(hibernateTemplate.get(CommitteeResearchAreas.class, researchAreaId));
+	}
+
+	@Override
+	public void deleteSchedule(Integer scheduleId) {
+		hibernateTemplate.delete(hibernateTemplate.get(CommitteeSchedule.class, scheduleId));
+	}
+
+	@Override
+	public List<PersonDetailsView> getAllEmployees() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(PersonDetailsView.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("prncplId"), "prncplId");
+		projList.add(Projections.property("fullName"), "fullName");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(PersonDetailsView.class));
+		criteria.addOrder(Order.asc("fullName"));
+		@SuppressWarnings("unchecked")
+		List<PersonDetailsView> employeesList = criteria.list();
+		return employeesList;
+	}
+
+	@Override
+	public List<Rolodex> getAllNonEmployees() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Rolodex.class);
+		criteria.add(Restrictions.eq("active", true));
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("rolodexId"), "rolodexId");
+		projList.add(Projections.property("firstName"), "firstName");
+		projList.add(Projections.property("lastName"), "lastName");
+		projList.add(Projections.property("middleName"), "middleName");
+		projList.add(Projections.property("prefix"), "prefix");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Rolodex.class));
+		criteria.addOrder(Order.asc("lastName"));
+		@SuppressWarnings("unchecked")
+		List<Rolodex> nonEmployeesList = criteria.list();
+		return nonEmployeesList;
+	}
+
+	@Override
+	public List<CommitteeMembershipType> getMembershipTypes() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(CommitteeMembershipType.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("membershipTypeCode"), "membershipTypeCode");
+		projList.add(Projections.property("description"), "description");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(CommitteeMembershipType.class));
+		criteria.addOrder(Order.asc(DESCRIPTION));
+		@SuppressWarnings("unchecked")
+		List<CommitteeMembershipType> membershipTypeList = criteria.list();
+		return membershipTypeList;
+	}
+
+	@Override
+	public List<MembershipRole> getMembershipRoles() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(MembershipRole.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("membershipRoleCode"), "membershipRoleCode");
+		projList.add(Projections.property("description"), "description");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(MembershipRole.class));
+		criteria.addOrder(Order.asc(DESCRIPTION));
+		@SuppressWarnings("unchecked")
+		List<MembershipRole> membershipRoleList = criteria.list();
+		return membershipRoleList;
+	}
+
+	@Override
+	public PersonDetailsView getPersonDetailsById(String personId) {
+		PersonDetailsView person = hibernateTemplate.get(PersonDetailsView.class, personId);
+		return person;
 	}
 
 }

@@ -20,6 +20,10 @@ public class CommitteeMemberRoles implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public static final String ALTERNATE_ROLE = "12";
+
+    public static final String INACTIVE_ROLE = "14";
+
 	@Id
 	@Column(name = "COMM_MEMBER_ROLES_ID")
 	private Integer commMemberRolesId;
@@ -30,6 +34,9 @@ public class CommitteeMemberRoles implements Serializable {
 
 	@Column(name = "MEMBERSHIP_ROLE_CODE")
 	private Integer membershipRoleCode;
+
+	@Column(name = "MEMBERSHIP_ROLE_DESCRIPTION")
+	private Integer membershipRoleDescription;
 
 	@Column(name = "START_DATE")
 	private Timestamp startDate;
@@ -124,6 +131,14 @@ public class CommitteeMemberRoles implements Serializable {
 
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
+	}
+
+	public Integer getMembershipRoleDescription() {
+		return membershipRoleDescription;
+	}
+
+	public void setMembershipRoleDescription(Integer membershipRoleDescription) {
+		this.membershipRoleDescription = membershipRoleDescription;
 	}
 
 }

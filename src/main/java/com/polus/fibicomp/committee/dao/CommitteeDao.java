@@ -7,11 +7,15 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
+import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
+import com.polus.fibicomp.pojo.Rolodex;
 import com.polus.fibicomp.pojo.Unit;
+import com.polus.fibicomp.view.PersonDetailsView;
 
 @Service
 public interface CommitteeDao {
@@ -37,5 +41,19 @@ public interface CommitteeDao {
 	public ScheduleStatus fetchScheduleStatusByStatus(String scheduleStatus);
 
 	public List<Committee> loadAllCommittee();
+
+	public void deleteAreaOfResearch(Integer researchAreaId);
+
+	public void deleteSchedule(Integer scheduleId);
+
+	public List<PersonDetailsView> getAllEmployees();
+
+	public List<Rolodex> getAllNonEmployees();
+
+	public List<CommitteeMembershipType> getMembershipTypes();
+
+	public List<MembershipRole> getMembershipRoles();
+
+	public PersonDetailsView getPersonDetailsById(String personId);
 
 }

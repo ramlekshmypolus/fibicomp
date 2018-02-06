@@ -31,6 +31,9 @@ public class CommitteeMemberExpertise implements Serializable {
 	@Column(name = "RESEARCH_AREA_CODE")
 	private String researchAreaCode;
 
+	@Column(name = "RESEARCH_AREA_DESCRIPTION")
+	private String researchAreaDescription;
+
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
 
@@ -102,5 +105,13 @@ public class CommitteeMemberExpertise implements Serializable {
 
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
+	}
+
+	public String getResearchAreaDescription() {
+		return researchAreaDescription;
+	}
+
+	public void setResearchAreaDescription(String researchAreaDescription) {
+		this.researchAreaDescription = researchAreaDescription;
 	}
 }
