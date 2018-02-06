@@ -3,10 +3,14 @@ package com.polus.fibicomp.committee.vo;
 import java.util.List;
 
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
+import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.committee.schedule.ScheduleData;
+import com.polus.fibicomp.pojo.Rolodex;
 import com.polus.fibicomp.pojo.Unit;
+import com.polus.fibicomp.view.PersonDetailsView;
 
 public class CommitteeVo {
 
@@ -27,6 +31,16 @@ public class CommitteeVo {
 	private String committeeId;
 	
 	private ScheduleData scheduleData;
+
+	private List<PersonDetailsView> employees;
+
+	private List<Rolodex> nonEmployees;
+
+	private List<CommitteeMembershipType> committeeMembershipTypes;
+
+	private List<MembershipRole> membershipRoles;
+
+	private String personId;
 
 	public List<ProtocolReviewType> getReviewTypes() {
 		return reviewTypes;
@@ -98,6 +112,46 @@ public class CommitteeVo {
 
 	public void setScheduleData(ScheduleData scheduleData) {
 		this.scheduleData = scheduleData;
+	}
+
+	public List<PersonDetailsView> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<PersonDetailsView> employees) {
+		this.employees = employees;
+	}
+
+	public List<Rolodex> getNonEmployees() {
+		return nonEmployees;
+	}
+
+	public void setNonEmployees(List<Rolodex> nonEmployees) {
+		this.nonEmployees = nonEmployees;
+	}
+
+	public List<CommitteeMembershipType> getCommitteeMembershipTypes() {
+		return committeeMembershipTypes;
+	}
+
+	public void setCommitteeMembershipTypes(List<CommitteeMembershipType> committeeMembershipTypes) {
+		this.committeeMembershipTypes = committeeMembershipTypes;
+	}
+
+	public List<MembershipRole> getMembershipRoles() {
+		return membershipRoles;
+	}
+
+	public void setMembershipRoles(List<MembershipRole> membershipRoles) {
+		this.membershipRoles = membershipRoles;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
 	}
 
 }

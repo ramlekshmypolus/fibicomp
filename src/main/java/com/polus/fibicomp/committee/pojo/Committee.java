@@ -9,15 +9,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.Version;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "FIBI_COMMITTEE")
@@ -29,7 +28,6 @@ public class Committee implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "COMMITTEE_ID")
 	private String committeeId;
 
@@ -92,15 +90,19 @@ public class Committee implements Serializable {
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeSchedule> committeeSchedules;
 
-	@Transient
+	@JsonManagedReference
+	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeMemberships> committeeMemberships;
+
+	@Column(name = "HOME_UNIT_NAME")
 	private String homeUnitName;
 
-	@Transient
+	@Column(name = "REVIEW_TYPE")
 	private String reviewTypeDescription;
 
 	public Committee() {
 		setResearchAreas(new ArrayList<CommitteeResearchAreas>());
-		//setCommitteeMemberships(new ArrayList<CommitteeMemberships>());
+		setCommitteeMemberships(new ArrayList<CommitteeMemberships>());
         setCommitteeSchedules(new ArrayList<CommitteeSchedule>());
 		setCommitteeTypeCode(1);
 	}
@@ -283,5 +285,13 @@ public class Committee implements Serializable {
 
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
+	}
+
+	public List<CommitteeMemberships> getCommitteeMemberships() {
+		return committeeMemberships;
+	}
+
+	public void setCommitteeMemberships(List<CommitteeMemberships> committeeMemberships) {
+		this.committeeMemberships = committeeMemberships;
 	}
 }

@@ -38,6 +38,9 @@ public class CommitteeResearchAreas implements Serializable {
 	@Column(name = "RESEARCH_AREA_CODE")
 	private String researchAreaCode;
 
+	@Column(name = "RESEARCH_AREA_DESCRIPTION")
+	private String researchAreaDescription;
+
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
 
@@ -108,6 +111,14 @@ public class CommitteeResearchAreas implements Serializable {
 
 	public void setUpdateTimestamp(Timestamp updateTimestamp) {
 		this.updateTimestamp = updateTimestamp;
+	}
+
+	public String getResearchAreaDescription() {
+		return researchAreaDescription;
+	}
+
+	public void setResearchAreaDescription(String researchAreaDescription) {
+		this.researchAreaDescription = researchAreaDescription;
 	}
 
 }

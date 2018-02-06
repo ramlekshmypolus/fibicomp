@@ -16,11 +16,25 @@ public interface CommitteeService {
 	public String fetchInitialDatas();
 
 	public String loadCommitteeById(String committeeId);
-	
-	/**
-     * This method implementer must add new non conflicting, non-repeating schedule dates to existing CommitteeBase.CommitteeScheduleBase list.
-     * @param committeeVo
-     */
-    public String addSchedule(CommitteeVo committeeVo) throws ParseException;
+
+	public String addSchedule(CommitteeVo committeeVo) throws ParseException;
+
+	public String saveAreaOfResearch(CommitteeVo committeeVo);
+
+	public void deleteAreaOfResearch(Integer researchAreaId);
+
+	public void deleteSchedule(Integer scheduleId);
+
+	/*public String loadAllResearchAreas();
+
+	public String loadAllUnitsAndReviewTypes();
+
+	public String getAllEmployees();
+
+	public String getAllNonEmployees();*/
+
+	public String addCommitteeMembership(CommitteeVo committeeVo);
+
+	public String saveCommitteeMembers(CommitteeVo committeeVo);
 
 }

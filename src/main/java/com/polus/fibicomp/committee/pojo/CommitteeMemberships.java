@@ -1,16 +1,31 @@
 package com.polus.fibicomp.committee.pojo;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.polus.fibicomp.committee.schedule.DateUtils;
+import com.polus.fibicomp.view.PersonDetailsView;
 
 @Entity
 @Table(name = "FIBI_COMM_MEMBERSHIPS")
@@ -22,9 +37,13 @@ public class CommitteeMemberships implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "COMM_MEMBERSHIP_ID")
+	@GenericGenerator(name = "membershipIdGererator", strategy = "increment", parameters = {
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@GeneratedValue(generator = "membershipIdGererator")
+	@Column(name = "COMM_MEMBERSHIP_ID", updatable = false, nullable = false)
 	private Integer commMembershipId;
 
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
@@ -48,10 +67,10 @@ public class CommitteeMemberships implements Serializable {
 	private String paidMemberFlag;
 
 	@Column(name = "TERM_START_DATE")
-	private Timestamp termStartDate;
+	private Date termStartDate;
 
 	@Column(name = "TERM_END_DATE")
-	private Timestamp termEndDate;
+	private Date termEndDate;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS_2"), name = "MEMBERSHIP_TYPE_CODE", referencedColumnName = "MEMBERSHIP_TYPE_CODE")
@@ -78,6 +97,21 @@ public class CommitteeMemberships implements Serializable {
 
 	@Column(name = "TRAINING_NOTES")
 	private char[] trainingNotes;
+
+	@OneToMany(mappedBy = "committeeMemberships", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeMemberRoles> committeeMemberRoles;
+
+	@OneToMany(mappedBy = "committeeMemberships", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeMemberExpertise> committeeMemberExpertises;
+
+	@Transient
+	private PersonDetailsView personDetails;
+
+	public CommitteeMemberships() {
+		setCommitteeMemberRoles(new ArrayList<CommitteeMemberRoles>());
+		setCommitteeMemberExpertises(new ArrayList<CommitteeMemberExpertise>());
+		setObjectId(UUID.randomUUID().toString());
+	}
 
 	public Integer getCommMembershipId() {
 		return commMembershipId;
@@ -141,22 +175,6 @@ public class CommitteeMemberships implements Serializable {
 
 	public void setPaidMemberFlag(String paidMemberFlag) {
 		this.paidMemberFlag = paidMemberFlag;
-	}
-
-	public Timestamp getTermStartDate() {
-		return termStartDate;
-	}
-
-	public void setTermStartDate(Timestamp termStartDate) {
-		this.termStartDate = termStartDate;
-	}
-
-	public Timestamp getTermEndDate() {
-		return termEndDate;
-	}
-
-	public void setTermEndDate(Timestamp termEndDate) {
-		this.termEndDate = termEndDate;
 	}
 
 	public CommitteeMembershipType getCommitteeMembershipType() {
@@ -226,4 +244,89 @@ public class CommitteeMemberships implements Serializable {
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
 	}
+
+	public Date getTermStartDate() {
+		return termStartDate;
+	}
+
+	public void setTermStartDate(Date termStartDate) {
+		this.termStartDate = termStartDate;
+	}
+
+	public Date getTermEndDate() {
+		return termEndDate;
+	}
+
+	public void setTermEndDate(Date termEndDate) {
+		this.termEndDate = termEndDate;
+	}
+
+	public List<CommitteeMemberRoles> getCommitteeMemberRoles() {
+		return committeeMemberRoles;
+	}
+
+	public void setCommitteeMemberRoles(List<CommitteeMemberRoles> committeeMemberRoles) {
+		this.committeeMemberRoles = committeeMemberRoles;
+	}
+
+	public List<CommitteeMemberExpertise> getCommitteeMemberExpertises() {
+		return committeeMemberExpertises;
+	}
+
+	public void setCommitteeMemberExpertises(List<CommitteeMemberExpertise> committeeMemberExpertises) {
+		this.committeeMemberExpertises = committeeMemberExpertises;
+	}
+
+	public PersonDetailsView getPersonDetails() {
+		return personDetails;
+	}
+
+	public void setPersonDetails(PersonDetailsView personDetails) {
+		this.personDetails = personDetails;
+	}
+
+	/**
+     * This method determines if the current committee member is active as of the current date.
+     * @return true if member is active, false otherwise
+     */
+    public boolean isActive() {
+        Date currentDate = DateUtils.clearTimeFields(new Date(System.currentTimeMillis()));
+        return isActive(currentDate);
+    }
+
+    /**
+     * 
+     * This method determines if the current committee member is active for the given date
+     * @param date
+     * @return true if member is active, false otherwise
+     */
+    public boolean isActive(Date date) {
+        boolean isActive = false;
+        for (CommitteeMemberRoles role : committeeMemberRoles) {
+            if (role.getStartDate() != null && role.getEndDate() != null && !date.before(role.getStartDate()) && !date.after(role.getEndDate())) {
+                if (role.getMembershipRoleCode().equals(CommitteeMemberRoles.INACTIVE_ROLE)) {
+                    isActive = false;
+                    break;
+                } else {
+                    isActive = true;
+                }
+            }
+        }
+        return isActive;
+    }
+
+    /**
+     * Indicates if the committee memberships are of the same person (i.e. the personId and rolodexId are the same).
+     * 
+     * @param committeeMembership - the committee membership to compare against
+     * @return <code>true</code> if both committee membership belong to the same person, <code>false</code> otherwise
+     */
+    public boolean isSamePerson(CommitteeMemberships committeeMembership) {
+        boolean isEquals = false;
+        if (this.getPersonId() != null && this.getPersonId().equals(committeeMembership.getPersonId())) {// || this.getRolodexId() != null && this.getRolodexId().equals(committeeMembership.getRolodexId())
+            isEquals = true;
+        }
+        return isEquals;
+    }
+
 }
