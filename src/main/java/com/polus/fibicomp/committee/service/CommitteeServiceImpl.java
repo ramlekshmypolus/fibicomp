@@ -328,8 +328,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 		if (researchAreas != null && !researchAreas.isEmpty()) {
 			for (CommitteeResearchAreas researchArea : researchAreas) {
 				if (researchArea.getCommResearchAreasId() == null) {
-					researchArea.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
-					researchArea.setUpdateUser(committeeVo.getCurrentUser());
+					//researchArea.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
+					//researchArea.setUpdateUser(committeeVo.getCurrentUser());
 					researchArea.setObjectId(UUID.randomUUID().toString());
 					researchArea.setCommittee(committee);
 				}
@@ -357,7 +357,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		CommitteeMemberships membership = new CommitteeMemberships();
 		Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
 		//Committee committee = committeeVo.getCommittee();
-		membership.setCommittee(committee);
+		//membership.setCommittee(committee);
 		PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeVo.getPersonId());
 		membership.setPersonDetails(personDetails);
 		membership.setPersonId(personDetails.getPrncplId());
@@ -392,6 +392,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 					committeeMember.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
 					committeeMember.setUpdateUser(committeeVo.getCurrentUser());
 					//committeeMember.setObjectId(UUID.randomUUID().toString());
+					committeeMember.setCommittee(committee);
 				}
 			}
 			committee = committeeDao.saveCommittee(committee);

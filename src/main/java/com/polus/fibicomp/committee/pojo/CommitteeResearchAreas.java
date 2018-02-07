@@ -11,9 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "FIBI_COMM_RESEARCH_AREAS")
@@ -31,6 +34,7 @@ public class CommitteeResearchAreas implements Serializable {
 	@Column(name = "COMM_RESEARCH_AREAS_ID", updatable = false, nullable = false)
 	private Integer commResearchAreasId;
 
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_RESEARCH_AREAS"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
@@ -47,6 +51,7 @@ public class CommitteeResearchAreas implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
+	@Version
 	@Column(name = "VER_NBR")
 	private Integer versionNumber;
 

@@ -73,11 +73,11 @@ public class CommitteeMemberships implements Serializable {
 	private Date termEndDate;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS_2"), name = "MEMBERSHIP_TYPE_CODE", referencedColumnName = "MEMBERSHIP_TYPE_CODE")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS_2"), name = "MEMBERSHIP_TYPE_CODE", referencedColumnName = "MEMBERSHIP_TYPE_CODE", insertable = false, updatable = false)
 	private CommitteeMembershipType committeeMembershipType;
 
-	@Column(name = "COMMENTS")
-	private String comments;
+	@Column(name = "MEMBERSHIP_TYPE_CODE")
+	private String membershipTypeCode;
 
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
@@ -106,6 +106,9 @@ public class CommitteeMemberships implements Serializable {
 
 	@Transient
 	private PersonDetailsView personDetails;
+
+	@Column(name = "COMMENTS")
+	private String comments;
 
 	public CommitteeMemberships() {
 		setCommitteeMemberRoles(new ArrayList<CommitteeMemberRoles>());
@@ -328,5 +331,13 @@ public class CommitteeMemberships implements Serializable {
         }
         return isEquals;
     }
+
+	public String getMembershipTypeCode() {
+		return membershipTypeCode;
+	}
+
+	public void setMembershipTypeCode(String membershipTypeCode) {
+		this.membershipTypeCode = membershipTypeCode;
+	}
 
 }

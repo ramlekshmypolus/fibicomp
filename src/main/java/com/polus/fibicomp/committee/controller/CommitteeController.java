@@ -43,7 +43,7 @@ public class CommitteeController {
 
 	@RequestMapping(value = "/loadCommitteeById", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String loadCommitteeById(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for saveCommittee");
+		logger.info("Requesting for loadCommitteeById");
 		String committeeDatas = committeeService.loadCommitteeById(vo.getCommitteeId());
 		//logger.info("committeeDatas : " + committeeDatas);
 		return committeeDatas;
@@ -114,7 +114,7 @@ public class CommitteeController {
 
 	@RequestMapping(value = "/saveCommitteeMembers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String saveCommitteeMembers(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
-		return committeeService.saveAreaOfResearch(vo);
+		return committeeService.saveCommitteeMembers(vo);
 	}
 
 }

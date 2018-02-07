@@ -18,7 +18,6 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
@@ -115,7 +114,7 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			response = mapper.writeValueAsString(object);
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -132,6 +131,17 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	public Committee fetchCommitteeById(String committeeId) {
 		Committee committee = null;
 		committee = hibernateTemplate.get(Committee.class, committeeId);
+		
+		/*CommitteeResearchAreas researchAreas1 = new CommitteeResearchAreas();
+		//researchAreas1.setCommittee(committee);
+		researchAreas1.setResearchAreaCode("19.0501");
+		researchAreas1.setResearchAreaDescription("Foods, Nutrition, and Wellness Studies, General");
+		researchAreas1.setObjectId(UUID.randomUUID().toString());
+		researchAreas1.setUpdateTimestamp(getCurrentTimestamp());
+		researchAreas1.setUpdateUser("admin");
+		committee.getResearchAreas().add(researchAreas1);
+		hibernateTemplate.save(committee);*/
+		
 		return committee;
 	}
 

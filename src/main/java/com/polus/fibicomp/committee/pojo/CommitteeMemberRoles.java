@@ -1,6 +1,7 @@
 package com.polus.fibicomp.committee.pojo;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -39,10 +40,10 @@ public class CommitteeMemberRoles implements Serializable {
 	private Integer membershipRoleDescription;
 
 	@Column(name = "START_DATE")
-	private Timestamp startDate;
+	private Date startDate;
 
 	@Column(name = "END_DATE")
-	private Timestamp endDate;
+	private Date endDate;
 
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
@@ -79,22 +80,6 @@ public class CommitteeMemberRoles implements Serializable {
 
 	public void setMembershipRoleCode(Integer membershipRoleCode) {
 		this.membershipRoleCode = membershipRoleCode;
-	}
-
-	public Timestamp getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Timestamp startDate) {
-		this.startDate = startDate;
-	}
-
-	public Timestamp getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Timestamp endDate) {
-		this.endDate = endDate;
 	}
 
 	public Timestamp getUpdateTimestamp() {
@@ -139,6 +124,22 @@ public class CommitteeMemberRoles implements Serializable {
 
 	public void setMembershipRoleDescription(Integer membershipRoleDescription) {
 		this.membershipRoleDescription = membershipRoleDescription;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 }
