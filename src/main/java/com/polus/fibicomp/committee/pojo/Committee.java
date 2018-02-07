@@ -84,9 +84,11 @@ public class Committee implements Serializable {
 	@Column(name = "OBJ_ID", length = 36, unique = true)
 	private String objectId;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeResearchAreas> researchAreas;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeSchedule> committeeSchedules;
 

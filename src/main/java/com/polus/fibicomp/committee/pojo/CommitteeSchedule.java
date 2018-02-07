@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE")
 public class CommitteeSchedule implements Serializable {
@@ -32,6 +34,7 @@ public class CommitteeSchedule implements Serializable {
 	@Column(name = "SCHEDULE_ID", updatable = false, nullable = false)
 	private Integer scheduleId;
 
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE_2"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
@@ -47,6 +50,9 @@ public class CommitteeSchedule implements Serializable {
 
 	@Column(name = "PROTOCOL_SUB_DEADLINE")
 	private Date protocolSubDeadline;
+
+	@Column(name = "SCHEDULE_STATUS_CODE")
+	private Integer scheduleStatusCode;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE"), name = "SCHEDULE_STATUS_CODE", referencedColumnName = "SCHEDULE_STATUS_CODE", insertable = false, updatable = false)
@@ -84,9 +90,6 @@ public class CommitteeSchedule implements Serializable {
 
 	@Column(name = "AVAILABLE_TO_REVIEWERS")
 	private String availableToReviewers;
-
-	@Column(name = "SCHEDULE_STATUS_CODE")
-	private Integer scheduleStatusCode;
 
 	public Integer getScheduleId() {
 		return scheduleId;
@@ -220,14 +223,6 @@ public class CommitteeSchedule implements Serializable {
 		this.agendaProdRevDate = agendaProdRevDate;
 	}
 
-	public Timestamp getTime() {
-		return time;
-	}
-
-	public void setTime(Timestamp time) {
-		this.time = time;
-	}
-
 	public Integer getVersionNumber() {
 		return versionNumber;
 	}
@@ -242,5 +237,13 @@ public class CommitteeSchedule implements Serializable {
 
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
+	}
+
+	public Timestamp getTime() {
+		return time;
+	}
+
+	public void setTime(Timestamp time) {
+		this.time = time;
 	}
 }

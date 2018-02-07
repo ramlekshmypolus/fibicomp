@@ -1,6 +1,7 @@
 package com.polus.fibicomp.committee.pojo;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,17 +30,20 @@ public class CommitteeCorrespBatch implements Serializable {
 	private Committee committee;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_COMM_CORRESP_BATCH2"), name = "BATCH_CORRESPONDENCE_TYPE_CODE", referencedColumnName = "BATCH_CORRESPONDENCE_TYPE_CODE")
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_COMM_CORRESP_BATCH2"), name = "BATCH_CORRESPONDENCE_TYPE_CODE", referencedColumnName = "BATCH_CORRESPONDENCE_TYPE_CODE", insertable = false, updatable = false)
 	private BatchCorrespondence batchCorrespondence;
 
+	@Column(name = "BATCH_CORRESPONDENCE_TYPE_CODE")
+	private String batchCorrespondencetypecode;
+
 	@Column(name = "BATCH_RUN_DATE")
-	private Timestamp batchRunDate;
+	private Date batchRunDate;
 
 	@Column(name = "TIME_WINDOW_START")
-	private Timestamp timeWindowStart;
+	private Date timeWindowStart;
 
 	@Column(name = "TIME_WINDOW_END")
-	private Timestamp timeWindowEnd;
+	private Date timeWindowEnd;
 
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
@@ -68,30 +72,6 @@ public class CommitteeCorrespBatch implements Serializable {
 
 	public void setCommittee(Committee committee) {
 		this.committee = committee;
-	}
-
-	public Timestamp getBatchRunDate() {
-		return batchRunDate;
-	}
-
-	public void setBatchRunDate(Timestamp batchRunDate) {
-		this.batchRunDate = batchRunDate;
-	}
-
-	public Timestamp getTimeWindowStart() {
-		return timeWindowStart;
-	}
-
-	public void setTimeWindowStart(Timestamp timeWindowStart) {
-		this.timeWindowStart = timeWindowStart;
-	}
-
-	public Timestamp getTimeWindowEnd() {
-		return timeWindowEnd;
-	}
-
-	public void setTimeWindowEnd(Timestamp timeWindowEnd) {
-		this.timeWindowEnd = timeWindowEnd;
 	}
 
 	public Timestamp getUpdateTimestamp() {
@@ -136,5 +116,37 @@ public class CommitteeCorrespBatch implements Serializable {
 
 	public void setObjectId(String objectId) {
 		this.objectId = objectId;
+	}
+
+	public String getBatchCorrespondencetypecode() {
+		return batchCorrespondencetypecode;
+	}
+
+	public void setBatchCorrespondencetypecode(String batchCorrespondencetypecode) {
+		this.batchCorrespondencetypecode = batchCorrespondencetypecode;
+	}
+
+	public Date getBatchRunDate() {
+		return batchRunDate;
+	}
+
+	public void setBatchRunDate(Date batchRunDate) {
+		this.batchRunDate = batchRunDate;
+	}
+
+	public Date getTimeWindowStart() {
+		return timeWindowStart;
+	}
+
+	public void setTimeWindowStart(Date timeWindowStart) {
+		this.timeWindowStart = timeWindowStart;
+	}
+
+	public Date getTimeWindowEnd() {
+		return timeWindowEnd;
+	}
+
+	public void setTimeWindowEnd(Date timeWindowEnd) {
+		this.timeWindowEnd = timeWindowEnd;
 	}
 }
