@@ -7,11 +7,15 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
 @Table(name = "FIBI_COMM_MEMBER_ROLES")
@@ -25,8 +29,11 @@ public class CommitteeMemberRoles implements Serializable {
 
     public static final String INACTIVE_ROLE = "14";
 
-	@Id
-	@Column(name = "COMM_MEMBER_ROLES_ID")
+    @Id
+	@GenericGenerator(name = "commMemberRolesIdGererator", strategy = "increment", parameters = {
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@GeneratedValue(generator = "commMemberRolesIdGererator")
+	@Column(name = "COMM_MEMBER_ROLES_ID", updatable = false, nullable = false)
 	private Integer commMemberRolesId;
 
 	@ManyToOne(optional = false)
@@ -34,10 +41,10 @@ public class CommitteeMemberRoles implements Serializable {
 	private CommitteeMemberships committeeMemberships;
 
 	@Column(name = "MEMBERSHIP_ROLE_CODE")
-	private Integer membershipRoleCode;
+	private String membershipRoleCode;
 
 	@Column(name = "MEMBERSHIP_ROLE_DESCRIPTION")
-	private Integer membershipRoleDescription;
+	private String membershipRoleDescription;
 
 	@Column(name = "START_DATE")
 	private Date startDate;
@@ -72,14 +79,6 @@ public class CommitteeMemberRoles implements Serializable {
 
 	public void setCommitteeMemberships(CommitteeMemberships committeeMemberships) {
 		this.committeeMemberships = committeeMemberships;
-	}
-
-	public Integer getMembershipRoleCode() {
-		return membershipRoleCode;
-	}
-
-	public void setMembershipRoleCode(Integer membershipRoleCode) {
-		this.membershipRoleCode = membershipRoleCode;
 	}
 
 	public Timestamp getUpdateTimestamp() {
@@ -118,14 +117,6 @@ public class CommitteeMemberRoles implements Serializable {
 		this.objectId = objectId;
 	}
 
-	public Integer getMembershipRoleDescription() {
-		return membershipRoleDescription;
-	}
-
-	public void setMembershipRoleDescription(Integer membershipRoleDescription) {
-		this.membershipRoleDescription = membershipRoleDescription;
-	}
-
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -140,6 +131,22 @@ public class CommitteeMemberRoles implements Serializable {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getMembershipRoleCode() {
+		return membershipRoleCode;
+	}
+
+	public void setMembershipRoleCode(String membershipRoleCode) {
+		this.membershipRoleCode = membershipRoleCode;
+	}
+
+	public String getMembershipRoleDescription() {
+		return membershipRoleDescription;
+	}
+
+	public void setMembershipRoleDescription(String membershipRoleDescription) {
+		this.membershipRoleDescription = membershipRoleDescription;
 	}
 
 }
