@@ -90,12 +90,10 @@ public class Committee implements Serializable {
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
-	@Fetch(FetchMode.JOIN)
 	private List<CommitteeResearchAreas> researchAreas;
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
-	@Fetch(FetchMode.JOIN)
 	private List<CommitteeSchedule> committeeSchedules;
 
 	@JsonManagedReference
