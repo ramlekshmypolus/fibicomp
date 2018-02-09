@@ -7,10 +7,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.polus.fibicomp.committee.service.CommitteeService;
@@ -74,14 +74,24 @@ public class CommitteeController {
 		return committeeService.saveAreaOfResearch(vo);
 	}
 
-	@RequestMapping(value = "/deleteAreaOfResearch/{researchAreaId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public void deleteAreaOfResearch(@PathVariable("researchAreaId") int researchAreaId, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/deleteAreaOfResearch", method = RequestMethod.GET)
+	public void deleteAreaOfResearch(@RequestParam int researchAreaId) {
 		committeeService.deleteAreaOfResearch(researchAreaId);
 	}
 
-	@RequestMapping(value = "/deleteSchedule/{scheduleId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public void deleteSchedule(@PathVariable("scheduleId") int scheduleId, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/deleteSchedule", method = RequestMethod.GET)
+	public void deleteSchedule(@RequestParam int scheduleId) {
 		committeeService.deleteSchedule(scheduleId);
+	}
+	
+	@RequestMapping(value = "/deleteMemberRoles", method = RequestMethod.GET)
+	public void deleteMemberRoles(@RequestParam int roleId) {
+		committeeService.deleteMemberRoles(roleId);
+	}
+	
+	@RequestMapping(value = "/deleteExpertise", method = RequestMethod.GET)
+	public void deleteExpertise(@RequestParam int expertiseId) {
+		committeeService.deleteExpertise(expertiseId);
 	}
 
 	/*@RequestMapping(value = "/loadAllResearchAreas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -3,6 +3,8 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.polus.fibicomp.committee.schedule.DayOfWeek;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE")
@@ -246,4 +249,39 @@ public class CommitteeSchedule implements Serializable {
 	public void setTime(Timestamp time) {
 		this.time = time;
 	}
+
+	/**
+     * This UI support method to find day Of week from BO's persistent field scheduledDate.
+     * @return
+     */
+    public String getDayOfWeek() {
+        Calendar cl = new GregorianCalendar();
+        cl.setTime(scheduledDate);
+        DayOfWeek dayOfWeek = null;        
+        switch (cl.get(Calendar.DAY_OF_WEEK)) {
+            case Calendar.SUNDAY:
+                dayOfWeek = DayOfWeek.Sunday;
+                break;
+            case Calendar.MONDAY:
+                dayOfWeek = DayOfWeek.Monday;
+                break;
+            case Calendar.TUESDAY:
+                dayOfWeek = DayOfWeek.Tuesday;
+                break;
+            case Calendar.WEDNESDAY:
+                dayOfWeek = DayOfWeek.Wednesday;
+                break;
+            case Calendar.THURSDAY:
+                dayOfWeek = DayOfWeek.Thursday;
+                break;
+            case Calendar.FRIDAY:
+                dayOfWeek = DayOfWeek.Friday;
+                break;
+            case Calendar.SATURDAY:
+                dayOfWeek = DayOfWeek.Saturday;
+                break;
+        }
+        return dayOfWeek.name().toUpperCase();
+    }
+
 }

@@ -17,6 +17,8 @@ import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "FIBI_COMM_MEMBER_ROLES")
 public class CommitteeMemberRoles implements Serializable {
@@ -36,6 +38,7 @@ public class CommitteeMemberRoles implements Serializable {
 	@Column(name = "COMM_MEMBER_ROLES_ID", updatable = false, nullable = false)
 	private Integer commMemberRolesId;
 
+    @JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBER_ROLES"), name = "COMM_MEMBERSHIP_ID", referencedColumnName = "COMM_MEMBERSHIP_ID")
 	private CommitteeMemberships committeeMemberships;
