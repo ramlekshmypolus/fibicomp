@@ -56,4 +56,8 @@ public interface CommitteeDao {
 
 	public PersonDetailsView getPersonDetailsById(String personId);
 
+	public void deleteMemberRoles(Integer roleId);
+
+	public void deleteExpertise(Integer expertiseId);
+
 }

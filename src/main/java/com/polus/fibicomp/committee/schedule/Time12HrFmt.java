@@ -21,6 +21,10 @@ public class Time12HrFmt implements Serializable {
 
 	private String meridiem;
 
+	public Time12HrFmt() {
+		
+	}
+
 	public Time12HrFmt(Timestamp day) {
 		parseTimeTo12HrFmt(day);
 	}

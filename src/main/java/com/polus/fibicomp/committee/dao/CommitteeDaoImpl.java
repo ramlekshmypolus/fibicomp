@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberExpertise;
 import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
@@ -246,6 +248,18 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	public PersonDetailsView getPersonDetailsById(String personId) {
 		PersonDetailsView person = hibernateTemplate.get(PersonDetailsView.class, personId);
 		return person;
+	}
+
+	@Override
+	public void deleteMemberRoles(Integer roleId) {
+		hibernateTemplate.delete(hibernateTemplate.get(CommitteeMemberships.class, roleId));
+		
+	}
+
+	@Override
+	public void deleteExpertise(Integer expertiseId) {
+		hibernateTemplate.delete(hibernateTemplate.get(CommitteeMemberExpertise.class, expertiseId));
+		
 	}
 
 }

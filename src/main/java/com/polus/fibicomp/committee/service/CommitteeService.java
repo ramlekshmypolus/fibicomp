@@ -25,6 +25,10 @@ public interface CommitteeService {
 
 	public void deleteSchedule(Integer scheduleId);
 
+	public void deleteMemberRoles(Integer roleId);
+
+	public void deleteExpertise(Integer expertiseId);
+
 	/*public String loadAllResearchAreas();
 
 	public String loadAllUnitsAndReviewTypes();

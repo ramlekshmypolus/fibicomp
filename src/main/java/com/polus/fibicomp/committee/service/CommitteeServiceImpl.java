@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
@@ -140,14 +141,20 @@ public class CommitteeServiceImpl implements CommitteeService {
 	public String loadCommitteeById(String committeeId) {
 		CommitteeVo committeeVo = new CommitteeVo();
 		Committee committee = committeeDao.fetchCommitteeById(committeeId);
+		List<CommitteeMemberships> committeeMemberships = committee.getCommitteeMemberships();
+		if (committeeMemberships != null && !committeeMemberships.isEmpty()) {
+			for (CommitteeMemberships membership : committeeMemberships) {
+				PersonDetailsView personDetails = committeeDao.getPersonDetailsById(membership.getPersonId());
+				membership.setPersonDetails(personDetails);
+			}
+		}
 		committeeVo.setCommittee(committee);
 
-		List<ProtocolReviewType> reviewTypes = committeeDao.fetchAllReviewType();
-		committeeVo.setReviewTypes(reviewTypes);
-		List<Unit> units = committeeDao.fetchAllHomeUnits();
-		committeeVo.setHomeUnits(units);
-		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
-		committeeVo.setResearchAreas(researchAreas);
+		committeeVo.setCommitteeMembershipTypes(committeeDao.getMembershipTypes());
+		committeeVo.setMembershipRoles(committeeDao.getMembershipRoles());
+		committeeVo.setReviewTypes(committeeDao.fetchAllReviewType());
+		committeeVo.setHomeUnits(committeeDao.fetchAllHomeUnits());
+		committeeVo.setResearchAreas(committeeDao.fetchAllResearchAreas());
 
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
@@ -388,11 +395,21 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<CommitteeMemberships> committeeMemberships = committee.getCommitteeMemberships();
 		if (committeeMemberships != null && !committeeMemberships.isEmpty()) {
 			for (CommitteeMemberships committeeMember : committeeMemberships) {
-				if (committeeMember.getCommMembershipId() == null) {
+				//if (committeeMember.getCommMembershipId() == null) {
+				if (committeeMember.getCommittee() == null) {
 					committeeMember.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
 					committeeMember.setUpdateUser(committeeVo.getCurrentUser());
 					//committeeMember.setObjectId(UUID.randomUUID().toString());
 					committeeMember.setCommittee(committee);
+					List<CommitteeMemberRoles> committeeMemberRoles = committeeMember.getCommitteeMemberRoles();
+					if (committeeMemberRoles != null && !committeeMemberRoles.isEmpty()) {
+						for (CommitteeMemberRoles memberRole : committeeMemberRoles) {
+							//if (memberRole.getCommMemberRolesId() == null) {
+							if (memberRole.getCommitteeMemberships() == null) {
+								memberRole.setCommitteeMemberships(committeeMember);
+							}
+						}
+					}
 				}
 			}
 			committee = committeeDao.saveCommittee(committee);
@@ -400,6 +417,18 @@ public class CommitteeServiceImpl implements CommitteeService {
 		}
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
+	}
+
+	@Override
+	public void deleteMemberRoles(Integer roleId) {
+		committeeDao.deleteMemberRoles(roleId);
+		
+	}
+
+	@Override
+	public void deleteExpertise(Integer expertiseId) {
+		committeeDao.deleteExpertise(expertiseId);
+		
 	}
 
 	/*@Override
