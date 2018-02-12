@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,8 @@ import org.hibernate.annotations.Parameter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.polus.fibicomp.committee.schedule.DateUtils;
+import com.polus.fibicomp.pojo.Rolodex;
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 import com.polus.fibicomp.view.PersonDetailsView;
 
 @Entity
@@ -58,14 +61,19 @@ public class CommitteeMemberships implements Serializable {
 	@Column(name = "PERSON_ID")
 	private String personId;
 
+	@Column(name = "ROLODEX_ID")
+	private Integer rolodexId;
+
 	@Column(name = "PERSON_NAME")
 	private String personName;
 
 	@Column(name = "NON_EMPLOYEE_FLAG")
-	private String nonEmployeeFlag;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean nonEmployeeFlag;
 
 	@Column(name = "PAID_MEMBER_FLAG")
-	private String paidMemberFlag;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean paidMemberFlag;
 
 	@Column(name = "TERM_START_DATE")
 	private Date termStartDate;
@@ -117,7 +125,7 @@ public class CommitteeMemberships implements Serializable {
 	private boolean active;
 
 	@Transient
-	private boolean samePerson;
+	private Rolodex rolodex;
 
 	public CommitteeMemberships() {
 		setCommitteeMemberRoles(new ArrayList<CommitteeMemberRoles>());
@@ -171,22 +179,6 @@ public class CommitteeMemberships implements Serializable {
 
 	public void setPersonName(String personName) {
 		this.personName = personName;
-	}
-
-	public String getNonEmployeeFlag() {
-		return nonEmployeeFlag;
-	}
-
-	public void setNonEmployeeFlag(String nonEmployeeFlag) {
-		this.nonEmployeeFlag = nonEmployeeFlag;
-	}
-
-	public String getPaidMemberFlag() {
-		return paidMemberFlag;
-	}
-
-	public void setPaidMemberFlag(String paidMemberFlag) {
-		this.paidMemberFlag = paidMemberFlag;
 	}
 
 	public CommitteeMembershipType getCommitteeMembershipType() {
@@ -328,27 +320,44 @@ public class CommitteeMemberships implements Serializable {
         return this.active;
     }
 
-    /**
-     * Indicates if the committee memberships are of the same person (i.e. the personId and rolodexId are the same).
-     * 
-     * @param committeeMembership - the committee membership to compare against
-     * @return <code>true</code> if both committee membership belong to the same person, <code>false</code> otherwise
-     */
-    public boolean isSamePerson(CommitteeMemberships committeeMembership) {
-        boolean isEquals = false;
-        if (this.getPersonId() != null && this.getPersonId().equals(committeeMembership.getPersonId())) {// || this.getRolodexId() != null && this.getRolodexId().equals(committeeMembership.getRolodexId())
-            isEquals = true;
-        }
-        this.samePerson = isEquals;
-        return this.samePerson;
-    }
-
 	public String getMembershipTypeCode() {
 		return membershipTypeCode;
 	}
 
 	public void setMembershipTypeCode(String membershipTypeCode) {
 		this.membershipTypeCode = membershipTypeCode;
+	}
+
+	public Rolodex getRolodex() {
+		return rolodex;
+	}
+
+	public void setRolodex(Rolodex rolodex) {
+		this.rolodex = rolodex;
+	}
+
+	public Integer getRolodexId() {
+		return rolodexId;
+	}
+
+	public void setRolodexId(Integer rolodexId) {
+		this.rolodexId = rolodexId;
+	}
+
+	public Boolean getNonEmployeeFlag() {
+		return nonEmployeeFlag;
+	}
+
+	public void setNonEmployeeFlag(Boolean nonEmployeeFlag) {
+		this.nonEmployeeFlag = nonEmployeeFlag;
+	}
+
+	public Boolean getPaidMemberFlag() {
+		return paidMemberFlag;
+	}
+
+	public void setPaidMemberFlag(Boolean paidMemberFlag) {
+		this.paidMemberFlag = paidMemberFlag;
 	}
 
 }

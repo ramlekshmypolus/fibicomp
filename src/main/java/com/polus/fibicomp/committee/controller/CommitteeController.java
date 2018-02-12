@@ -43,6 +43,7 @@ public class CommitteeController {
 	@RequestMapping(value = "/loadCommitteeById", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String loadCommitteeById(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for loadCommitteeById");
+		logger.info("CommitteeId : " + vo.getCommitteeId());
 		String committeeDatas = committeeService.loadCommitteeById(vo.getCommitteeId());
 		return committeeDatas;
 	}

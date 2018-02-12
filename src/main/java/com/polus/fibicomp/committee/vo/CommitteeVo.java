@@ -42,6 +42,10 @@ public class CommitteeVo {
 
 	private String personId;
 
+	private boolean nonEmployeeFlag;
+
+	private Integer rolodexId;
+
 	public List<ProtocolReviewType> getReviewTypes() {
 		return reviewTypes;
 	}
@@ -152,6 +156,22 @@ public class CommitteeVo {
 
 	public void setPersonId(String personId) {
 		this.personId = personId;
+	}
+
+	public boolean isNonEmployeeFlag() {
+		return nonEmployeeFlag;
+	}
+
+	public void setNonEmployeeFlag(boolean nonEmployeeFlag) {
+		this.nonEmployeeFlag = nonEmployeeFlag;
+	}
+
+	public Integer getRolodexId() {
+		return rolodexId;
+	}
+
+	public void setRolodexId(Integer rolodexId) {
+		this.rolodexId = rolodexId;
 	}
 
 }

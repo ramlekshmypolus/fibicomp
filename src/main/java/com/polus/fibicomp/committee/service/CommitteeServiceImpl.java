@@ -341,27 +341,23 @@ public class CommitteeServiceImpl implements CommitteeService {
 
 	@Override
 	public String addCommitteeMembership(CommitteeVo committeeVo) {
-		//CommitteeVo vo = new CommitteeVo();
 		CommitteeMemberships membership = new CommitteeMemberships();
-		Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
-		//Committee committee = committeeVo.getCommittee();
-		//membership.setCommittee(committee);
-		PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeVo.getPersonId());
-		membership.setPersonDetails(personDetails);
-		membership.setPersonId(personDetails.getPrncplId());
-		membership.setPersonName(personDetails.getFullName());
+		Committee committee = committeeVo.getCommittee();
+		membership.setNonEmployeeFlag(committeeVo.isNonEmployeeFlag());
+		if (committeeVo.isNonEmployeeFlag()) {
+			Rolodex rolodex = committeeDao.getRolodexById(committeeVo.getRolodexId());
+			membership.setRolodex(rolodex);
+			membership.setRolodexId(rolodex.getRolodexId());
+			membership.setPersonName(rolodex.getFullName());
+		} else {
+			PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeVo.getPersonId());
+			membership.setPersonDetails(personDetails);
+			membership.setPersonId(personDetails.getPrncplId());
+			membership.setPersonName(personDetails.getFullName());
+		}
 		membership.setMembershipId("0");
 
 		committee.getCommitteeMemberships().add(membership);
-		/*List<CommitteeMemberships> committeeMemberships = committee.getCommitteeMemberships();
-		if (committeeMemberships != null && !committeeMemberships.isEmpty()) {
-			committeeMemberships.add(membership);
-			committee.setCommitteeMemberships(committeeMemberships);
-		} if (committeeMemberships == null || committeeMemberships.isEmpty()) {
-			List<CommitteeMemberships> memberships = new ArrayList<CommitteeMemberships>();
-			memberships.add(membership);
-			committee.setCommitteeMemberships(memberships);
-		}*/
 		committeeVo.setCommittee(committee);
 		committeeVo.setCommitteeMembershipTypes(committeeDao.getMembershipTypes());
 		committeeVo.setMembershipRoles(committeeDao.getMembershipRoles());

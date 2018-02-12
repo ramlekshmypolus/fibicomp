@@ -253,13 +253,17 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	@Override
 	public void deleteMemberRoles(Integer roleId) {
 		hibernateTemplate.delete(hibernateTemplate.get(CommitteeMemberships.class, roleId));
-		
 	}
 
 	@Override
 	public void deleteExpertise(Integer expertiseId) {
 		hibernateTemplate.delete(hibernateTemplate.get(CommitteeMemberExpertise.class, expertiseId));
-		
+	}
+
+	@Override
+	public Rolodex getRolodexById(Integer rolodexId) {
+		Rolodex rolodex = hibernateTemplate.get(Rolodex.class, rolodexId);
+		return rolodex;
 	}
 
 }
