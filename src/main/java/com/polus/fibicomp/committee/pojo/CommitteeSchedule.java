@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -85,6 +87,7 @@ public class CommitteeSchedule implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
+	@Version
 	@Column(name = "VER_NBR")
 	private Integer versionNumber;
 
@@ -93,6 +96,9 @@ public class CommitteeSchedule implements Serializable {
 
 	@Column(name = "AVAILABLE_TO_REVIEWERS")
 	private String availableToReviewers;
+
+	@Transient
+	private String dayOfWeek;
 
 	public Integer getScheduleId() {
 		return scheduleId;
@@ -281,7 +287,8 @@ public class CommitteeSchedule implements Serializable {
                 dayOfWeek = DayOfWeek.Saturday;
                 break;
         }
-        return dayOfWeek.name().toUpperCase();
+        this.dayOfWeek = dayOfWeek.name().toUpperCase();
+        return this.dayOfWeek;
     }
 
 }

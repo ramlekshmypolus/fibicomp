@@ -77,9 +77,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		Committee committee = new Committee();
 		committeeVo.setCommitteeTypeCode(committeeTypeCode);
 		CommitteeType committeeType = committeeDao.fetchCommitteeType(committeeTypeCode);
-		// committee.setCommitteeTypeCode(committeeType.getCommitteeTypeCode());
 		committee.setCommitteeType(committeeType);
-		// committee.setResearchAreas(new ArrayList<CommitteeResearchAreas>());
 		committeeVo.setCommittee(committee);
 
 		List<ProtocolReviewType> reviewTypes = committeeDao.fetchAllReviewType();
@@ -109,22 +107,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 			committee.setObjectId(UUID.randomUUID().toString());
 			committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
 			committee.setUpdateUser(vo.getCurrentUser());
-			/*List<CommitteeResearchAreas> researchAreas = committee.getResearchAreas();
-			if (researchAreas != null && !researchAreas.isEmpty()) {
-				for (CommitteeResearchAreas researchArea : researchAreas) {
-					researchArea.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
-					researchArea.setUpdateUser(vo.getCurrentUser());
-					researchArea.setObjectId(UUID.randomUUID().toString());
-				}
-			}
-			List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
-			if (committeeSchedules != null && !committeeSchedules.isEmpty()) {
-				for (CommitteeSchedule schedule : committeeSchedules) {
-					schedule.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
-					schedule.setUpdateUser(vo.getCurrentUser());
-					schedule.setObjectId(UUID.randomUUID().toString());
-				}
-			}*/
 		} else {
 			committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
 			committee.setUpdateUser(vo.getCurrentUser());
@@ -133,7 +115,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 		committee = committeeDao.saveCommittee(committee);
 		vo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(vo);
-		logger.info("response : " + response);
 		return response;
 	}
 
@@ -257,7 +238,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<java.sql.Date> skippedDates = new ArrayList<java.sql.Date>();
 		scheduleData.setDatesInConflict(skippedDates);
 		addScheduleDatesToCommittee(dates, committee, scheduleData.getPlace(), skippedDates, committeeVo);
-		//committee = committeeDao.saveCommittee(committee);
+		committee = committeeDao.saveCommittee(committee);
 		committeeVo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;

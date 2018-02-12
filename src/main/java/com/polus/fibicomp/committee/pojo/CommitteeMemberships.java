@@ -113,6 +113,12 @@ public class CommitteeMemberships implements Serializable {
 	@Column(name = "COMMENTS")
 	private String comments;
 
+	@Transient
+	private boolean active;
+
+	@Transient
+	private boolean samePerson;
+
 	public CommitteeMemberships() {
 		setCommitteeMemberRoles(new ArrayList<CommitteeMemberRoles>());
 		setCommitteeMemberExpertises(new ArrayList<CommitteeMemberExpertise>());
@@ -318,7 +324,8 @@ public class CommitteeMemberships implements Serializable {
                 }
             }
         }
-        return isActive;
+        this.active = isActive;
+        return this.active;
     }
 
     /**
@@ -332,7 +339,8 @@ public class CommitteeMemberships implements Serializable {
         if (this.getPersonId() != null && this.getPersonId().equals(committeeMembership.getPersonId())) {// || this.getRolodexId() != null && this.getRolodexId().equals(committeeMembership.getRolodexId())
             isEquals = true;
         }
-        return isEquals;
+        this.samePerson = isEquals;
+        return this.samePerson;
     }
 
 	public String getMembershipTypeCode() {
