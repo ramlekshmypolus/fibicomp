@@ -60,4 +60,6 @@ public interface CommitteeDao {
 
 	public void deleteExpertise(Integer expertiseId);
 
+	public Rolodex getRolodexById(Integer rolodexId);
+
 }
