@@ -28,8 +28,8 @@ public class CommitteeController {
 	@RequestMapping(value = "/createCommittee", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String createCommittee(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for createCommittee");
+		logger.info("Committee Type Code : " + vo.getCommitteeTypeCode());
 		String committeeDatas = committeeService.createCommittee(vo.getCommitteeTypeCode());
-		//logger.info("committeeDatas : " + committeeDatas);
 		return committeeDatas;
 	}
 
@@ -37,7 +37,6 @@ public class CommitteeController {
 	public String saveCommittee(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for saveCommittee");
 		String committeeDatas = committeeService.saveCommittee(vo);
-		//logger.info("committeeDatas : " + committeeDatas);
 		return committeeDatas;
 	}
 
@@ -45,7 +44,6 @@ public class CommitteeController {
 	public String loadCommitteeById(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for loadCommitteeById");
 		String committeeDatas = committeeService.loadCommitteeById(vo.getCommitteeId());
-		//logger.info("committeeDatas : " + committeeDatas);
 		return committeeDatas;
 	}
 
@@ -58,7 +56,6 @@ public class CommitteeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//logger.info("committeeDatas : " + committeeDatas);
 		return committeeDatas;
 	}
 
@@ -71,26 +68,35 @@ public class CommitteeController {
 
 	@RequestMapping(value = "/saveAreaOfResearch", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String saveAreaOfResearch(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for saveAreaOfResearch");
 		return committeeService.saveAreaOfResearch(vo);
 	}
 
 	@RequestMapping(value = "/deleteAreaOfResearch", method = RequestMethod.GET)
 	public void deleteAreaOfResearch(@RequestParam int researchAreaId) {
+		logger.info("Requesting for deleteAreaOfResearch");
+		logger.info("researchAreaId : " + researchAreaId);
 		committeeService.deleteAreaOfResearch(researchAreaId);
 	}
 
 	@RequestMapping(value = "/deleteSchedule", method = RequestMethod.GET)
 	public void deleteSchedule(@RequestParam int scheduleId) {
+		logger.info("Requesting for deleteSchedule");
+		logger.info("scheduleId : " + scheduleId);
 		committeeService.deleteSchedule(scheduleId);
 	}
 	
 	@RequestMapping(value = "/deleteMemberRoles", method = RequestMethod.GET)
 	public void deleteMemberRoles(@RequestParam int roleId) {
+		logger.info("Requesting for deleteMemberRoles");
+		logger.info("roleId : " + roleId);
 		committeeService.deleteMemberRoles(roleId);
 	}
 	
 	@RequestMapping(value = "/deleteExpertise", method = RequestMethod.GET)
 	public void deleteExpertise(@RequestParam int expertiseId) {
+		logger.info("Requesting for deleteExpertise");
+		logger.info("expertiseId : " + expertiseId);
 		committeeService.deleteExpertise(expertiseId);
 	}
 
@@ -118,12 +124,12 @@ public class CommitteeController {
 	public String addCommitteeMembership(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for addCommitteeMembership");
 		String committeeDatas = committeeService.addCommitteeMembership(vo);
-		//logger.info("committeeDatas : " + committeeDatas);
 		return committeeDatas;
 	}
 
 	@RequestMapping(value = "/saveCommitteeMembers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String saveCommitteeMembers(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for saveCommitteeMembers");
 		return committeeService.saveCommitteeMembers(vo);
 	}
 
