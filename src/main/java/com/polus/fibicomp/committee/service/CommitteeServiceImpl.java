@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -112,7 +113,15 @@ public class CommitteeServiceImpl implements CommitteeService {
 			committee.setUpdateUser(vo.getCurrentUser());
 		}
 
-		committee = committeeDao.saveCommittee(committee);
+		Committee committeeFromDB = committeeDao.fetchCommitteeById(committee.getCommitteeId());
+		if (committeeFromDB != null) {
+			vo.setStatus(false);
+			vo.setMessage("Duplicate committee id");
+		} else {
+			vo.setStatus(true);
+			vo.setMessage("Committee created successfully");
+			committee = committeeDao.saveCommittee(committee);
+		}
 		vo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(vo);
 		return response;
@@ -125,8 +134,13 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<CommitteeMemberships> committeeMemberships = committee.getCommitteeMemberships();
 		if (committeeMemberships != null && !committeeMemberships.isEmpty()) {
 			for (CommitteeMemberships membership : committeeMemberships) {
-				PersonDetailsView personDetails = committeeDao.getPersonDetailsById(membership.getPersonId());
-				membership.setPersonDetails(personDetails);
+				if (membership.getNonEmployeeFlag()) {
+					Rolodex rolodex = committeeDao.getRolodexById(membership.getRolodexId());
+					membership.setRolodex(rolodex);
+				} else {
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(membership.getPersonId());
+					membership.setPersonDetails(personDetails);
+				}
 			}
 		}
 		committeeVo.setCommittee(committee);
@@ -136,6 +150,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		committeeVo.setReviewTypes(committeeDao.fetchAllReviewType());
 		committeeVo.setHomeUnits(committeeDao.fetchAllHomeUnits());
 		committeeVo.setResearchAreas(committeeDao.fetchAllResearchAreas());
+		committeeVo.setEmployees(committeeDao.getAllEmployees());
 
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
@@ -159,6 +174,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 		Date dt = scheduleData.getScheduleStartDate();
 
 		StyleKey key = StyleKey.valueOf(scheduleData.getRecurrenceType());
+		logger.info("RecurrenceType : " + scheduleData.getRecurrenceType());
+		logger.info("ScheduleStartDate : " + scheduleData.getScheduleStartDate());
 		switch (key) {
 		case NEVER:
 			dates = scheduleService.getScheduledDates(dt, dt, time, null);
@@ -236,8 +253,9 @@ public class CommitteeServiceImpl implements CommitteeService {
 			break;
 		}
 		List<java.sql.Date> skippedDates = new ArrayList<java.sql.Date>();
-		scheduleData.setDatesInConflict(skippedDates);
 		addScheduleDatesToCommittee(dates, committee, scheduleData.getPlace(), skippedDates, committeeVo);
+		scheduleData.setDatesInConflict(skippedDates);
+		logger.info("skippedDates : " + skippedDates);
 		committee = committeeDao.saveCommittee(committee);
 		committeeVo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(committeeVo);
@@ -335,8 +353,31 @@ public class CommitteeServiceImpl implements CommitteeService {
 	}
 
 	@Override
-	public void deleteSchedule(Integer scheduleId) {
-		committeeDao.deleteSchedule(scheduleId);		
+	public String deleteSchedule(CommitteeVo committeeVo) {
+		try {
+			// CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleId);
+			// committeeDao.deleteSchedule(committeeSchedule);
+			Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
+
+			List<CommitteeSchedule> list = committee.getCommitteeSchedules();
+			List<CommitteeSchedule> updatedlist = new ArrayList<CommitteeSchedule>(list);
+			Collections.copy(updatedlist, list);
+			for (CommitteeSchedule schedule : list) {
+				if (schedule.getScheduleId().equals(committeeVo.getScheduleId())) {
+					updatedlist.remove(schedule);
+				}
+			}
+			committee.setCommitteeSchedules(updatedlist);
+			committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Committee schedule deleted successfully");
+		} catch (Exception e) {
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Committee schedule deleted successfully");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(committeeVo);
 	}
 
 	@Override
@@ -408,42 +449,89 @@ public class CommitteeServiceImpl implements CommitteeService {
 		
 	}
 
-	/*@Override
-	public String loadAllResearchAreas() {
-		CommitteeVo committeeVo = new CommitteeVo();
-		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
-		committeeVo.setResearchAreas(researchAreas);
+	@Override
+	public String filterCommitteeScheduleDates(CommitteeVo committeeVo) {
+		ScheduleData scheduleData = committeeVo.getScheduleData();
+		Committee committee = committeeVo.getCommittee();
+		Date startDate = scheduleData.getFilterStartDate();
+		Date endDate = scheduleData.getFilerEndDate();
+		logger.info("FilterStartDate : " + startDate);
+		logger.info("FilerEndDate : " + endDate);
+		startDate = DateUtils.addDays(startDate, -1);
+		endDate = DateUtils.addDays(endDate, 1);
+		java.util.Date scheduleDate = null;
+		for (CommitteeSchedule schedule : getSortedCommitteeScheduleList(committee)) {
+			scheduleDate = schedule.getScheduledDate();
+			if ((scheduleDate != null) && scheduleDate.after(startDate) && scheduleDate.before(endDate)) {
+				schedule.setFilter(true);
+			} else {
+				schedule.setFilter(false);
+			}
+		}
+		String response = committeeDao.convertObjectToJSON(committeeVo);
+		return response;
+	}
+
+	private List<CommitteeSchedule> getSortedCommitteeScheduleList(Committee committee) {
+        List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+        Collections.sort(committeeSchedules);
+        return committeeSchedules;
+    }
+
+	@Override
+	public String resetCommitteeScheduleDates(CommitteeVo committeeVo) {
+		ScheduleData scheduleData = committeeVo.getScheduleData();
+		Committee committee = committeeVo.getCommittee();
+		for (CommitteeSchedule schedule : getSortedCommitteeScheduleList(committee)) {
+			schedule.setFilter(true);
+		}
+		scheduleData.setFilterStartDate(null);
+		scheduleData.setFilerEndDate(null);
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
 	}
 
 	@Override
-	public String loadAllUnitsAndReviewTypes() {
-		CommitteeVo committeeVo = new CommitteeVo();
-		List<ProtocolReviewType> reviewTypes = committeeDao.fetchAllReviewType();
-		committeeVo.setReviewTypes(reviewTypes);
-		List<Unit> units = committeeDao.fetchAllHomeUnits();
-		committeeVo.setHomeUnits(units);
-		String response = committeeDao.convertObjectToJSON(committeeVo);
+	public String updateCommitteeSchedule(CommitteeVo committeeVo) {
+		Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
+		List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+		CommitteeSchedule schedule = committeeVo.getCommitteeSchedule();
+		java.sql.Date scheduledDate = schedule.getScheduledDate();
+		boolean isDateExist = isDateAvailable(committeeSchedules, scheduledDate);
+		String response = "";
+		if (!isDateExist) {
+			committeeVo.setStatus(false);
+			response = "Scheduled date already exist";
+			committeeVo.setMessage(response);
+		} else {
+			// committeeSchedule.setCommittee(committee);
+			// committeeDao.updateCommitteSchedule(committeeSchedule);
+			/*CommitteeSchedule schedule = committeeDao.getCommitteeScheduleById(committeeSchedule.getScheduleId());
+			if (schedule != null) {
+				schedule.setScheduledDate(committeeSchedule.getScheduledDate());
+				schedule.setPlace(committeeSchedule.getPlace());
+				int daysToAdd = schedule.getCommittee().getAdvSubmissionDaysReq();
+				java.sql.Date sqlDate = calculateAdvancedSubmissionDays(committeeSchedule.getScheduledDate(), daysToAdd);
+				schedule.setProtocolSubDeadline(sqlDate);
+				committeeDao.updateCommitteSchedule(schedule);
+				response = "Committee schedule updated successfully";
+				committeeVo.setStatus(true);
+				committeeVo.setMessage(response);
+			}*/
+			for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+				if (committeeSchedule.getScheduleId().equals(schedule.getScheduleId())) {
+					committeeSchedule.setScheduledDate(schedule.getScheduledDate());
+					committeeSchedule.setPlace(schedule.getPlace());
+					int daysToAdd = committeeSchedule.getCommittee().getAdvSubmissionDaysReq();
+					java.sql.Date sqlDate = calculateAdvancedSubmissionDays(schedule.getScheduledDate(), daysToAdd);
+					committeeSchedule.setProtocolSubDeadline(sqlDate);
+				}
+			}
+			committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+		}
+		response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
 	}
-
-	@Override
-	public String getAllEmployees() {
-		CommitteeVo committeeVo = new CommitteeVo();
-		List<PersonDetailsView> employeesList = committeeDao.getAllEmployees();
-		committeeVo.setEmployees(employeesList);
-		String response = committeeDao.convertObjectToJSON(committeeVo);
-		return response;
-	}
-
-	@Override
-	public String getAllNonEmployees() {
-		CommitteeVo committeeVo = new CommitteeVo();
-		List<Rolodex> nonEmployeesList = committeeDao.getAllNonEmployees();
-		committeeVo.setNonEmployees(nonEmployeesList);
-		String response = committeeDao.convertObjectToJSON(committeeVo);
-		return response;
-	}*/
 
 }

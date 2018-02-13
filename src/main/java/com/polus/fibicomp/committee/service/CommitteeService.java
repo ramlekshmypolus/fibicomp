@@ -23,22 +23,20 @@ public interface CommitteeService {
 
 	public void deleteAreaOfResearch(Integer researchAreaId);
 
-	public void deleteSchedule(Integer scheduleId);
+	public String deleteSchedule(CommitteeVo committeeVo);
 
 	public void deleteMemberRoles(Integer roleId);
 
 	public void deleteExpertise(Integer expertiseId);
 
-	/*public String loadAllResearchAreas();
-
-	public String loadAllUnitsAndReviewTypes();
-
-	public String getAllEmployees();
-
-	public String getAllNonEmployees();*/
-
 	public String addCommitteeMembership(CommitteeVo committeeVo);
 
 	public String saveCommitteeMembers(CommitteeVo committeeVo);
+
+	public String filterCommitteeScheduleDates(CommitteeVo committeeVo);
+
+	public String resetCommitteeScheduleDates(CommitteeVo committeeVo);
+
+	public String updateCommitteeSchedule(CommitteeVo committeeVo);
 
 }

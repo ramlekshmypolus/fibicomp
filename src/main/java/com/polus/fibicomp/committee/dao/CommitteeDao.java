@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
+import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
@@ -44,7 +45,7 @@ public interface CommitteeDao {
 
 	public void deleteAreaOfResearch(Integer researchAreaId);
 
-	public void deleteSchedule(Integer scheduleId);
+	public void deleteSchedule(CommitteeSchedule committeeSchedule);
 
 	public List<PersonDetailsView> getAllEmployees();
 
@@ -61,5 +62,9 @@ public interface CommitteeDao {
 	public void deleteExpertise(Integer expertiseId);
 
 	public Rolodex getRolodexById(Integer rolodexId);
+
+	public void updateCommitteSchedule(CommitteeSchedule committeeSchedule);
+
+	public CommitteeSchedule getCommitteeScheduleById(Integer scheduleId);
 
 }

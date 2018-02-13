@@ -17,15 +17,17 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.polus.fibicomp.committee.schedule.DayOfWeek;
+import com.polus.fibicomp.committee.schedule.Time12HrFmt;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE")
-public class CommitteeSchedule implements Serializable {
+public class CommitteeSchedule implements Serializable, Comparable<CommitteeSchedule> {
 
 	/**
 	 * 
@@ -43,6 +45,12 @@ public class CommitteeSchedule implements Serializable {
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE_2"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
+
+	@Transient
+	private boolean filter = true;
+
+	@Transient
+	private Time12HrFmt viewTime;
 
 	@Column(name = "SCHEDULED_DATE")
 	private Date scheduledDate;
@@ -67,10 +75,10 @@ public class CommitteeSchedule implements Serializable {
 	private Date meetingDate;
 
 	@Column(name = "START_TIME")
-	private Date startTime;
+	private Timestamp startTime;
 
 	@Column(name = "END_TIME")
-	private Date endTime;
+	private Timestamp endTime;
 
 	@Column(name = "AGENDA_PROD_REV_DATE")
 	private Date agendaProdRevDate;
@@ -99,6 +107,12 @@ public class CommitteeSchedule implements Serializable {
 
 	@Transient
 	private String dayOfWeek;
+
+	@Transient
+	private Time12HrFmt viewStartTime;
+
+	@Transient
+	private Time12HrFmt viewEndTime;
 
 	public Integer getScheduleId() {
 		return scheduleId;
@@ -133,10 +147,16 @@ public class CommitteeSchedule implements Serializable {
 	}
 
 	public Integer getMaxProtocols() {
+		if (maxProtocols == null && getCommittee() != null) {
+            maxProtocols = getCommittee().getMaxProtocols();
+        }
 		return maxProtocols;
 	}
 
 	public void setMaxProtocols(Integer maxProtocols) {
+		if (maxProtocols == null) {
+			maxProtocols = 0;
+		}
 		this.maxProtocols = maxProtocols;
 	}
 
@@ -208,19 +228,35 @@ public class CommitteeSchedule implements Serializable {
 		this.meetingDate = meetingDate;
 	}
 
-	public Date getStartTime() {
+	public Timestamp getStartTime() {
+		if (startTime == null || startTime.getTime() == 0) {
+			java.util.Date dt = new java.util.Date(0);
+			dt = DateUtils.round(dt, Calendar.DAY_OF_MONTH);
+			if (viewStartTime != null) {
+				dt = DateUtils.addMinutes(dt, viewStartTime.findMinutes());
+			}
+			this.startTime = new Timestamp(dt.getTime());
+		}
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(Timestamp startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public Timestamp getEndTime() {
+		if (endTime == null || endTime.getTime() == 0) {
+			java.util.Date dt = new java.util.Date(0); // set to 1969/12/31 19:00 ?
+			dt = DateUtils.round(dt, Calendar.DAY_OF_MONTH); // force it to 1970-01-01
+			if (viewEndTime != null) {
+				dt = DateUtils.addMinutes(dt, viewEndTime.findMinutes());
+			}
+			this.endTime = new Timestamp(dt.getTime());
+		}
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
+	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
 	}
 
@@ -249,6 +285,16 @@ public class CommitteeSchedule implements Serializable {
 	}
 
 	public Timestamp getTime() {
+		if (this.time != null) {
+			java.util.Date dt = new java.util.Date(this.time.getTime());
+			dt = DateUtils.round(dt, Calendar.DAY_OF_MONTH);
+			if (viewTime != null) {
+				dt = new java.util.Date(0); // 12/31/1969 19:00:00
+				dt = DateUtils.round(dt, Calendar.DAY_OF_MONTH);
+				dt = DateUtils.addMinutes(dt, viewTime.findMinutes()); // to set it to 1970-01-01
+				this.time = new Timestamp(dt.getTime());
+			}
+		}
 		return time;
 	}
 
@@ -290,5 +336,70 @@ public class CommitteeSchedule implements Serializable {
         this.dayOfWeek = dayOfWeek.name().toUpperCase();
         return this.dayOfWeek;
     }
+
+	@Override
+	public int compareTo(CommitteeSchedule other) {
+		int compareResult;
+
+		if (getScheduledDate() == null) {
+			if (other.getScheduledDate() == null) {
+				compareResult = 0;
+			} else {
+				compareResult = -1;
+			}
+		} else {
+			if (other.getScheduledDate() == null) {
+				compareResult = 1;
+			} else {
+				compareResult = getScheduledDate().compareTo(other.getScheduledDate());
+			}
+		}
+		return compareResult;
+	}
+
+	public Time12HrFmt getViewTime() {
+		if(null == this.viewTime) {
+			this.viewTime = new Time12HrFmt(time);
+		}
+		return viewTime;
+	}
+
+	public void setViewTime(Time12HrFmt viewTime) {
+		this.viewTime = viewTime;
+	}
+
+	public void setDayOfWeek(String dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
+	}
+
+	public Time12HrFmt getViewStartTime() {
+		if (null == this.viewStartTime) {
+			this.viewStartTime = new Time12HrFmt(startTime);
+		}
+		return viewStartTime;
+	}
+
+	public void setViewStartTime(Time12HrFmt viewStartTime) {
+		this.viewStartTime = viewStartTime;
+	}
+
+	public Time12HrFmt getViewEndTime() {
+		if (null == this.viewEndTime) {
+            this.viewEndTime = new Time12HrFmt(endTime);
+        }
+		return viewEndTime;
+	}
+
+	public void setViewEndTime(Time12HrFmt viewEndTime) {
+		this.viewEndTime = viewEndTime;
+	}
+
+	public boolean isFilter() {
+		return filter;
+	}
+
+	public void setFilter(boolean filter) {
+		this.filter = filter;
+	}
 
 }

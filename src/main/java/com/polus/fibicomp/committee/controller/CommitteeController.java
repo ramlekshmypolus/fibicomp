@@ -80,11 +80,12 @@ public class CommitteeController {
 		committeeService.deleteAreaOfResearch(researchAreaId);
 	}
 
-	@RequestMapping(value = "/deleteSchedule", method = RequestMethod.GET)
-	public void deleteSchedule(@RequestParam int scheduleId) {
+	@RequestMapping(value = "/deleteSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteSchedule(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for deleteSchedule");
-		logger.info("scheduleId : " + scheduleId);
-		committeeService.deleteSchedule(scheduleId);
+		logger.info("scheduleId : " + vo.getScheduleId());
+		logger.info("committeeId : " + vo.getCommitteeId());
+		return committeeService.deleteSchedule(vo);
 	}
 	
 	@RequestMapping(value = "/deleteMemberRoles", method = RequestMethod.GET)
@@ -101,26 +102,6 @@ public class CommitteeController {
 		committeeService.deleteExpertise(expertiseId);
 	}
 
-	/*@RequestMapping(value = "/loadAllResearchAreas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String loadAllResearchAreas(HttpServletRequest request, HttpServletResponse response) {
-		return committeeService.loadAllResearchAreas();
-	}
-
-	@RequestMapping(value = "/loadAllUnitsAndReviewTypes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String loadAllUnitsAndReviewTypes(HttpServletRequest request, HttpServletResponse response) {
-		return committeeService.loadAllUnitsAndReviewTypes();
-	}*/
-
-	/*@RequestMapping(value = "/getAllEmployees", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String getEmployees(HttpServletRequest request, HttpServletResponse response) {
-		return committeeService.getAllEmployees();
-	}
-
-	@RequestMapping(value = "/getAllNonEmployees", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String getNonEmployees(HttpServletRequest request, HttpServletResponse response) {
-		return committeeService.getAllNonEmployees();
-	}*/
-
 	@RequestMapping(value = "/addCommitteeMembership", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String addCommitteeMembership(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for addCommitteeMembership");
@@ -132,6 +113,25 @@ public class CommitteeController {
 	public String saveCommitteeMembers(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for saveCommitteeMembers");
 		return committeeService.saveCommitteeMembers(vo);
+	}
+
+	@RequestMapping(value = "/filterCommitteeScheduleDates", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String filterCommitteeScheduleDates(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for filterCommitteeScheduleDates");
+		return committeeService.filterCommitteeScheduleDates(vo);
+	}
+
+	@RequestMapping(value = "/resetCommitteeScheduleDates", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String resetCommitteeScheduleDates(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for resetCommitteeScheduleDates");
+		return committeeService.resetCommitteeScheduleDates(vo);
+	}
+
+	@RequestMapping(value = "/updateCommitteeSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String updateCommitteeSchedule(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for updateCommitteeSchedule");
+		String committeeDatas = committeeService.updateCommitteeSchedule(vo);
+		return committeeDatas;
 	}
 
 }

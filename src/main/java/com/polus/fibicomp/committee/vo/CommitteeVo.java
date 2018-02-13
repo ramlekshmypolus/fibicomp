@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
+import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
@@ -45,6 +46,14 @@ public class CommitteeVo {
 	private boolean nonEmployeeFlag;
 
 	private Integer rolodexId;
+
+	private CommitteeSchedule committeeSchedule;
+
+	private Boolean status;
+
+	private String message;
+
+	private Integer scheduleId;
 
 	public List<ProtocolReviewType> getReviewTypes() {
 		return reviewTypes;
@@ -172,6 +181,38 @@ public class CommitteeVo {
 
 	public void setRolodexId(Integer rolodexId) {
 		this.rolodexId = rolodexId;
+	}
+
+	public CommitteeSchedule getCommitteeSchedule() {
+		return committeeSchedule;
+	}
+
+	public void setCommitteeSchedule(CommitteeSchedule committeeSchedule) {
+		this.committeeSchedule = committeeSchedule;
+	}
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public Integer getScheduleId() {
+		return scheduleId;
+	}
+
+	public void setScheduleId(Integer scheduleId) {
+		this.scheduleId = scheduleId;
 	}
 
 }

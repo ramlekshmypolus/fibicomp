@@ -48,7 +48,7 @@ public class CommitteeMemberships implements Serializable {
 	private Integer commMembershipId;
 
 	@JsonBackReference
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = {CascadeType.ALL})
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
 
