@@ -133,17 +133,6 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	public Committee fetchCommitteeById(String committeeId) {
 		Committee committee = null;
 		committee = hibernateTemplate.get(Committee.class, committeeId);
-		
-		/*CommitteeResearchAreas researchAreas1 = new CommitteeResearchAreas();
-		//researchAreas1.setCommittee(committee);
-		researchAreas1.setResearchAreaCode("19.0501");
-		researchAreas1.setResearchAreaDescription("Foods, Nutrition, and Wellness Studies, General");
-		researchAreas1.setObjectId(UUID.randomUUID().toString());
-		researchAreas1.setUpdateTimestamp(getCurrentTimestamp());
-		researchAreas1.setUpdateUser("admin");
-		committee.getResearchAreas().add(researchAreas1);
-		hibernateTemplate.save(committee);*/
-		
 		return committee;
 	}
 
@@ -180,8 +169,8 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	}
 
 	@Override
-	public void deleteSchedule(Integer scheduleId) {
-		hibernateTemplate.delete(hibernateTemplate.get(CommitteeSchedule.class, scheduleId));
+	public void deleteSchedule(CommitteeSchedule committeeSchedule) {
+		hibernateTemplate.delete(committeeSchedule);
 	}
 
 	@Override
@@ -264,6 +253,18 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	public Rolodex getRolodexById(Integer rolodexId) {
 		Rolodex rolodex = hibernateTemplate.get(Rolodex.class, rolodexId);
 		return rolodex;
+	}
+
+	@Override
+	public void updateCommitteSchedule(CommitteeSchedule committeeSchedule) {
+		//hibernateTemplate.evict(committeeSchedule);
+		hibernateTemplate.saveOrUpdate(committeeSchedule);
+	}
+
+	@Override
+	public CommitteeSchedule getCommitteeScheduleById(Integer scheduleId) {
+		CommitteeSchedule committeeSchedule = hibernateTemplate.get(CommitteeSchedule.class, scheduleId);
+		return committeeSchedule;
 	}
 
 }
