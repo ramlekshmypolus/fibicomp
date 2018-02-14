@@ -613,8 +613,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 				}
 			}
 			committeeDao.saveCommittee(committee);
-			committeeVo.setCommittee(committee);
 		}
+		committeeVo.setCommittee(committee);
 		response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
 	}
@@ -627,7 +627,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 			List<CommitteeMemberships> updatedlist = new ArrayList<CommitteeMemberships>(list);
 			Collections.copy(updatedlist, list);
 			for (CommitteeMemberships committeeMembership : list) {
-				if (committeeMembership.getMembershipId().equals(committeeVo.getCommMembershipId())) {
+				if (committeeMembership.getCommMembershipId().equals(committeeVo.getCommMembershipId())) {
 					updatedlist.remove(committeeMembership);
 				}
 				if (committeeMembership.getNonEmployeeFlag()) {
