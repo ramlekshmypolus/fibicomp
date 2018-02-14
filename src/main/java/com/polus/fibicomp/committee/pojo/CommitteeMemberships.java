@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -48,7 +46,7 @@ public class CommitteeMemberships implements Serializable {
 	private Integer commMembershipId;
 
 	@JsonBackReference
-	@ManyToOne(optional = false, cascade = {CascadeType.ALL})
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_MEMBERSHIPS"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
 
@@ -94,13 +92,6 @@ public class CommitteeMemberships implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	@Version
-	@Column(name = "VER_NBR", length = 8)
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID", length = 36, unique = true)
-	private String objectId;
-
 	@Column(name = "CONTACT_NOTES")
 	private char[] contactNotes;
 
@@ -130,7 +121,6 @@ public class CommitteeMemberships implements Serializable {
 	public CommitteeMemberships() {
 		setCommitteeMemberRoles(new ArrayList<CommitteeMemberRoles>());
 		setCommitteeMemberExpertises(new ArrayList<CommitteeMemberExpertise>());
-		setObjectId(UUID.randomUUID().toString());
 	}
 
 	public Integer getCommMembershipId() {
@@ -231,22 +221,6 @@ public class CommitteeMemberships implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
 	}
 
 	public Date getTermStartDate() {

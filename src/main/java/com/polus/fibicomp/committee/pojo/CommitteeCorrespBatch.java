@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name = "FIBI_COMM_CORRESP_BATCH")
@@ -50,13 +49,6 @@ public class CommitteeCorrespBatch implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
-
-	@Version
-	@Column(name = "VER_NBR", length = 8)
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID", length = 36, unique = true)
-	private String objectId;
 
 	public String getCorrespBatchId() {
 		return correspBatchId;
@@ -100,22 +92,6 @@ public class CommitteeCorrespBatch implements Serializable {
 
 	public void setBatchCorrespondence(BatchCorrespondence batchCorrespondence) {
 		this.batchCorrespondence = batchCorrespondence;
-	}
-
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
 	}
 
 	public String getBatchCorrespondencetypecode() {

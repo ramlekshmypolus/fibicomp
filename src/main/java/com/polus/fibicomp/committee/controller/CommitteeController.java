@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.polus.fibicomp.committee.service.CommitteeService;
@@ -73,11 +72,12 @@ public class CommitteeController {
 		return committeeService.saveAreaOfResearch(vo);
 	}
 
-	@RequestMapping(value = "/deleteAreaOfResearch", method = RequestMethod.GET)
-	public void deleteAreaOfResearch(@RequestParam int researchAreaId) {
+	@RequestMapping(value = "/deleteAreaOfResearch", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteAreaOfResearch(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for deleteAreaOfResearch");
-		logger.info("researchAreaId : " + researchAreaId);
-		committeeService.deleteAreaOfResearch(researchAreaId);
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("researchAreaId : " + vo.getCommResearchAreasId());
+		return committeeService.deleteAreaOfResearch(vo);
 	}
 
 	@RequestMapping(value = "/deleteSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -88,18 +88,22 @@ public class CommitteeController {
 		return committeeService.deleteSchedule(vo);
 	}
 	
-	@RequestMapping(value = "/deleteMemberRoles", method = RequestMethod.GET)
-	public void deleteMemberRoles(@RequestParam int roleId) {
+	@RequestMapping(value = "/deleteMemberRoles", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteMemberRoles(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for deleteMemberRoles");
-		logger.info("roleId : " + roleId);
-		committeeService.deleteMemberRoles(roleId);
+		logger.info("CommMemberRolesId : " + vo.getCommMemberRolesId());
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommMembershipId : " + vo.getCommMembershipId());
+		return committeeService.deleteMemberRoles(vo);
 	}
 	
-	@RequestMapping(value = "/deleteExpertise", method = RequestMethod.GET)
-	public void deleteExpertise(@RequestParam int expertiseId) {
+	@RequestMapping(value = "/deleteExpertise", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteExpertise(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for deleteExpertise");
-		logger.info("expertiseId : " + expertiseId);
-		committeeService.deleteExpertise(expertiseId);
+		logger.info("CommMemberExpertiseId : " + vo.getCommMemberExpertiseId());
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommMembershipId : " + vo.getCommMembershipId());
+		return committeeService.deleteExpertise(vo);
 	}
 
 	@RequestMapping(value = "/addCommitteeMembership", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -132,6 +136,14 @@ public class CommitteeController {
 		logger.info("Requesting for updateCommitteeSchedule");
 		String committeeDatas = committeeService.updateCommitteeSchedule(vo);
 		return committeeDatas;
+	}
+
+	@RequestMapping(value = "/deleteCommitteeMembers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteCommitteeMembers(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteCommitteeMembers");
+		logger.info("CommMembershipId : " + vo.getCommMembershipId());
+		logger.info("CommitteeId : " + vo.getCommitteeId());
+		return committeeService.deleteCommitteeMembers(vo);
 	}
 
 }

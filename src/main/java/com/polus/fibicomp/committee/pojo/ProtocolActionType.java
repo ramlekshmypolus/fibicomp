@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name = "PROTOCOL_ACTION_TYPE")
@@ -39,13 +38,6 @@ public class ProtocolActionType implements Serializable {
 
 	@Column(name = "FINAL_ACTION_FOR_BATCH_CORRESP")
 	private char finalActionForBatchcorresp;
-
-	@Version
-	@Column(name = "VER_NBR", length = 8)
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID", length = 36, unique = true)
-	private String objectId;
 
 	public String getProtocolActionTypecode() {
 		return protocolActionTypecode;
@@ -107,19 +99,4 @@ public class ProtocolActionType implements Serializable {
 		return serialVersionUID;
 	}
 
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
-	}
 }

@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name = "FIBI_COMM_MEMBERSHIP_TYPE")
@@ -29,13 +28,6 @@ public class CommitteeMembershipType implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
-
-	@Version
-	@Column(name = "VER_NBR", length = 8)
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID", length = 36, unique = true)
-	private String objectId;
 
 	public String getMembershipTypeCode() {
 		return membershipTypeCode;
@@ -67,22 +59,6 @@ public class CommitteeMembershipType implements Serializable {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
-	}
-
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
 	}
 
 	public static long getSerialversionuid() {

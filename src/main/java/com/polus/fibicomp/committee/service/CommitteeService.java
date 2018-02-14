@@ -21,13 +21,13 @@ public interface CommitteeService {
 
 	public String saveAreaOfResearch(CommitteeVo committeeVo);
 
-	public void deleteAreaOfResearch(Integer researchAreaId);
+	public String deleteAreaOfResearch(CommitteeVo committeeVo);
 
 	public String deleteSchedule(CommitteeVo committeeVo);
 
-	public void deleteMemberRoles(Integer roleId);
+	public String deleteMemberRoles(CommitteeVo committeeVo);
 
-	public void deleteExpertise(Integer expertiseId);
+	public String deleteExpertise(CommitteeVo committeeVo);
 
 	public String addCommitteeMembership(CommitteeVo committeeVo);
 
@@ -38,5 +38,7 @@ public interface CommitteeService {
 	public String resetCommitteeScheduleDates(CommitteeVo committeeVo);
 
 	public String updateCommitteeSchedule(CommitteeVo committeeVo);
+
+	public String deleteCommitteeMembers(CommitteeVo committeeVo);
 
 }

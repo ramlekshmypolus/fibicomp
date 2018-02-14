@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberExpertise;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
-import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
@@ -241,7 +241,7 @@ public class CommitteeDaoImpl implements CommitteeDao {
 
 	@Override
 	public void deleteMemberRoles(Integer roleId) {
-		hibernateTemplate.delete(hibernateTemplate.get(CommitteeMemberships.class, roleId));
+		hibernateTemplate.delete(hibernateTemplate.get(CommitteeMemberRoles.class, roleId));
 	}
 
 	@Override
@@ -265,6 +265,12 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	public CommitteeSchedule getCommitteeScheduleById(Integer scheduleId) {
 		CommitteeSchedule committeeSchedule = hibernateTemplate.get(CommitteeSchedule.class, scheduleId);
 		return committeeSchedule;
+	}
+
+	@Override
+	public CommitteeMembershipType getCommitteeMembershipTypeById(String membershipTypeCode) {
+		CommitteeMembershipType committeeMembershipType = hibernateTemplate.get(CommitteeMembershipType.class, membershipTypeCode);
+		return committeeMembershipType;
 	}
 
 }

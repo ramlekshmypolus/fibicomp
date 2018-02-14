@@ -67,4 +67,6 @@ public interface CommitteeDao {
 
 	public CommitteeSchedule getCommitteeScheduleById(Integer scheduleId);
 
+	public CommitteeMembershipType getCommitteeMembershipTypeById(String membershipTypeCode);
+
 }

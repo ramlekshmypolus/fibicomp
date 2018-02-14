@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name = "BATCH_CORRESPONDENCE")
@@ -56,13 +55,6 @@ public class BatchCorrespondence implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
-
-	@Version
-	@Column(name = "VER_NBR", length = 8)
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID", length = 36, unique = true)
-	private String objectId;
 
 	public String getBatchCorrespondencetypecode() {
 		return batchCorrespondencetypecode;
@@ -156,19 +148,4 @@ public class BatchCorrespondence implements Serializable {
 		this.protoCorrespType = protoCorrespType;
 	}
 
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
-	}
 }
