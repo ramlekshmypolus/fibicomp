@@ -55,6 +55,14 @@ public class CommitteeVo {
 
 	private Integer scheduleId;
 
+	private Integer commMemberRolesId;
+
+	private Integer commMemberExpertiseId;
+
+	private Integer commMembershipId;
+
+	private Integer commResearchAreasId;
+
 	public List<ProtocolReviewType> getReviewTypes() {
 		return reviewTypes;
 	}
@@ -213,6 +221,38 @@ public class CommitteeVo {
 
 	public void setScheduleId(Integer scheduleId) {
 		this.scheduleId = scheduleId;
+	}
+
+	public Integer getCommMemberRolesId() {
+		return commMemberRolesId;
+	}
+
+	public void setCommMemberRolesId(Integer commMemberRolesId) {
+		this.commMemberRolesId = commMemberRolesId;
+	}
+
+	public Integer getCommMemberExpertiseId() {
+		return commMemberExpertiseId;
+	}
+
+	public void setCommMemberExpertiseId(Integer commMemberExpertiseId) {
+		this.commMemberExpertiseId = commMemberExpertiseId;
+	}
+
+	public Integer getCommMembershipId() {
+		return commMembershipId;
+	}
+
+	public void setCommMembershipId(Integer commMembershipId) {
+		this.commMembershipId = commMembershipId;
+	}
+
+	public Integer getCommResearchAreasId() {
+		return commResearchAreasId;
+	}
+
+	public void setCommResearchAreasId(Integer commResearchAreasId) {
+		this.commResearchAreasId = commResearchAreasId;
 	}
 
 }

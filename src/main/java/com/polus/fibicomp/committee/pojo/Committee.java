@@ -8,14 +8,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -81,23 +79,16 @@ public class Committee implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	@Version
-	@Column(name = "VER_NBR", length = 8)
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID", length = 36, unique = true)
-	private String objectId;
-
 	@JsonManagedReference
-	@OneToMany(mappedBy = "committee", fetch=FetchType.LAZY, cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeResearchAreas> researchAreas;
 
 	@JsonManagedReference
-	@OneToMany(mappedBy = "committee", fetch=FetchType.LAZY, cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeSchedule> committeeSchedules;
 
 	@JsonManagedReference
-	@OneToMany(mappedBy = "committee", fetch=FetchType.LAZY, cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "committee", orphanRemoval = true, cascade = { CascadeType.ALL })
 	@Fetch(FetchMode.JOIN)
 	private List<CommitteeMemberships> committeeMemberships;
 
@@ -276,22 +267,6 @@ public class Committee implements Serializable {
 
 	public void setReviewTypeDescription(String reviewTypeDescription) {
 		this.reviewTypeDescription = reviewTypeDescription;
-	}
-
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
 	}
 
 	public List<CommitteeMemberships> getCommitteeMemberships() {

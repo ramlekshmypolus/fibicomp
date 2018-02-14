@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -15,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -42,7 +42,7 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 	private Integer scheduleId;
 
 	@JsonBackReference
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE_2"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
 
@@ -94,13 +94,6 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
-
-	@Version
-	@Column(name = "VER_NBR")
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID")
-	private String objectId;
 
 	@Column(name = "AVAILABLE_TO_REVIEWERS")
 	private String availableToReviewers;
@@ -266,22 +259,6 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	public void setAgendaProdRevDate(Date agendaProdRevDate) {
 		this.agendaProdRevDate = agendaProdRevDate;
-	}
-
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
 	}
 
 	public Timestamp getTime() {

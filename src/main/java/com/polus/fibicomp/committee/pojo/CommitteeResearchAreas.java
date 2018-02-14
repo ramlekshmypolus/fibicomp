@@ -3,6 +3,7 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -11,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -35,7 +35,7 @@ public class CommitteeResearchAreas implements Serializable {
 	private Integer commResearchAreasId;
 
 	@JsonBackReference
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_RESEARCH_AREAS"), name = "COMMITTEE_ID", referencedColumnName = "COMMITTEE_ID")
 	private Committee committee;
 
@@ -50,13 +50,6 @@ public class CommitteeResearchAreas implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
-
-	@Version
-	@Column(name = "VER_NBR")
-	private Integer versionNumber;
-
-	@Column(name = "OBJ_ID")
-	private String objectId;
 
 	public Integer getCommResearchAreasId() {
 		return commResearchAreasId;
@@ -92,22 +85,6 @@ public class CommitteeResearchAreas implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public Integer getVersionNumber() {
-		return versionNumber;
-	}
-
-	public void setVersionNumber(Integer versionNumber) {
-		this.versionNumber = versionNumber;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
 	}
 
 	public Timestamp getUpdateTimestamp() {

@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberExpertise;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
@@ -88,9 +88,9 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
 		committeeVo.setResearchAreas(researchAreas);
 
-		committeeVo.setEmployees(committeeDao.getAllEmployees());
+		//committeeVo.setEmployees(committeeDao.getAllEmployees());
 		//committeeVo.setNonEmployees(committeeDao.getAllNonEmployees());
-		committeeVo.setNonEmployees(new ArrayList<Rolodex>());
+		//committeeVo.setNonEmployees(new ArrayList<Rolodex>());
 		committeeVo.setCommitteeMembershipTypes(committeeDao.getMembershipTypes());
 		committeeVo.setMembershipRoles(committeeDao.getMembershipRoles());
 
@@ -103,23 +103,25 @@ public class CommitteeServiceImpl implements CommitteeService {
 		Committee committee = vo.getCommittee();
 		String updateType = vo.getUpdateType();
 		if (updateType != null && updateType.equals("SAVE")) {
-			committee.setCreateTimestamp(committeeDao.getCurrentTimestamp());
-			committee.setCreateUser(vo.getCurrentUser());
-			committee.setObjectId(UUID.randomUUID().toString());
-			committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
-			committee.setUpdateUser(vo.getCurrentUser());
+			//committee.setCreateTimestamp(committeeDao.getCurrentTimestamp());
+			//committee.setCreateUser(vo.getCurrentUser());
+			//committee.setObjectId(UUID.randomUUID().toString());
+			//committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
+			//committee.setUpdateUser(vo.getCurrentUser());
+			Committee committeeFromDB = committeeDao.fetchCommitteeById(committee.getCommitteeId());
+			if (committeeFromDB != null) {
+				vo.setStatus(false);
+				vo.setMessage("Duplicate committee id");
+			} else {
+				vo.setStatus(true);
+				vo.setMessage("Committee created successfully");
+				committee = committeeDao.saveCommittee(committee);
+			}
 		} else {
-			committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
-			committee.setUpdateUser(vo.getCurrentUser());
-		}
-
-		Committee committeeFromDB = committeeDao.fetchCommitteeById(committee.getCommitteeId());
-		if (committeeFromDB != null) {
-			vo.setStatus(false);
-			vo.setMessage("Duplicate committee id");
-		} else {
+			//committee.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
+			//committee.setUpdateUser(vo.getCurrentUser());
 			vo.setStatus(true);
-			vo.setMessage("Committee created successfully");
+			vo.setMessage("Committee updated successfully");
 			committee = committeeDao.saveCommittee(committee);
 		}
 		vo.setCommittee(committee);
@@ -150,7 +152,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		committeeVo.setReviewTypes(committeeDao.fetchAllReviewType());
 		committeeVo.setHomeUnits(committeeDao.fetchAllHomeUnits());
 		committeeVo.setResearchAreas(committeeDao.fetchAllResearchAreas());
-		committeeVo.setEmployees(committeeDao.getAllEmployees());
+		//committeeVo.setEmployees(committeeDao.getAllEmployees());
 
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
@@ -297,10 +299,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 			ScheduleStatus defaultStatus = getDefaultScheduleStatus();
 			committeeSchedule.setScheduleStatusCode(defaultStatus.getScheduleStatusCode());
 			committeeSchedule.setScheduleStatus(defaultStatus);
-
 			committeeSchedule.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
 			committeeSchedule.setUpdateUser(committeeVo.getCurrentUser());
-			committeeSchedule.setObjectId(UUID.randomUUID().toString());
 
 			committee.getCommitteeSchedules().add(committeeSchedule);
 		}
@@ -334,9 +334,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 		if (researchAreas != null && !researchAreas.isEmpty()) {
 			for (CommitteeResearchAreas researchArea : researchAreas) {
 				if (researchArea.getCommResearchAreasId() == null) {
-					//researchArea.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
-					//researchArea.setUpdateUser(committeeVo.getCurrentUser());
-					researchArea.setObjectId(UUID.randomUUID().toString());
 					researchArea.setCommittee(committee);
 				}
 			}
@@ -348,17 +345,36 @@ public class CommitteeServiceImpl implements CommitteeService {
 	}
 
 	@Override
-	public void deleteAreaOfResearch(Integer researchAreaId) {
-		committeeDao.deleteAreaOfResearch(researchAreaId);		
+	public String deleteAreaOfResearch(CommitteeVo committeeVo) {
+		//committeeDao.deleteAreaOfResearch(researchAreaId);
+		try {
+			Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
+			List<CommitteeResearchAreas> list = committee.getResearchAreas();
+			List<CommitteeResearchAreas> updatedlist = new ArrayList<CommitteeResearchAreas>(list);
+			Collections.copy(updatedlist, list);
+			for (CommitteeResearchAreas researchArea : list) {
+				if (researchArea.getCommResearchAreasId().equals(committeeVo.getCommResearchAreasId())) {
+					updatedlist.remove(researchArea);
+				}
+			}
+			committee.getResearchAreas().clear();
+			committee.getResearchAreas().addAll(updatedlist);
+			committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Committee research area deleted successfully");
+		} catch (Exception e) {
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Problem occurred in deleting committee research area");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(committeeVo);
 	}
 
 	@Override
 	public String deleteSchedule(CommitteeVo committeeVo) {
 		try {
-			// CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleId);
-			// committeeDao.deleteSchedule(committeeSchedule);
 			Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
-
 			List<CommitteeSchedule> list = committee.getCommitteeSchedules();
 			List<CommitteeSchedule> updatedlist = new ArrayList<CommitteeSchedule>(list);
 			Collections.copy(updatedlist, list);
@@ -367,14 +383,15 @@ public class CommitteeServiceImpl implements CommitteeService {
 					updatedlist.remove(schedule);
 				}
 			}
-			committee.setCommitteeSchedules(updatedlist);
+			committee.getCommitteeSchedules().clear();
+			committee.getCommitteeSchedules().addAll(updatedlist);
 			committeeDao.saveCommittee(committee);
 			committeeVo.setCommittee(committee);
 			committeeVo.setStatus(true);
 			committeeVo.setMessage("Committee schedule deleted successfully");
 		} catch (Exception e) {
 			committeeVo.setStatus(true);
-			committeeVo.setMessage("Committee schedule deleted successfully");
+			committeeVo.setMessage("Problem occurred in deleting committee schedule");
 			e.printStackTrace();
 		}
 		return committeeDao.convertObjectToJSON(committeeVo);
@@ -413,18 +430,22 @@ public class CommitteeServiceImpl implements CommitteeService {
 		List<CommitteeMemberships> committeeMemberships = committee.getCommitteeMemberships();
 		if (committeeMemberships != null && !committeeMemberships.isEmpty()) {
 			for (CommitteeMemberships committeeMember : committeeMemberships) {
-				//if (committeeMember.getCommMembershipId() == null) {
-				if (committeeMember.getCommittee() == null) {
-					committeeMember.setUpdateTimestamp(committeeDao.getCurrentTimestamp());
-					committeeMember.setUpdateUser(committeeVo.getCurrentUser());
-					//committeeMember.setObjectId(UUID.randomUUID().toString());
+				if (committeeMember.getCommMembershipId() == null) {
 					committeeMember.setCommittee(committee);
+					committeeMember.setCommitteeMembershipType(committeeDao.getCommitteeMembershipTypeById(committeeMember.getMembershipTypeCode()));
 					List<CommitteeMemberRoles> committeeMemberRoles = committeeMember.getCommitteeMemberRoles();
 					if (committeeMemberRoles != null && !committeeMemberRoles.isEmpty()) {
 						for (CommitteeMemberRoles memberRole : committeeMemberRoles) {
-							//if (memberRole.getCommMemberRolesId() == null) {
-							if (memberRole.getCommitteeMemberships() == null) {
+							if (memberRole.getCommMemberRolesId() == null) {
 								memberRole.setCommitteeMemberships(committeeMember);
+							}
+						}
+					}
+					List<CommitteeMemberExpertise> committeeMemberExpertises = committeeMember.getCommitteeMemberExpertises();
+					if (committeeMemberExpertises != null && !committeeMemberExpertises.isEmpty()) {
+						for (CommitteeMemberExpertise memberExpertise : committeeMemberExpertises) {
+							if (memberExpertise.getCommMemberExpertiseId() == null) {
+								memberExpertise.setCommitteeMemberships(committeeMember);
 							}
 						}
 					}
@@ -438,15 +459,65 @@ public class CommitteeServiceImpl implements CommitteeService {
 	}
 
 	@Override
-	public void deleteMemberRoles(Integer roleId) {
-		committeeDao.deleteMemberRoles(roleId);
-		
+	public String deleteMemberRoles(CommitteeVo committeeVo) {
+		try {
+			Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
+			List<CommitteeMemberships> memberships = committee.getCommitteeMemberships();
+			for (CommitteeMemberships committeeMembership : memberships) {
+				if (committeeMembership.getCommMembershipId().equals(committeeVo.getCommMembershipId())) {
+					List<CommitteeMemberRoles> list = committeeMembership.getCommitteeMemberRoles();
+					List<CommitteeMemberRoles> updatedlist = new ArrayList<CommitteeMemberRoles>(list);
+					Collections.copy(updatedlist, list);
+					for (CommitteeMemberRoles role : list) {
+						if (role.getCommMemberRolesId().equals(committeeVo.getCommMemberRolesId())) {
+							updatedlist.remove(role);
+						}
+					}
+					committeeMembership.getCommitteeMemberRoles().clear();
+					committeeMembership.getCommitteeMemberRoles().addAll(updatedlist);
+				}
+			}
+			committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Committee member role deleted successfully");
+		} catch (Exception e) {
+			committeeVo.setStatus(false);
+			committeeVo.setMessage("Problem occurred in deleting member role");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(committeeVo);
 	}
 
 	@Override
-	public void deleteExpertise(Integer expertiseId) {
-		committeeDao.deleteExpertise(expertiseId);
-		
+	public String deleteExpertise(CommitteeVo committeeVo) {
+		try {
+			Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
+			List<CommitteeMemberships> memberships = committee.getCommitteeMemberships();
+			for (CommitteeMemberships committeeMembership : memberships) {
+				if (committeeMembership.getCommMembershipId().equals(committeeVo.getCommMembershipId())) {
+					List<CommitteeMemberExpertise> list = committeeMembership.getCommitteeMemberExpertises();
+					List<CommitteeMemberExpertise> updatedlist = new ArrayList<CommitteeMemberExpertise>(list);
+					Collections.copy(updatedlist, list);
+					for (CommitteeMemberExpertise expertise : list) {
+						if (expertise.getCommMemberExpertiseId().equals(committeeVo.getCommMemberExpertiseId())) {
+							updatedlist.remove(expertise);
+						}
+					}
+					committeeMembership.getCommitteeMemberExpertises().clear();
+					committeeMembership.getCommitteeMemberExpertises().addAll(updatedlist);
+				}
+			}
+			committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Committee member expertise deleted successfully");
+		} catch (Exception e) {
+			committeeVo.setStatus(false);
+			committeeVo.setMessage("Problem occurred in deleting member expertise");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(committeeVo);
 	}
 
 	@Override
@@ -504,20 +575,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 			response = "Scheduled date already exist";
 			committeeVo.setMessage(response);
 		} else {
-			// committeeSchedule.setCommittee(committee);
-			// committeeDao.updateCommitteSchedule(committeeSchedule);
-			/*CommitteeSchedule schedule = committeeDao.getCommitteeScheduleById(committeeSchedule.getScheduleId());
-			if (schedule != null) {
-				schedule.setScheduledDate(committeeSchedule.getScheduledDate());
-				schedule.setPlace(committeeSchedule.getPlace());
-				int daysToAdd = schedule.getCommittee().getAdvSubmissionDaysReq();
-				java.sql.Date sqlDate = calculateAdvancedSubmissionDays(committeeSchedule.getScheduledDate(), daysToAdd);
-				schedule.setProtocolSubDeadline(sqlDate);
-				committeeDao.updateCommitteSchedule(schedule);
-				response = "Committee schedule updated successfully";
-				committeeVo.setStatus(true);
-				committeeVo.setMessage(response);
-			}*/
 			for (CommitteeSchedule committeeSchedule : committeeSchedules) {
 				if (committeeSchedule.getScheduleId().equals(schedule.getScheduleId())) {
 					committeeSchedule.setScheduledDate(schedule.getScheduledDate());
@@ -532,6 +589,32 @@ public class CommitteeServiceImpl implements CommitteeService {
 		}
 		response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
+	}
+
+	@Override
+	public String deleteCommitteeMembers(CommitteeVo committeeVo) {
+		try {
+			Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
+			List<CommitteeMemberships> list = committee.getCommitteeMemberships();
+			List<CommitteeMemberships> updatedlist = new ArrayList<CommitteeMemberships>(list);
+			Collections.copy(updatedlist, list);
+			for (CommitteeMemberships member : list) {
+				if (member.getMembershipId().equals(committeeVo.getCommMembershipId())) {
+					updatedlist.remove(member);
+				}
+			}
+			committee.getCommitteeMemberships().clear();
+			committee.getCommitteeMemberships().addAll(updatedlist);
+			committeeDao.saveCommittee(committee);
+			committeeVo.setCommittee(committee);
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Committee member deleted successfully");
+		} catch (Exception e) {
+			committeeVo.setStatus(true);
+			committeeVo.setMessage("Problem occurred in deleting committee member");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(committeeVo);
 	}
 
 }
