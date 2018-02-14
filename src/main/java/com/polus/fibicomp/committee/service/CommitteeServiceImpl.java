@@ -318,6 +318,20 @@ public class CommitteeServiceImpl implements CommitteeService {
 		return retVal;
 	}
 
+	protected Boolean isDateAvailableForUpdate(List<CommitteeSchedule> committeeSchedules, CommitteeSchedule schedule) {
+		boolean retVal = true;
+		for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+			Date scheduledDate = committeeSchedule.getScheduledDate();
+			if ((scheduledDate != null) && DateUtils.isSameDay(scheduledDate, schedule.getScheduledDate())) {
+				if (!committeeSchedule.getScheduleId().equals(schedule.getScheduleId())) {
+					retVal = false;
+					break;
+				}
+			}
+		}
+		return retVal;
+	}
+
 	protected java.sql.Date calculateAdvancedSubmissionDays(Date startDate, Integer days) {
 		Date deadlineDate = DateUtils.addDays(startDate, -days);
 		return new java.sql.Date(deadlineDate.getTime());
@@ -476,6 +490,13 @@ public class CommitteeServiceImpl implements CommitteeService {
 					committeeMembership.getCommitteeMemberRoles().clear();
 					committeeMembership.getCommitteeMemberRoles().addAll(updatedlist);
 				}
+				if (committeeMembership.getNonEmployeeFlag()) {
+					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
+					committeeMembership.setRolodex(rolodex);
+				} else {
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
+					committeeMembership.setPersonDetails(personDetails);
+				}
 			}
 			committeeDao.saveCommittee(committee);
 			committeeVo.setCommittee(committee);
@@ -506,6 +527,13 @@ public class CommitteeServiceImpl implements CommitteeService {
 					}
 					committeeMembership.getCommitteeMemberExpertises().clear();
 					committeeMembership.getCommitteeMemberExpertises().addAll(updatedlist);
+				}
+				if (committeeMembership.getNonEmployeeFlag()) {
+					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
+					committeeMembership.setRolodex(rolodex);
+				} else {
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
+					committeeMembership.setPersonDetails(personDetails);
 				}
 			}
 			committeeDao.saveCommittee(committee);
@@ -567,8 +595,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
 		List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
 		CommitteeSchedule schedule = committeeVo.getCommitteeSchedule();
-		java.sql.Date scheduledDate = schedule.getScheduledDate();
-		boolean isDateExist = isDateAvailable(committeeSchedules, scheduledDate);
+		boolean isDateExist = isDateAvailableForUpdate(committeeSchedules, schedule);
 		String response = "";
 		if (!isDateExist) {
 			committeeVo.setStatus(false);
@@ -579,6 +606,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 				if (committeeSchedule.getScheduleId().equals(schedule.getScheduleId())) {
 					committeeSchedule.setScheduledDate(schedule.getScheduledDate());
 					committeeSchedule.setPlace(schedule.getPlace());
+					committeeSchedule.setTime(schedule.getTime());
 					int daysToAdd = committeeSchedule.getCommittee().getAdvSubmissionDaysReq();
 					java.sql.Date sqlDate = calculateAdvancedSubmissionDays(schedule.getScheduledDate(), daysToAdd);
 					committeeSchedule.setProtocolSubDeadline(sqlDate);
@@ -598,9 +626,16 @@ public class CommitteeServiceImpl implements CommitteeService {
 			List<CommitteeMemberships> list = committee.getCommitteeMemberships();
 			List<CommitteeMemberships> updatedlist = new ArrayList<CommitteeMemberships>(list);
 			Collections.copy(updatedlist, list);
-			for (CommitteeMemberships member : list) {
-				if (member.getMembershipId().equals(committeeVo.getCommMembershipId())) {
-					updatedlist.remove(member);
+			for (CommitteeMemberships committeeMembership : list) {
+				if (committeeMembership.getMembershipId().equals(committeeVo.getCommMembershipId())) {
+					updatedlist.remove(committeeMembership);
+				}
+				if (committeeMembership.getNonEmployeeFlag()) {
+					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
+					committeeMembership.setRolodex(rolodex);
+				} else {
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
+					committeeMembership.setPersonDetails(personDetails);
 				}
 			}
 			committee.getCommitteeMemberships().clear();
