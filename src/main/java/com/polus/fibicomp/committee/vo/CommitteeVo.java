@@ -3,7 +3,10 @@ package com.polus.fibicomp.committee.vo;
 import java.util.List;
 
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberExpertise;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
+import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
@@ -62,6 +65,12 @@ public class CommitteeVo {
 	private Integer commMembershipId;
 
 	private Integer commResearchAreasId;
+
+	private CommitteeResearchAreas committeeResearchArea;
+
+	private CommitteeMemberRoles committeeMemberRole;
+
+	private CommitteeMemberExpertise committeeMemberExpertise;
 
 	public List<ProtocolReviewType> getReviewTypes() {
 		return reviewTypes;
@@ -253,6 +262,30 @@ public class CommitteeVo {
 
 	public void setCommResearchAreasId(Integer commResearchAreasId) {
 		this.commResearchAreasId = commResearchAreasId;
+	}
+
+	public CommitteeResearchAreas getCommitteeResearchArea() {
+		return committeeResearchArea;
+	}
+
+	public void setCommitteeResearchArea(CommitteeResearchAreas committeeResearchArea) {
+		this.committeeResearchArea = committeeResearchArea;
+	}
+
+	public CommitteeMemberRoles getCommitteeMemberRole() {
+		return committeeMemberRole;
+	}
+
+	public void setCommitteeMemberRole(CommitteeMemberRoles committeeMemberRole) {
+		this.committeeMemberRole = committeeMemberRole;
+	}
+
+	public CommitteeMemberExpertise getCommitteeMemberExpertise() {
+		return committeeMemberExpertise;
+	}
+
+	public void setCommitteeMemberExpertise(CommitteeMemberExpertise committeeMemberExpertise) {
+		this.committeeMemberExpertise = committeeMemberExpertise;
 	}
 
 }

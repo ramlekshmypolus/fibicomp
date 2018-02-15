@@ -25,20 +25,10 @@ public interface CommitteeService {
 
 	public String deleteSchedule(CommitteeVo committeeVo);
 
-	public String deleteMemberRoles(CommitteeVo committeeVo);
-
-	public String deleteExpertise(CommitteeVo committeeVo);
-
-	public String addCommitteeMembership(CommitteeVo committeeVo);
-
-	public String saveCommitteeMembers(CommitteeVo committeeVo);
-
 	public String filterCommitteeScheduleDates(CommitteeVo committeeVo);
 
 	public String resetCommitteeScheduleDates(CommitteeVo committeeVo);
 
 	public String updateCommitteeSchedule(CommitteeVo committeeVo);
-
-	public String deleteCommitteeMembers(CommitteeVo committeeVo);
 
 }
