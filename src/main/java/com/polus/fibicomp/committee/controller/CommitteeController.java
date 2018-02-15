@@ -69,6 +69,9 @@ public class CommitteeController {
 	@RequestMapping(value = "/saveAreaOfResearch", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String saveAreaOfResearch(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for saveAreaOfResearch");
+		logger.info("CommitteeId : " + vo.getCommitteeId());
+		logger.info("ResearchAreaCode : " + vo.getCommitteeResearchArea().getResearchAreaCode());
+		logger.info("ResearchAreaDescription : " + vo.getCommitteeResearchArea().getResearchAreaDescription());
 		return committeeService.saveAreaOfResearch(vo);
 	}
 
@@ -87,37 +90,6 @@ public class CommitteeController {
 		logger.info("committeeId : " + vo.getCommitteeId());
 		return committeeService.deleteSchedule(vo);
 	}
-	
-	@RequestMapping(value = "/deleteMemberRoles", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String deleteMemberRoles(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for deleteMemberRoles");
-		logger.info("CommMemberRolesId : " + vo.getCommMemberRolesId());
-		logger.info("committeeId : " + vo.getCommitteeId());
-		logger.info("CommMembershipId : " + vo.getCommMembershipId());
-		return committeeService.deleteMemberRoles(vo);
-	}
-	
-	@RequestMapping(value = "/deleteExpertise", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String deleteExpertise(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for deleteExpertise");
-		logger.info("CommMemberExpertiseId : " + vo.getCommMemberExpertiseId());
-		logger.info("committeeId : " + vo.getCommitteeId());
-		logger.info("CommMembershipId : " + vo.getCommMembershipId());
-		return committeeService.deleteExpertise(vo);
-	}
-
-	@RequestMapping(value = "/addCommitteeMembership", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String addCommitteeMembership(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for addCommitteeMembership");
-		String committeeDatas = committeeService.addCommitteeMembership(vo);
-		return committeeDatas;
-	}
-
-	@RequestMapping(value = "/saveCommitteeMembers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String saveCommitteeMembers(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for saveCommitteeMembers");
-		return committeeService.saveCommitteeMembers(vo);
-	}
 
 	@RequestMapping(value = "/filterCommitteeScheduleDates", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String filterCommitteeScheduleDates(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
@@ -134,16 +106,10 @@ public class CommitteeController {
 	@RequestMapping(value = "/updateCommitteeSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String updateCommitteeSchedule(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for updateCommitteeSchedule");
+		logger.info("CommitteeId : " + vo.getCommitteeId());
+		logger.info("ScheduleId : " + vo.getCommitteeSchedule().getScheduleId());
 		String committeeDatas = committeeService.updateCommitteeSchedule(vo);
 		return committeeDatas;
-	}
-
-	@RequestMapping(value = "/deleteCommitteeMembers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String deleteCommitteeMembers(@RequestBody CommitteeVo vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for deleteCommitteeMembers");
-		logger.info("CommMembershipId : " + vo.getCommMembershipId());
-		logger.info("CommitteeId : " + vo.getCommitteeId());
-		return committeeService.deleteCommitteeMembers(vo);
 	}
 
 }
