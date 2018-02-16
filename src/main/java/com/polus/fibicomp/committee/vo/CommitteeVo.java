@@ -11,6 +11,7 @@ import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
+import com.polus.fibicomp.committee.pojo.ScheduleStatus;
 import com.polus.fibicomp.committee.schedule.ScheduleData;
 import com.polus.fibicomp.pojo.Rolodex;
 import com.polus.fibicomp.pojo.Unit;
@@ -71,6 +72,8 @@ public class CommitteeVo {
 	private CommitteeMemberRoles committeeMemberRole;
 
 	private CommitteeMemberExpertise committeeMemberExpertise;
+
+	private List<ScheduleStatus> scheduleStatus;
 
 	public List<ProtocolReviewType> getReviewTypes() {
 		return reviewTypes;
@@ -286,6 +289,14 @@ public class CommitteeVo {
 
 	public void setCommitteeMemberExpertise(CommitteeMemberExpertise committeeMemberExpertise) {
 		this.committeeMemberExpertise = committeeMemberExpertise;
+	}
+
+	public List<ScheduleStatus> getScheduleStatus() {
+		return scheduleStatus;
+	}
+
+	public void setScheduleStatus(List<ScheduleStatus> scheduleStatus) {
+		this.scheduleStatus = scheduleStatus;
 	}
 
 }

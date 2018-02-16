@@ -7,7 +7,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberExpertise;
+import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMembershipType;
+import com.polus.fibicomp.committee.pojo.CommitteeResearchAreas;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeType;
 import com.polus.fibicomp.committee.pojo.MembershipRole;
@@ -68,5 +71,13 @@ public interface CommitteeDao {
 	public CommitteeSchedule getCommitteeScheduleById(Integer scheduleId);
 
 	public CommitteeMembershipType getCommitteeMembershipTypeById(String membershipTypeCode);
+
+	public List<ScheduleStatus> fetchAllScheduleStatus();
+
+	public CommitteeMemberRoles saveCommitteeMemberRole(CommitteeMemberRoles memberRole);
+
+	public CommitteeMemberExpertise saveCommitteeMemberExpertise(CommitteeMemberExpertise expertise);
+
+	public CommitteeResearchAreas saveCommitteeResearchAreas(CommitteeResearchAreas researchAreas);
 
 }
