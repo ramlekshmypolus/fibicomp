@@ -65,6 +65,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 		committeeVo.setHomeUnits(units);
 		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
 		committeeVo.setResearchAreas(researchAreas);
+		List<ScheduleStatus> scheduleStatus = committeeDao.fetchAllScheduleStatus();
+		committeeVo.setScheduleStatus(scheduleStatus);
 
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
@@ -85,6 +87,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 		committeeVo.setHomeUnits(units);
 		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
 		committeeVo.setResearchAreas(researchAreas);
+		List<ScheduleStatus> scheduleStatus = committeeDao.fetchAllScheduleStatus();
+		committeeVo.setScheduleStatus(scheduleStatus);
 
 		committeeVo.setCommitteeMembershipTypes(committeeDao.getMembershipTypes());
 		committeeVo.setMembershipRoles(committeeDao.getMembershipRoles());
@@ -96,21 +100,13 @@ public class CommitteeServiceImpl implements CommitteeService {
 	@Override
 	public String saveCommittee(CommitteeVo vo) {
 		Committee committee = vo.getCommittee();
+		committee = committeeDao.saveCommittee(committee);
+		vo.setStatus(true);
 		String updateType = vo.getUpdateType();
 		if (updateType != null && updateType.equals("SAVE")) {
-			Committee committeeFromDB = committeeDao.fetchCommitteeById(committee.getCommitteeId());
-			if (committeeFromDB != null) {
-				vo.setStatus(false);
-				vo.setMessage("Duplicate committee id");
-			} else {
-				vo.setStatus(true);
-				vo.setMessage("Committee created successfully");
-				committee = committeeDao.saveCommittee(committee);
-			}
+			vo.setMessage("Committee created successfully");
 		} else {
-			vo.setStatus(true);
 			vo.setMessage("Committee updated successfully");
-			committee = committeeDao.saveCommittee(committee);
 		}
 		vo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(vo);
@@ -139,6 +135,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		committeeVo.setReviewTypes(committeeDao.fetchAllReviewType());
 		committeeVo.setHomeUnits(committeeDao.fetchAllHomeUnits());
 		committeeVo.setResearchAreas(committeeDao.fetchAllResearchAreas());
+		committeeVo.setScheduleStatus(committeeDao.fetchAllScheduleStatus());
 
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
@@ -331,8 +328,16 @@ public class CommitteeServiceImpl implements CommitteeService {
 	public String saveAreaOfResearch(CommitteeVo committeeVo) {
 		Committee committee = committeeDao.fetchCommitteeById(committeeVo.getCommitteeId());
 		CommitteeResearchAreas committeeResearchAreas = committeeVo.getCommitteeResearchArea();
-		committeeResearchAreas.setCommittee(committee);
-		committee.getResearchAreas().add(committeeResearchAreas);
+		/*committeeResearchAreas.setCommittee(committee);
+		committee.getResearchAreas().add(committeeResearchAreas);*/
+		CommitteeResearchAreas researchAreas = new CommitteeResearchAreas();
+		researchAreas.setCommittee(committee);
+		researchAreas.setResearchAreaCode(committeeResearchAreas.getResearchAreaCode());
+		researchAreas.setResearchAreaDescription(committeeResearchAreas.getResearchAreaDescription());
+		researchAreas.setUpdateTimestamp(committeeResearchAreas.getUpdateTimestamp());
+		researchAreas.setUpdateUser(committeeResearchAreas.getUpdateUser());
+		researchAreas = committeeDao.saveCommitteeResearchAreas(researchAreas);
+		committee.getResearchAreas().add(researchAreas);
 		committee = committeeDao.saveCommittee(committee);
 		committeeVo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(committeeVo);

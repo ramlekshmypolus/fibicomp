@@ -257,7 +257,6 @@ public class CommitteeDaoImpl implements CommitteeDao {
 
 	@Override
 	public void updateCommitteSchedule(CommitteeSchedule committeeSchedule) {
-		//hibernateTemplate.evict(committeeSchedule);
 		hibernateTemplate.saveOrUpdate(committeeSchedule);
 	}
 
@@ -271,6 +270,38 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	public CommitteeMembershipType getCommitteeMembershipTypeById(String membershipTypeCode) {
 		CommitteeMembershipType committeeMembershipType = hibernateTemplate.get(CommitteeMembershipType.class, membershipTypeCode);
 		return committeeMembershipType;
+	}
+
+	@Override
+	public List<ScheduleStatus> fetchAllScheduleStatus() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ScheduleStatus.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("scheduleStatusCode"), "scheduleStatusCode");
+		projList.add(Projections.property("description"), "description");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ScheduleStatus.class));
+		criteria.addOrder(Order.asc("description"));
+		@SuppressWarnings("unchecked")
+		List<ScheduleStatus> status = criteria.list();
+		return status;
+	}
+
+	@Override
+	public CommitteeMemberRoles saveCommitteeMemberRole(CommitteeMemberRoles memberRole) {
+		hibernateTemplate.save(memberRole);
+		return memberRole;
+	}
+
+	@Override
+	public CommitteeMemberExpertise saveCommitteeMemberExpertise(CommitteeMemberExpertise expertise) {
+		hibernateTemplate.save(expertise);
+		return expertise;
+	}
+
+	@Override
+	public CommitteeResearchAreas saveCommitteeResearchAreas(CommitteeResearchAreas researchAreas) {
+		hibernateTemplate.save(researchAreas);
+		return researchAreas;
 	}
 
 }

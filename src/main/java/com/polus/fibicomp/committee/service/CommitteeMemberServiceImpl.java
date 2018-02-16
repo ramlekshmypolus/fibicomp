@@ -68,8 +68,7 @@ public class CommitteeMemberServiceImpl implements CommitteeMemberService {
 							}
 						}
 					}
-					List<CommitteeMemberExpertise> committeeMemberExpertises = committeeMember
-							.getCommitteeMemberExpertises();
+					List<CommitteeMemberExpertise> committeeMemberExpertises = committeeMember.getCommitteeMemberExpertises();
 					if (committeeMemberExpertises != null && !committeeMemberExpertises.isEmpty()) {
 						for (CommitteeMemberExpertise memberExpertise : committeeMemberExpertises) {
 							if (memberExpertise.getCommMemberExpertiseId() == null) {
@@ -101,8 +100,7 @@ public class CommitteeMemberServiceImpl implements CommitteeMemberService {
 					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
 					committeeMembership.setRolodex(rolodex);
 				} else {
-					PersonDetailsView personDetails = committeeDao
-							.getPersonDetailsById(committeeMembership.getPersonId());
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
 					committeeMembership.setPersonDetails(personDetails);
 				}
 			}
@@ -128,19 +126,28 @@ public class CommitteeMemberServiceImpl implements CommitteeMemberService {
 			List<CommitteeMemberships> memberships = committee.getCommitteeMemberships();
 			for (CommitteeMemberships committeeMembership : memberships) {
 				if (committeeMembership.getCommMembershipId().equals(committeeVo.getCommMembershipId())) {
-					role.setCommitteeMemberships(committeeMembership);
-					committeeMembership.getCommitteeMemberRoles().add(role);
+					/*role.setCommitteeMemberships(committeeMembership);
+					committeeMembership.getCommitteeMemberRoles().add(role);*/
+					CommitteeMemberRoles memberRole = new CommitteeMemberRoles();
+					memberRole.setCommitteeMemberships(committeeMembership);
+					memberRole.setEndDate(role.getEndDate());
+					memberRole.setMembershipRoleCode(role.getMembershipRoleCode());
+					memberRole.setMembershipRoleDescription(role.getMembershipRoleDescription());
+					memberRole.setStartDate(role.getStartDate());
+					memberRole.setUpdateTimestamp(role.getUpdateTimestamp());
+					memberRole.setUpdateUser(role.getUpdateUser());
+					memberRole = committeeDao.saveCommitteeMemberRole(memberRole);
+					committeeMembership.getCommitteeMemberRoles().add(memberRole);
 				}
 				if (committeeMembership.getNonEmployeeFlag()) {
 					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
 					committeeMembership.setRolodex(rolodex);
 				} else {
-					PersonDetailsView personDetails = committeeDao
-							.getPersonDetailsById(committeeMembership.getPersonId());
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
 					committeeMembership.setPersonDetails(personDetails);
 				}
 			}
-			committeeDao.saveCommittee(committee);
+			committee = committeeDao.saveCommittee(committee);
 			committeeVo.setCommittee(committee);
 			committeeVo.setStatus(true);
 			committeeVo.setMessage("Committee member role saved successfully");
@@ -174,8 +181,7 @@ public class CommitteeMemberServiceImpl implements CommitteeMemberService {
 					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
 					committeeMembership.setRolodex(rolodex);
 				} else {
-					PersonDetailsView personDetails = committeeDao
-							.getPersonDetailsById(committeeMembership.getPersonId());
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
 					committeeMembership.setPersonDetails(personDetails);
 				}
 			}
@@ -210,8 +216,7 @@ public class CommitteeMemberServiceImpl implements CommitteeMemberService {
 					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
 					committeeMembership.setRolodex(rolodex);
 				} else {
-					PersonDetailsView personDetails = committeeDao
-							.getPersonDetailsById(committeeMembership.getPersonId());
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
 					committeeMembership.setPersonDetails(personDetails);
 				}
 			}
@@ -274,15 +279,22 @@ public class CommitteeMemberServiceImpl implements CommitteeMemberService {
 			List<CommitteeMemberships> memberships = committee.getCommitteeMemberships();
 			for (CommitteeMemberships committeeMembership : memberships) {
 				if (committeeMembership.getCommMembershipId().equals(committeeVo.getCommMembershipId())) {
-					expertise.setCommitteeMemberships(committeeMembership);
-					committeeMembership.getCommitteeMemberExpertises().add(expertise);
+					/*expertise.setCommitteeMemberships(committeeMembership);
+					committeeMembership.getCommitteeMemberExpertises().add(expertise);*/
+					CommitteeMemberExpertise memberExpertise = new CommitteeMemberExpertise();
+					memberExpertise.setCommitteeMemberships(committeeMembership);
+					memberExpertise.setResearchAreaCode(expertise.getResearchAreaCode());
+					memberExpertise.setResearchAreaDescription(expertise.getResearchAreaDescription());
+					memberExpertise.setUpdateTimestamp(expertise.getUpdateTimestamp());
+					memberExpertise.setUpdateUser(expertise.getUpdateUser());
+					memberExpertise = committeeDao.saveCommitteeMemberExpertise(memberExpertise);
+					committeeMembership.getCommitteeMemberExpertises().add(memberExpertise);
 				}
 				if (committeeMembership.getNonEmployeeFlag()) {
 					Rolodex rolodex = committeeDao.getRolodexById(committeeMembership.getRolodexId());
 					committeeMembership.setRolodex(rolodex);
 				} else {
-					PersonDetailsView personDetails = committeeDao
-							.getPersonDetailsById(committeeMembership.getPersonId());
+					PersonDetailsView personDetails = committeeDao.getPersonDetailsById(committeeMembership.getPersonId());
 					committeeMembership.setPersonDetails(personDetails);
 				}
 			}
