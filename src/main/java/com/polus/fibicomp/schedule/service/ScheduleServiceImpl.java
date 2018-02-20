@@ -55,8 +55,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	/*
-	 * Init attendance if this meeting schedule is maintained for the first
-	 * time.
+	 * Init attendance if this meeting schedule is maintained for the first time.
 	 */
 	protected void initAttendance(List<CommitteeScheduleAttendance> committeeScheduleAttendances, CommitteeSchedule commSchedule) {
 		List<CommitteeMemberships> committeeMemberships = commSchedule.getCommittee().getCommitteeMemberships();
