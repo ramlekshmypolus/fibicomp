@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -22,6 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.polus.fibicomp.committee.schedule.DayOfWeek;
 import com.polus.fibicomp.committee.schedule.Time12HrFmt;
 
@@ -98,6 +101,10 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 	@Column(name = "AVAILABLE_TO_REVIEWERS")
 	private String availableToReviewers;
 
+	@JsonManagedReference
+	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeScheduleAttendance> committeeScheduleAttendances;
+
 	@Transient
 	private String dayOfWeek;
 
@@ -106,6 +113,12 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	@Transient
 	private Time12HrFmt viewEndTime;
+
+	@Transient
+	private String committeeId;
+
+	@Transient
+	private String committeeName;
 
 	public Integer getScheduleId() {
 		return scheduleId;
@@ -377,6 +390,38 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	public void setFilter(boolean filter) {
 		this.filter = filter;
+	}
+
+	public List<CommitteeScheduleAttendance> getCommitteeScheduleAttendances() {
+		return committeeScheduleAttendances;
+	}
+
+	public void setCommitteeScheduleAttendances(List<CommitteeScheduleAttendance> committeeScheduleAttendances) {
+		this.committeeScheduleAttendances = committeeScheduleAttendances;
+	}
+
+	/*for dashboard purpose*/
+	public String getCommitteeId() {
+		if (this.committee != null) {
+			this.committeeId = this.committee.getCommitteeId();
+		}
+		return committeeId;
+	}
+
+	public void setCommitteeId(String committeeId) {
+		this.committeeId = committeeId;
+	}
+
+	/*for dashboard purpose*/
+	public String getCommitteeName() {
+		if (this.committee != null) {
+			this.committeeName = this.committee.getCommitteeName();
+		}
+		return committeeName;
+	}
+
+	public void setCommitteeName(String committeeName) {
+		this.committeeName = committeeName;
 	}
 
 }

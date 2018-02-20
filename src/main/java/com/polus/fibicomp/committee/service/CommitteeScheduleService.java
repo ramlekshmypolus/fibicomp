@@ -11,7 +11,7 @@ import com.polus.fibicomp.committee.schedule.ScheduleSequence;
 import com.polus.fibicomp.committee.schedule.Time24HrFmt;
 
 @Service
-public interface ScheduleService {
+public interface CommitteeScheduleService {
 
 	/**
      * This method must return schedule dates generated between provided parameters.

@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.polus.fibicomp.committee.dao.CommitteeDao;
-import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.dao.DashboardDao;
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
@@ -34,9 +32,6 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Autowired
 	private DashboardDao dashboardDao;
-
-	@Autowired
-	private CommitteeDao committeeDao;
 
 	@Override
 	public String getDashBoardResearchSummary(String personId) throws Exception {
@@ -64,10 +59,10 @@ public class DashboardServiceImpl implements DashboardService {
 				dashBoardProfile = dashboardDao.getDashBoardDataForDisclosures(vo);
 			}
 			if (requestType.equals("COMMITTEE")) {
-				List<Committee> committees = committeeDao.loadAllCommittee();
-				if (committees != null && !committees.isEmpty()) {
-					dashBoardProfile.setCommittees(committees);
-				}
+				dashBoardProfile = dashboardDao.getDashBoardDataForCommittee(vo);
+			}
+			if (requestType.equals("SCHEDULE")) {
+				dashBoardProfile = dashboardDao.getDashBoardDataForCommitteeSchedule(vo);
 			}
 			// dashBoardProfile.setPersonDTO(personDTO);
 		} catch (Exception e) {

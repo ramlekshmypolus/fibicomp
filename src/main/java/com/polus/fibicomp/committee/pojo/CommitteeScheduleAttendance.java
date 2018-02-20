@@ -4,12 +4,17 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE_ATTENDANCE")
@@ -27,6 +32,7 @@ public class CommitteeScheduleAttendance implements Serializable {
 	@Column(name = "SCHEDULE_ID")
 	private Integer scheduleId;
 
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_ATTENDANCE"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
 	private CommitteeSchedule committeeSchedule;
@@ -38,16 +44,19 @@ public class CommitteeScheduleAttendance implements Serializable {
 	private String personName;
 
 	@Column(name = "GUEST_FLAG")
-	private String guestFlag;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean guestFlag;
 
 	@Column(name = "ALTERNATE_FLAG")
-	private String alternateFlag;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean alternateFlag;
 
 	@Column(name = "ALTERNATE_FOR")
 	private String alternateFor;
 
 	@Column(name = "NON_EMPLOYEE_FLAG")
-	private String nonEmployeeFlag;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean nonEmployeeFlag;
 
 	@Column(name = "COMMENTS")
 	private String comments;
@@ -57,6 +66,12 @@ public class CommitteeScheduleAttendance implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
+
+	@Transient
+	private String roleName;
+
+	@Transient
+	private boolean guestMemberActive;
 
 	public Integer getCommitteeScheduleAttendanceId() {
 		return committeeScheduleAttendanceId;
@@ -90,36 +105,12 @@ public class CommitteeScheduleAttendance implements Serializable {
 		this.personName = personName;
 	}
 
-	public String getGuestFlag() {
-		return guestFlag;
-	}
-
-	public void setGuestFlag(String guestFlag) {
-		this.guestFlag = guestFlag;
-	}
-
-	public String getAlternateFlag() {
-		return alternateFlag;
-	}
-
-	public void setAlternateFlag(String alternateFlag) {
-		this.alternateFlag = alternateFlag;
-	}
-
 	public String getAlternateFor() {
 		return alternateFor;
 	}
 
 	public void setAlternateFor(String alternateFor) {
 		this.alternateFor = alternateFor;
-	}
-
-	public String getNonEmployeeFlag() {
-		return nonEmployeeFlag;
-	}
-
-	public void setNonEmployeeFlag(String nonEmployeeFlag) {
-		this.nonEmployeeFlag = nonEmployeeFlag;
 	}
 
 	public String getComments() {
@@ -156,6 +147,46 @@ public class CommitteeScheduleAttendance implements Serializable {
 
 	public void setScheduleId(Integer scheduleId) {
 		this.scheduleId = scheduleId;
+	}
+
+	public Boolean getGuestFlag() {
+		return guestFlag;
+	}
+
+	public void setGuestFlag(Boolean guestFlag) {
+		this.guestFlag = guestFlag;
+	}
+
+	public Boolean getAlternateFlag() {
+		return alternateFlag;
+	}
+
+	public void setAlternateFlag(Boolean alternateFlag) {
+		this.alternateFlag = alternateFlag;
+	}
+
+	public Boolean getNonEmployeeFlag() {
+		return nonEmployeeFlag;
+	}
+
+	public void setNonEmployeeFlag(Boolean nonEmployeeFlag) {
+		this.nonEmployeeFlag = nonEmployeeFlag;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public boolean isGuestMemberActive() {
+		return guestMemberActive;
+	}
+
+	public void setGuestMemberActive(boolean guestMemberActive) {
+		this.guestMemberActive = guestMemberActive;
 	}
 
 }

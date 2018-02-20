@@ -13,8 +13,10 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.polus.fibicomp.committee.pojo.Committee;
+import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
@@ -936,6 +940,134 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 		}
 		return mobileProposalViews;
+	}
+
+	@Override
+	public DashBoardProfile getDashBoardDataForCommittee(CommonVO vo) {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		Integer pageNumber = vo.getPageNumber();
+		String sortBy = vo.getSortBy();
+		String reverse = vo.getReverse();
+		String property1 = vo.getProperty1();
+		String property2 = vo.getProperty2();
+		String property3 = vo.getProperty3();
+		String property4 = vo.getProperty4();
+		Integer currentPage = vo.getCurrentPage();
+
+		Conjunction and = Restrictions.conjunction();
+		try {
+			logger.info("----------- getDashBoardDataForCommittee ------------");
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Criteria searchCriteria = session.createCriteria(Committee.class);
+			Criteria countCriteria = session.createCriteria(Committee.class);
+			if (sortBy.isEmpty() || reverse.isEmpty()) {
+				searchCriteria.addOrder(Order.desc("updateTimestamp"));
+			} else {
+				if (reverse.equals("DESC")) {
+					searchCriteria.addOrder(Order.desc(sortBy));
+				} else {
+					searchCriteria.addOrder(Order.asc(sortBy));
+				}
+			}
+			if (property1 != null && !property1.isEmpty()) {
+				and.add(Restrictions.like("committeeId", "%" + property1 + "%").ignoreCase());
+			}
+			if (property2 != null && !property2.isEmpty()) {
+				and.add(Restrictions.like("committeeName", "%" + property2 + "%").ignoreCase());
+			}
+			if (property3 != null && !property3.isEmpty()) {
+				and.add(Restrictions.like("homeUnitNumber", "%" + property3 + "%").ignoreCase());
+			}
+			if (property4 != null && !property4.isEmpty()) {
+				and.add(Restrictions.like("homeUnitName", "%" + property4 + "%").ignoreCase());
+			}
+
+			searchCriteria.add(and);
+			ProjectionList projList = Projections.projectionList();
+			projList.add(Projections.property("committeeId"), "committeeId");
+			projList.add(Projections.property("committeeName"), "committeeName");
+			projList.add(Projections.property("homeUnitNumber"), "homeUnitNumber");
+			projList.add(Projections.property("homeUnitName"), "homeUnitName");
+			projList.add(Projections.property("reviewTypeDescription"), "reviewTypeDescription");
+			projList.add(Projections.property("description"), "description");
+			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Committee.class));
+			countCriteria.add(and);
+
+			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
+			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
+
+			int count = pageNumber * (currentPage - 1);
+			searchCriteria.setFirstResult(count);
+			searchCriteria.setMaxResults(pageNumber);
+			@SuppressWarnings("unchecked")
+			List<Committee> committees = searchCriteria.list();
+			dashBoardProfile.setCommittees(committees);
+		} catch (Exception e) {
+			logger.error("Error in method getDashBoardDataForCommittee");
+			e.printStackTrace();
+		}
+		return dashBoardProfile;
+	}
+
+	@Override
+	public DashBoardProfile getDashBoardDataForCommitteeSchedule(CommonVO vo) {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		Integer pageNumber = vo.getPageNumber();
+		String sortBy = vo.getSortBy();
+		String reverse = vo.getReverse();
+		String property1 = vo.getProperty1();
+		String property2 = vo.getProperty2();
+		String property3 = vo.getProperty3();
+		String property4 = vo.getProperty4();
+		Integer currentPage = vo.getCurrentPage();
+
+		Conjunction and = Restrictions.conjunction();
+		try {
+			logger.info("----------- getDashBoardDataForCommitteeSchedule ------------");
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Criteria searchCriteria = session.createCriteria(CommitteeSchedule.class);
+			Criteria countCriteria = session.createCriteria(CommitteeSchedule.class);
+			if (sortBy.isEmpty() || reverse.isEmpty()) {
+				searchCriteria.addOrder(Order.desc("updateTimestamp"));
+			} else {
+				if (reverse.equals("DESC")) {
+					searchCriteria.addOrder(Order.desc(sortBy));
+				} else {
+					searchCriteria.addOrder(Order.asc(sortBy));
+				}
+			}
+			if (property1 != null && !property1.isEmpty()) {
+				and.add(Restrictions.like("scheduleId", "%" + property1 + "%").ignoreCase());
+			}
+			if (property2 != null && !property2.isEmpty()) {
+				and.add(Restrictions.like("place", "%" + property2 + "%").ignoreCase());
+			}
+			if (property3 != null && !property3.isEmpty()) {
+				and.add(Restrictions.like("committee.committeeId", "%" + property3 + "%").ignoreCase());
+			}
+			if (property4 != null && !property4.isEmpty()) {
+				and.add(Restrictions.like("committee.committeeName", "%" + property4 + "%").ignoreCase());
+			}
+
+			searchCriteria.add(and);
+			countCriteria.add(and);
+
+			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
+			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
+
+			int count = pageNumber * (currentPage - 1);
+			searchCriteria.setFirstResult(count);
+			searchCriteria.setMaxResults(pageNumber);
+			@SuppressWarnings("unchecked")
+			List<CommitteeSchedule> committeeSchedules = searchCriteria.list();
+			dashBoardProfile.setCommitteeSchedules(committeeSchedules);
+		} catch (Exception e) {
+			logger.error("Error in method getDashBoardDataForCommitteeSchedule");
+			e.printStackTrace();
+		}
+		return dashBoardProfile;
 	}
 
 }

@@ -54,7 +54,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 	private CommitteeDao committeeDao;
 
 	@Autowired
-	private ScheduleService scheduleService;
+	private CommitteeScheduleService committeeScheduleService;
 
 	@Override
 	public String fetchInitialDatas() {
@@ -163,7 +163,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 		logger.info("ScheduleStartDate : " + scheduleData.getScheduleStartDate());
 		switch (key) {
 		case NEVER:
-			dates = scheduleService.getScheduledDates(dt, dt, time, null);
+			dates = committeeScheduleService.getScheduledDates(dt, dt, time, null);
 			break;
 		case DAILY:
 			DailyScheduleDetails.optionValues dailyoption = DailyScheduleDetails.optionValues
@@ -172,14 +172,14 @@ public class CommitteeServiceImpl implements CommitteeService {
 			case XDAY:
 				dtEnd = scheduleData.getDailySchedule().getScheduleEndDate();
 				day = scheduleData.getDailySchedule().getDay();
-				dates = scheduleService.getIntervalInDaysScheduledDates(dt, dtEnd, time, day);
+				dates = committeeScheduleService.getIntervalInDaysScheduledDates(dt, dtEnd, time, day);
 				break;
 			case WEEKDAY:
 				dtEnd = scheduleData.getDailySchedule().getScheduleEndDate();
 				weekdays = ScheduleData.convertToWeekdays(scheduleData.getDailySchedule().getDaysOfWeek());
 				ScheduleSequence scheduleSequence = new WeekScheduleSequenceDecorator(
 						new TrimDatesScheduleSequenceDecorator(new DefaultScheduleSequence()), 1, weekdays.length);
-				dates = scheduleService.getScheduledDates(dt, dtEnd, time, weekdays, scheduleSequence);
+				dates = committeeScheduleService.getScheduledDates(dt, dtEnd, time, weekdays, scheduleSequence);
 				break;
 			}
 			break;
@@ -193,7 +193,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 			ScheduleSequence scheduleSequence = new WeekScheduleSequenceDecorator(
 					new TrimDatesScheduleSequenceDecorator(new DefaultScheduleSequence()),
 					scheduleData.getWeeklySchedule().getWeek(), weekdays.length);
-			dates = scheduleService.getScheduledDates(dt, dtEnd, time, weekdays, scheduleSequence);
+			dates = committeeScheduleService.getScheduledDates(dt, dtEnd, time, weekdays, scheduleSequence);
 			break;
 		case MONTHLY:
 			MonthlyScheduleDetails.optionValues monthOption = MonthlyScheduleDetails.optionValues
@@ -203,14 +203,14 @@ public class CommitteeServiceImpl implements CommitteeService {
 				dtEnd = scheduleData.getMonthlySchedule().getScheduleEndDate();
 				day = scheduleData.getMonthlySchedule().getDay();
 				frequency = scheduleData.getMonthlySchedule().getOption1Month();
-				dates = scheduleService.getScheduledDates(dt, dtEnd, time, day, frequency, null);
+				dates = committeeScheduleService.getScheduledDates(dt, dtEnd, time, day, frequency, null);
 				break;
 			case XDAYOFWEEKANDXMONTH:
 				dtEnd = scheduleData.getMonthlySchedule().getScheduleEndDate();
 				weekOfMonth = ScheduleData.getWeekOfMonth(scheduleData.getMonthlySchedule().getSelectedMonthsWeek());
 				dayOfWeek = ScheduleData.getDayOfWeek(scheduleData.getMonthlySchedule().getSelectedDayOfWeek());
 				frequency = scheduleData.getMonthlySchedule().getOption2Month();
-				dates = scheduleService.getScheduledDates(dt, dtEnd, time, dayOfWeek, weekOfMonth, frequency, null);
+				dates = committeeScheduleService.getScheduledDates(dt, dtEnd, time, dayOfWeek, weekOfMonth, frequency, null);
 				break;
 			}
 			break;
@@ -223,7 +223,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 				month = ScheduleData.getMonthOfWeek(scheduleData.getYearlySchedule().getSelectedOption1Month());
 				day = scheduleData.getYearlySchedule().getDay();
 				frequency = scheduleData.getYearlySchedule().getOption1Year();
-				dates = scheduleService.getScheduledDates(dt, dtEnd, time, month, day, frequency, null);
+				dates = committeeScheduleService.getScheduledDates(dt, dtEnd, time, month, day, frequency, null);
 				break;
 			case CMPLX:
 				dtEnd = scheduleData.getYearlySchedule().getScheduleEndDate();
@@ -231,7 +231,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 				dayOfWeek = ScheduleData.getDayOfWeek(scheduleData.getYearlySchedule().getSelectedDayOfWeek());
 				month = ScheduleData.getMonthOfWeek(scheduleData.getYearlySchedule().getSelectedOption2Month());
 				frequency = scheduleData.getYearlySchedule().getOption2Year();
-				dates = scheduleService.getScheduledDates(dt, dtEnd, time, weekOfMonth, dayOfWeek, month, frequency,
+				dates = committeeScheduleService.getScheduledDates(dt, dtEnd, time, weekOfMonth, dayOfWeek, month, frequency,
 						null);
 				break;
 			}

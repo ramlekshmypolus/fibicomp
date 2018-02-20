@@ -65,7 +65,21 @@ public interface DashboardDao {
 	 * @return A list of disclosure.
 	 */
 	public DashBoardProfile getDashBoardDataForDisclosures(CommonVO vo);
-	
+
+	/**
+	 * This method is used to get list of Committee.
+	 * @param vo - Object of CommonVO class.
+	 * @return A list of committee.
+	 */
+	public DashBoardProfile getDashBoardDataForCommittee(CommonVO vo);
+
+	/**
+	 * This method is used to get list of CommitteeSchedule.
+	 * @param vo - Object of CommonVO class.
+	 * @return A list of committe schedule.
+	 */
+	public DashBoardProfile getDashBoardDataForCommitteeSchedule(CommonVO vo);
+
 	/**
 	 * This method is used to retrieve award data in piechart based on sponsor type.
 	 * @param personId - Logged User ID
@@ -74,7 +88,7 @@ public interface DashboardDao {
 	 * @throws Exception
 	 */
 	public String getAwardBySponsorTypes(String personId, String sponsorCode) throws Exception;
-	
+
 	/**
 	 * This method is used to retrieve proposal data in piechart based on sponsor type.
 	 * @param personId - Logged User ID
@@ -83,7 +97,7 @@ public interface DashboardDao {
 	 * @throws Exception
 	 */
 	public String getProposalBySponsorTypes(String personId, String sponsorCode) throws Exception;
-	
+
 	/**
 	 * This method is used to retrieve list of pending action.
 	 * @param personId - ID of the user.

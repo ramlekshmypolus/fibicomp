@@ -27,8 +27,8 @@ import com.polus.fibicomp.committee.schedule.YearMonthDayCronExpression;
 import com.polus.fibicomp.committee.schedule.YearMonthDayOfWeekCronExpression;
 
 @Transactional
-@Service(value = "scheduleService")
-public class ScheduleServiceImpl implements ScheduleService {
+@Service(value = "committeeScheduleService")
+public class CommitteeScheduleServiceImpl implements CommitteeScheduleService {
 
 	@Override
 	public List<Date> getScheduledDates(Date startDate, Date endDate, Time24HrFmt time,

@@ -154,8 +154,9 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		projList.add(Projections.property("committeeId"), "committeeId");
 		projList.add(Projections.property("committeeName"), "committeeName");
 		projList.add(Projections.property("homeUnitNumber"), "homeUnitNumber");
-		projList.add(Projections.property("committeeTypeCode"), "committeeTypeCode");
-		projList.add(Projections.property("applicableReviewTypecode"), "applicableReviewTypecode");
+		projList.add(Projections.property("homeUnitName"), "homeUnitName");
+		projList.add(Projections.property("reviewTypeDescription"), "reviewTypeDescription");
+		projList.add(Projections.property("description"), "description");
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Committee.class));
 		criteria.addOrder(Order.asc("updateTimestamp"));
 		@SuppressWarnings("unchecked")
