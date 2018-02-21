@@ -105,6 +105,10 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeScheduleAttendance> committeeScheduleAttendances;
 
+	@JsonManagedReference
+	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeScheduleActItems> committeeScheduleActItems;
+
 	@Transient
 	private String dayOfWeek;
 
@@ -422,6 +426,14 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	public void setCommitteeName(String committeeName) {
 		this.committeeName = committeeName;
+	}
+
+	public List<CommitteeScheduleActItems> getCommitteeScheduleActItems() {
+		return committeeScheduleActItems;
+	}
+
+	public void setCommitteeScheduleActItems(List<CommitteeScheduleActItems> committeeScheduleActItems) {
+		this.committeeScheduleActItems = committeeScheduleActItems;
 	}
 
 }

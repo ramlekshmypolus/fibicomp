@@ -3,13 +3,20 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE_ACT_ITEMS")
@@ -21,14 +28,15 @@ public class CommitteeScheduleActItems implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "COMM_SCHEDULE_ACT_ITEMS_ID")
+	@GenericGenerator(name = "actionItemIdGererator", strategy = "increment", parameters = {
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@GeneratedValue(generator = "actionItemIdGererator")
+	@Column(name = "COMM_SCHEDULE_ACT_ITEMS_ID", updatable = false, nullable = false)
 	private Integer commScheduleActItemsId;
 
-	@Column(name = "SCHEDULE_ID")
-	private Integer scheduleId;
-
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_ACT_ITEMS"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
+	@JsonBackReference
+	@ManyToOne(cascade = { CascadeType.REFRESH })
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_ACT_ITEMS"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID")
 	private CommitteeSchedule committeeSchedule;
 
 	@Column(name = "ACTION_ITEM_NUMBER")
@@ -104,14 +112,6 @@ public class CommitteeScheduleActItems implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public Integer getScheduleId() {
-		return scheduleId;
-	}
-
-	public void setScheduleId(Integer scheduleId) {
-		this.scheduleId = scheduleId;
 	}
 
 }

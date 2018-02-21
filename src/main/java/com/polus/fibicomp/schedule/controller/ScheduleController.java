@@ -35,9 +35,25 @@ public class ScheduleController {
 	@RequestMapping(value = "/updateSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String updateSchedule(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for updateSchedule");
-		logger.info("scheduleId : " + vo.getScheduleId());
 		String scheduleDatas = scheduleService.updateSchedule(vo);
 		return scheduleDatas;
 	}
 
+	@RequestMapping(value = "/addOtherActions", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String addOtherActions(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for addOtherActions");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("scheduleId : " + vo.getScheduleId());
+		logger.info("scheduleActItemTypecode : " + vo.getCommitteeScheduleActItems().getScheduleActItemTypecode());
+		logger.info("itemDesctiption : " + vo.getCommitteeScheduleActItems().getItemDesctiption());
+		String scheduleDatas = scheduleService.addOtherActions(vo);
+		return scheduleDatas;
+	}
+
+	@RequestMapping(value = "/deleteOtherActions", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteOtherActions(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteOtherActions");
+		logger.info("actionItemId : " + vo.getCommScheduleActItemsId());
+		return scheduleService.deleteOtherActions(vo);
+	}
 }

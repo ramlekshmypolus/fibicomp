@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 
@@ -60,6 +61,12 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	public CommitteeSchedule updateCommitteeSchedule(CommitteeSchedule committeeSchedule) {
 		hibernateTemplate.saveOrUpdate(committeeSchedule);
 		return committeeSchedule;
+	}
+
+	@Override
+	public CommitteeScheduleActItems addOtherActions(CommitteeScheduleActItems committeeScheduleActItems) {
+		hibernateTemplate.save(committeeScheduleActItems);
+		return committeeScheduleActItems;
 	}
 
 }
