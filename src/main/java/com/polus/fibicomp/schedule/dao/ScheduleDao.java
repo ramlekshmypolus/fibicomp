@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 
@@ -13,5 +14,7 @@ public interface ScheduleDao {
 	public List<ProtocolSubmission> fetchProtocolSubmissionByIds(Integer scheduleId, String committeeId);
 
 	public List<ScheduleActItemType> fetchAllScheduleActItemType();
+
+	public CommitteeSchedule updateCommitteeSchedule(CommitteeSchedule committeeSchedule);
 
 }
