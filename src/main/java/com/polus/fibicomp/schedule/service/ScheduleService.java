@@ -10,4 +10,9 @@ public interface ScheduleService {
 	public String loadScheduleById(Integer scheduleId);
 
 	public String updateSchedule(ScheduleVo scheduleVo);
+
+	public String addOtherActions(ScheduleVo scheduleVo);
+
+	public String deleteOtherActions(ScheduleVo scheduleVo);
+
 }

@@ -2,6 +2,7 @@ package com.polus.fibicomp.schedule.service;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,7 @@ import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
@@ -312,6 +314,62 @@ public class ScheduleServiceImpl implements ScheduleService {
 		scheduleVo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(scheduleVo);
 		return response;
+	}
+
+	@Override
+	public String addOtherActions(ScheduleVo scheduleVo) {
+		CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleVo.getScheduleId());
+		CommitteeScheduleActItems committeeScheduleActItems = scheduleVo.getCommitteeScheduleActItems();
+		CommitteeScheduleActItems scheduleActItem = new CommitteeScheduleActItems();
+		scheduleActItem.setCommitteeSchedule(committeeSchedule);
+		scheduleActItem.setScheduleActItemTypecode(committeeScheduleActItems.getScheduleActItemTypecode());
+		scheduleActItem.setItemDesctiption(committeeScheduleActItems.getItemDesctiption());
+		scheduleActItem.setActionItemNumber(getNextActionItemNumber(committeeSchedule));
+		scheduleActItem = scheduleDao.addOtherActions(scheduleActItem);
+		committeeSchedule.getCommitteeScheduleActItems().add(scheduleActItem);
+		Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+		committeeSchedule.setCommittee(committee);
+		committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+		scheduleVo.setCommitteeSchedule(committeeSchedule);
+		String response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
+	}
+
+	public Integer getNextActionItemNumber(CommitteeSchedule committeeSchedule) {
+        Integer nextActionItemNumber = committeeSchedule.getCommitteeScheduleActItems().size();
+        for (CommitteeScheduleActItems commScheduleActItem : committeeSchedule.getCommitteeScheduleActItems()) {
+            if (commScheduleActItem.getActionItemNumber() > nextActionItemNumber) {
+                nextActionItemNumber = commScheduleActItem.getActionItemNumber();
+            }
+        }
+        return nextActionItemNumber + 1;
+
+    }
+
+	@Override
+	public String deleteOtherActions(ScheduleVo scheduleVo) {
+		try {
+			CommitteeSchedule committeeSchedule = scheduleVo.getCommitteeSchedule();
+			List<CommitteeScheduleActItems> list = committeeSchedule.getCommitteeScheduleActItems();
+			List<CommitteeScheduleActItems> updatedlist = new ArrayList<CommitteeScheduleActItems>(list);
+			Collections.copy(updatedlist, list);
+			for (CommitteeScheduleActItems committeeScheduleActItem : list) {
+				if (committeeScheduleActItem.getCommScheduleActItemsId().equals(scheduleVo.getCommScheduleActItemsId())) {
+					updatedlist.remove(committeeScheduleActItem);
+				}
+			}
+			committeeSchedule.getCommitteeScheduleActItems().clear();
+			committeeSchedule.getCommitteeScheduleActItems().addAll(updatedlist);
+			scheduleDao.updateCommitteeSchedule(committeeSchedule);
+			scheduleVo.setCommitteeSchedule(committeeSchedule);
+			scheduleVo.setStatus(true);
+			scheduleVo.setMessage("Schedule other action item deleted successfully");
+		} catch (Exception e) {
+			scheduleVo.setStatus(true);
+			scheduleVo.setMessage("Problem occurred in deleting Schedule other action item");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(scheduleVo);
 	}
 
 }

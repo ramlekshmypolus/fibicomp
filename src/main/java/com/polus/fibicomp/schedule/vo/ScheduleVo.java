@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
@@ -33,6 +34,10 @@ public class ScheduleVo {
 	private List<CommitteeScheduleAttendance> otherPresents;
 
 	private List<ScheduleActItemType> scheduleActItemTypes;
+
+	private CommitteeScheduleActItems committeeScheduleActItems;
+
+	private Integer commScheduleActItemsId;
 
 	public ScheduleVo() {
 		memberAbsents = new ArrayList<CommitteeScheduleAttendance>();
@@ -125,5 +130,21 @@ public class ScheduleVo {
 
 	public void setScheduleActItemTypes(List<ScheduleActItemType> scheduleActItemTypes) {
 		this.scheduleActItemTypes = scheduleActItemTypes;
+	}
+
+	public CommitteeScheduleActItems getCommitteeScheduleActItems() {
+		return committeeScheduleActItems;
+	}
+
+	public void setCommitteeScheduleActItems(CommitteeScheduleActItems committeeScheduleActItems) {
+		this.committeeScheduleActItems = committeeScheduleActItems;
+	}
+
+	public Integer getCommScheduleActItemsId() {
+		return commScheduleActItemsId;
+	}
+
+	public void setCommScheduleActItemsId(Integer commScheduleActItemsId) {
+		this.commScheduleActItemsId = commScheduleActItemsId;
 	}
 }
