@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.dao.CommitteeDao;
+import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
@@ -297,6 +298,20 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		return isActiveMember;
+	}
+
+	@Override
+	public String updateSchedule(ScheduleVo scheduleVo) {
+		Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+		CommitteeSchedule committeeSchedule = scheduleVo.getCommitteeSchedule();
+		committeeSchedule.setCommittee(committee);
+		committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+		scheduleVo.setCommitteeSchedule(committeeSchedule);
+		committee.getCommitteeSchedules().add(committeeSchedule);
+		committee = committeeDao.saveCommittee(committee);
+		scheduleVo.setCommittee(committee);
+		String response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
 	}
 
 }

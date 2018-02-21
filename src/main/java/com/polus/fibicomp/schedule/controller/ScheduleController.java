@@ -31,4 +31,13 @@ public class ScheduleController {
 		String committeeDatas = scheduleService.loadScheduleById(vo.getScheduleId());
 		return committeeDatas;
 	}
+
+	@RequestMapping(value = "/updateSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String updateSchedule(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for updateSchedule");
+		logger.info("scheduleId : " + vo.getScheduleId());
+		String scheduleDatas = scheduleService.updateSchedule(vo);
+		return scheduleDatas;
+	}
+
 }
