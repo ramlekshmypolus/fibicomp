@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
-import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
+import com.polus.fibicomp.view.ProtocolView;
 
 @Service
 public interface ScheduleDao {
 
-	public List<ProtocolSubmission> fetchProtocolSubmissionByIds(Integer scheduleId, String committeeId);
+	public ProtocolView fetchProtocolViewByParams(Integer protocolId, String personId, String fullName);
 
 	public List<ScheduleActItemType> fetchAllScheduleActItemType();
 

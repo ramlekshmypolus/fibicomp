@@ -7,7 +7,6 @@ import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
-import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
 
@@ -27,8 +26,6 @@ public class ScheduleVo {
 
 	private List<ScheduleStatus> scheduleStatus;
 
-	private List<ProtocolSubmission> protocolSubmissions;
-
 	private List<CommitteeScheduleAttendance> memberAbsents;
 
 	private List<CommitteeScheduleAttendance> otherPresents;
@@ -42,14 +39,6 @@ public class ScheduleVo {
 	public ScheduleVo() {
 		memberAbsents = new ArrayList<CommitteeScheduleAttendance>();
 		otherPresents = new ArrayList<CommitteeScheduleAttendance>();
-	}
-
-	public List<ProtocolSubmission> getProtocolSubmissions() {
-		return protocolSubmissions;
-	}
-
-	public void setProtocolSubmissions(List<ProtocolSubmission> protocolSubmissions) {
-		this.protocolSubmissions = protocolSubmissions;
 	}
 
 	public CommitteeSchedule getCommitteeSchedule() {
