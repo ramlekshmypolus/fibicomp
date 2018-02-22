@@ -1060,7 +1060,6 @@ public class DashboardDaoImpl implements DashboardDao {
 			int count = pageNumber * (currentPage - 1);
 			searchCriteria.setFirstResult(count);
 			searchCriteria.setMaxResults(pageNumber);
-			searchCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			@SuppressWarnings("unchecked")
 			List<CommitteeSchedule> committeeSchedules = searchCriteria.list();
 			dashBoardProfile.setCommitteeSchedules(committeeSchedules);
