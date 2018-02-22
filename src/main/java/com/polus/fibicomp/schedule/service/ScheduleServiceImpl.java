@@ -323,7 +323,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 		CommitteeScheduleActItems scheduleActItem = new CommitteeScheduleActItems();
 		scheduleActItem.setCommitteeSchedule(committeeSchedule);
 		scheduleActItem.setScheduleActItemTypecode(committeeScheduleActItems.getScheduleActItemTypecode());
-		scheduleActItem.setItemDesctiption(committeeScheduleActItems.getItemDesctiption());
+		scheduleActItem.setItemDescription(committeeScheduleActItems.getItemDescription());
+		scheduleActItem.setScheduleActItemTypeDescription(committeeScheduleActItems.getScheduleActItemTypeDescription());
 		scheduleActItem.setActionItemNumber(getNextActionItemNumber(committeeSchedule));
 		scheduleActItem = scheduleDao.addOtherActions(scheduleActItem);
 		committeeSchedule.getCommitteeScheduleActItems().add(scheduleActItem);
@@ -349,23 +350,28 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Override
 	public String deleteOtherActions(ScheduleVo scheduleVo) {
 		try {
-			CommitteeSchedule committeeSchedule = scheduleVo.getCommitteeSchedule();
-			List<CommitteeScheduleActItems> list = committeeSchedule.getCommitteeScheduleActItems();
-			List<CommitteeScheduleActItems> updatedlist = new ArrayList<CommitteeScheduleActItems>(list);
-			Collections.copy(updatedlist, list);
-			for (CommitteeScheduleActItems committeeScheduleActItem : list) {
-				if (committeeScheduleActItem.getCommScheduleActItemsId().equals(scheduleVo.getCommScheduleActItemsId())) {
-					updatedlist.remove(committeeScheduleActItem);
+			Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+			List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+			for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+				if (committeeSchedule.getScheduleId().equals(scheduleVo.getScheduleId())) {
+					List<CommitteeScheduleActItems> list = committeeSchedule.getCommitteeScheduleActItems();
+					List<CommitteeScheduleActItems> updatedlist = new ArrayList<CommitteeScheduleActItems>(list);
+					Collections.copy(updatedlist, list);
+					for (CommitteeScheduleActItems actionItem : list) {
+						if (actionItem.getCommScheduleActItemsId().equals(scheduleVo.getCommScheduleActItemsId())) {
+							updatedlist.remove(actionItem);
+						}
+					}
+					committeeSchedule.getCommitteeScheduleActItems().clear();
+					committeeSchedule.getCommitteeScheduleActItems().addAll(updatedlist);
 				}
 			}
-			committeeSchedule.getCommitteeScheduleActItems().clear();
-			committeeSchedule.getCommitteeScheduleActItems().addAll(updatedlist);
-			scheduleDao.updateCommitteeSchedule(committeeSchedule);
-			scheduleVo.setCommitteeSchedule(committeeSchedule);
+			committeeDao.saveCommittee(committee);
+			scheduleVo.setCommittee(committee);
 			scheduleVo.setStatus(true);
 			scheduleVo.setMessage("Schedule other action item deleted successfully");
 		} catch (Exception e) {
-			scheduleVo.setStatus(true);
+			scheduleVo.setStatus(false);
 			scheduleVo.setMessage("Problem occurred in deleting Schedule other action item");
 			e.printStackTrace();
 		}

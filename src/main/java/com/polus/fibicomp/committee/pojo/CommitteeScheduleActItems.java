@@ -46,7 +46,10 @@ public class CommitteeScheduleActItems implements Serializable {
 	private Integer scheduleActItemTypecode;
 
 	@Column(name = "ITEM_DESCTIPTION")
-	private String itemDesctiption;
+	private String itemDescription;
+
+	@Column(name = "ACT_ITEM_TYPE_DESCRIPTION")
+	private String scheduleActItemTypeDescription;
 
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
@@ -86,14 +89,6 @@ public class CommitteeScheduleActItems implements Serializable {
 		this.scheduleActItemTypecode = scheduleActItemTypecode;
 	}
 
-	public String getItemDesctiption() {
-		return itemDesctiption;
-	}
-
-	public void setItemDesctiption(String itemDesctiption) {
-		this.itemDesctiption = itemDesctiption;
-	}
-
 	public Timestamp getUpdateTimestamp() {
 		return updateTimestamp;
 	}
@@ -112,6 +107,22 @@ public class CommitteeScheduleActItems implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getItemDescription() {
+		return itemDescription;
+	}
+
+	public void setItemDescription(String itemDescription) {
+		this.itemDescription = itemDescription;
+	}
+
+	public String getScheduleActItemTypeDescription() {
+		return scheduleActItemTypeDescription;
+	}
+
+	public void setScheduleActItemTypeDescription(String scheduleActItemTypeDescription) {
+		this.scheduleActItemTypeDescription = scheduleActItemTypeDescription;
 	}
 
 }
