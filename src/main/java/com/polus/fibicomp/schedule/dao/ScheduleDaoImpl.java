@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
-import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
+import com.polus.fibicomp.view.ProtocolView;
 
 @Transactional
 @Service(value = "scheduleDao")
@@ -29,18 +29,16 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProtocolSubmission> fetchProtocolSubmissionByIds(Integer scheduleId, String committeeId) {
-		List<ProtocolSubmission> protocolSubmissions = null;
+	public ProtocolView fetchProtocolViewByParams(Integer protocolId, String personId, String fullName) {
+		ProtocolView protocolView = null;
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(ProtocolSubmission.class);
-		criteria.add(Restrictions.eq("scheduleId", scheduleId));
-		criteria.add(Restrictions.eq("committeeId", committeeId));
-		criteria.add(Restrictions.eq("protocolActive", true));
-		//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		protocolSubmissions = criteria.list();
-		return protocolSubmissions;
+		Criteria criteria = session.createCriteria(ProtocolView.class);
+		criteria.add(Restrictions.eq("protocolId", protocolId));
+		criteria.add(Restrictions.eq("personId", personId));
+		criteria.add(Restrictions.eq("fullName", fullName));
+		protocolView = (ProtocolView) criteria.uniqueResult();
+		return protocolView;
 	}
 
 	@Override

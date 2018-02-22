@@ -6,11 +6,14 @@ import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
@@ -26,8 +29,10 @@ public class ProtocolSubmission implements Serializable {
 	@Column(name = "SUBMISSION_ID")
 	private Long submissionId;
 
-	@Column(name = "FIBI_SCHEDULE_ID")
-	private Integer scheduleId;
+	@JsonBackReference
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_PROTOCOL_SUBMISSION8"), name = "FIBI_SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
+	private CommitteeSchedule committeeSchedule;
 
 	@Column(name = "FIBI_COMMITTEE_ID")
 	private String committeeId;
@@ -40,6 +45,9 @@ public class ProtocolSubmission implements Serializable {
 
 	@Column(name = "PI_PERSON_NAME")
 	private String piPersonName;
+
+	@Column(name = "PI_PERSON_ID")
+	private String piPersonId;
 
 	@Column(name = "PROTOCOL_TITLE")
 	private String protocolTitle;
@@ -78,6 +86,9 @@ public class ProtocolSubmission implements Serializable {
 	@Column(name = "PROTOCOL_ACTIVE")
 	@Convert(converter = JpaCharBooleanConversion.class)
 	private Boolean protocolActive;
+
+	@Transient
+	private String documentNumber;
 
 	public Long getSubmissionId() {
 		return submissionId;
@@ -211,12 +222,28 @@ public class ProtocolSubmission implements Serializable {
 		this.protocolActive = protocolActive;
 	}
 
-	public Integer getScheduleId() {
-		return scheduleId;
+	public CommitteeSchedule getCommitteeSchedule() {
+		return committeeSchedule;
 	}
 
-	public void setScheduleId(Integer scheduleId) {
-		this.scheduleId = scheduleId;
+	public void setCommitteeSchedule(CommitteeSchedule committeeSchedule) {
+		this.committeeSchedule = committeeSchedule;
+	}
+
+	public String getPiPersonId() {
+		return piPersonId;
+	}
+
+	public void setPiPersonId(String piPersonId) {
+		this.piPersonId = piPersonId;
+	}
+
+	public String getDocumentNumber() {
+		return documentNumber;
+	}
+
+	public void setDocumentNumber(String documentNumber) {
+		this.documentNumber = documentNumber;
 	}
 
 }

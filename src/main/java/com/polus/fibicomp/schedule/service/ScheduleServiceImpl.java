@@ -23,6 +23,7 @@ import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
 import com.polus.fibicomp.schedule.dao.ScheduleDao;
 import com.polus.fibicomp.schedule.vo.ScheduleVo;
+import com.polus.fibicomp.view.ProtocolView;
 
 @Transactional
 @Service(value = "scheduleService")
@@ -46,9 +47,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 		scheduleVo.setScheduleStatus(scheduleStatus);
 		List<ScheduleActItemType> scheduleActItemTypes = scheduleDao.fetchAllScheduleActItemType();
 		scheduleVo.setScheduleActItemTypes(scheduleActItemTypes);
-		logger.info("committeeId : " + scheduleVo.getCommittee().getCommitteeId());
-		List<ProtocolSubmission> protocolSubmissions = scheduleDao.fetchProtocolSubmissionByIds(scheduleId, scheduleVo.getCommittee().getCommitteeId());
-		scheduleVo.setProtocolSubmissions(protocolSubmissions);
+		List<ProtocolSubmission> protocolSubmissions = committeeSchedule.getProtocolSubmissions();
+		if (protocolSubmissions != null && !protocolSubmissions.isEmpty()) {
+			for (ProtocolSubmission protocolSubmission : protocolSubmissions) {
+				logger.info("protocolId : " + protocolSubmission.getProtocolId());
+				logger.info("piPersonId : " + protocolSubmission.getPiPersonId());
+				logger.info("piPersonName : " + protocolSubmission.getPiPersonName());
+				ProtocolView protocolView = scheduleDao.fetchProtocolViewByParams(protocolSubmission.getProtocolId().intValue(), protocolSubmission.getPiPersonId(), protocolSubmission.getPiPersonName());
+				if (protocolView != null) {
+					protocolSubmission.setDocumentNumber(protocolView.getDocumentNumber());
+				}
+			}
+		}
 		if (committeeSchedule.getCommitteeScheduleAttendances().isEmpty() && !committeeSchedule.getCommittee().getCommitteeMemberships().isEmpty()) {
 			initAttendance(scheduleVo.getMemberAbsents(), committeeSchedule);
 		} else {
@@ -145,7 +155,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 	protected void populateAttendanceToForm(ScheduleVo scheduleVo, List<CommitteeMemberships> committeeMemberships, CommitteeSchedule commSchedule) {
 		populatePresentBean(scheduleVo, committeeMemberships, commSchedule);
 		populateMemberAbsentBean(scheduleVo, committeeMemberships, commSchedule);
-
 	}
 
 	/*

@@ -103,6 +103,10 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProtocolSubmission> protocolSubmissions;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeScheduleAttendance> committeeScheduleAttendances;
 
 	@JsonManagedReference
@@ -434,6 +438,14 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	public void setCommitteeScheduleActItems(List<CommitteeScheduleActItems> committeeScheduleActItems) {
 		this.committeeScheduleActItems = committeeScheduleActItems;
+	}
+
+	public List<ProtocolSubmission> getProtocolSubmissions() {
+		return protocolSubmissions;
+	}
+
+	public void setProtocolSubmissions(List<ProtocolSubmission> protocolSubmissions) {
+		this.protocolSubmissions = protocolSubmissions;
 	}
 
 }
