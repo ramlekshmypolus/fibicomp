@@ -45,7 +45,8 @@ public class ScheduleController {
 		logger.info("committeeId : " + vo.getCommitteeId());
 		logger.info("scheduleId : " + vo.getScheduleId());
 		logger.info("scheduleActItemTypecode : " + vo.getCommitteeScheduleActItems().getScheduleActItemTypecode());
-		logger.info("itemDesctiption : " + vo.getCommitteeScheduleActItems().getItemDesctiption());
+		logger.info("scheduleActItemTypeDescription : " + vo.getCommitteeScheduleActItems().getScheduleActItemTypeDescription());
+		logger.info("itemDescription : " + vo.getCommitteeScheduleActItems().getItemDescription());
 		String scheduleDatas = scheduleService.addOtherActions(vo);
 		return scheduleDatas;
 	}
@@ -53,6 +54,8 @@ public class ScheduleController {
 	@RequestMapping(value = "/deleteOtherActions", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String deleteOtherActions(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for deleteOtherActions");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
 		logger.info("actionItemId : " + vo.getCommScheduleActItemsId());
 		return scheduleService.deleteOtherActions(vo);
 	}
