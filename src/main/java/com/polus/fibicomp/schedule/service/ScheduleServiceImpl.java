@@ -1,11 +1,16 @@
 package com.polus.fibicomp.schedule.service;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,10 +22,14 @@ import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
+import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
+import com.polus.fibicomp.committee.schedule.Time12HrFmt;
 import com.polus.fibicomp.schedule.dao.ScheduleDao;
 import com.polus.fibicomp.schedule.vo.ScheduleVo;
 import com.polus.fibicomp.view.ProtocolView;
@@ -47,6 +56,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 		scheduleVo.setScheduleStatus(scheduleStatus);
 		List<ScheduleActItemType> scheduleActItemTypes = scheduleDao.fetchAllScheduleActItemType();
 		scheduleVo.setScheduleActItemTypes(scheduleActItemTypes);
+		List<MinuteEntrytype> minuteEntrytypes = scheduleDao.fetchAllMinuteEntryTypes();
+		scheduleVo.setMinuteEntrytypes(minuteEntrytypes);
+		List<ProtocolContingency> protocolContingencies = scheduleDao.fetchAllProtocolContingency();
+		scheduleVo.setProtocolContingencies(protocolContingencies);
+		List<CommitteeScheduleAttachType> committeeScheduleAttachTypes = scheduleDao.fetchAllCommitteeScheduleAttachType();
+		scheduleVo.setAttachmentTypes(committeeScheduleAttachTypes);
 		List<ProtocolSubmission> protocolSubmissions = committeeSchedule.getProtocolSubmissions();
 		if (protocolSubmissions != null && !protocolSubmissions.isEmpty()) {
 			for (ProtocolSubmission protocolSubmission : protocolSubmissions) {
@@ -316,6 +331,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 		Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
 		CommitteeSchedule committeeSchedule = scheduleVo.getCommitteeSchedule();
 		committeeSchedule.setCommittee(committee);
+		committeeSchedule.setStartTime(addHrMinToDate(committeeSchedule.getViewStartTime()));
+        committeeSchedule.setEndTime(addHrMinToDate(committeeSchedule.getViewEndTime()));
+        committeeSchedule.setTime(addHrMinToDate(committeeSchedule.getViewTime()));
 		committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
 		scheduleVo.setCommitteeSchedule(committeeSchedule);
 		committee.getCommitteeSchedules().add(committeeSchedule);
@@ -323,6 +341,23 @@ public class ScheduleServiceImpl implements ScheduleService {
 		scheduleVo.setCommittee(committee);
 		String response = committeeDao.convertObjectToJSON(scheduleVo);
 		return response;
+	}
+
+	/*
+     * utility methods by adding minutes to date
+     */
+	protected Timestamp addHrMinToDate(Time12HrFmt viewTime) {
+		java.util.Date dt = new java.util.Date(0); // this is actually 12-31-1969 19:00. its GMT time
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+		try {
+			// support localization.
+			dt = dateFormat.parse("01/01/1970 " + viewTime.getTime() + " " + viewTime.getMeridiem());
+			return new Timestamp(dt.getTime());
+		} catch (Exception e) {
+			// folowing may convert date to 07-02-1970 iftz is gmt+12 or more
+			dt = DateUtils.round(dt, Calendar.DAY_OF_MONTH);
+			return new Timestamp(DateUtils.addMinutes(dt, viewTime.findMinutes()).getTime());
+		}
 	}
 
 	@Override

@@ -6,10 +6,16 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE_ATTACHMENTS ")
@@ -21,15 +27,20 @@ public class CommitteeScheduleAttachment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "COMM_SCHEDULE_ATTACH_ID")
+	@GenericGenerator(name = "attachmentIdGererator", strategy = "increment", parameters = {
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@GeneratedValue(generator = "attachmentIdGererator")
+	@Column(name = "COMM_SCHEDULE_ATTACH_ID", updatable = false, nullable = false)
 	private Integer commScheduleAttachId;
 
-	@Column(name = "SCHEDULE_ID")
-	private Integer scheduleId;
+	@JsonBackReference
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_SCHEDULE_ATTACHMENT"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID")
+	private CommitteeSchedule committeeSchedule;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_SCHEDULE_ATTACHMENT"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
-	private CommitteeSchedule committeeSchedule;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_SCHE_ATTACH_TYPE"), name = "ATTACHMENT_TYPE_CODE", referencedColumnName = "ATTACHMENT_TYPE_CODE", insertable = false, updatable = false)
+	private CommitteeScheduleAttachType attachmentType;
 
 	@Column(name = "ATTACHMENT_ID")
 	private Integer attachmentId;
@@ -131,14 +142,6 @@ public class CommitteeScheduleAttachment implements Serializable {
 		return serialVersionUID;
 	}
 
-	public Integer getScheduleId() {
-		return scheduleId;
-	}
-
-	public void setScheduleId(Integer scheduleId) {
-		this.scheduleId = scheduleId;
-	}
-
 	public String getUpdateUser() {
 		return updateUser;
 	}
@@ -146,4 +149,13 @@ public class CommitteeScheduleAttachment implements Serializable {
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
 	}
+
+	public CommitteeScheduleAttachType getAttachmentType() {
+		return attachmentType;
+	}
+
+	public void setAttachmentType(CommitteeScheduleAttachType attachmentType) {
+		this.attachmentType = attachmentType;
+	}
+
 }
