@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
+import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.view.ProtocolView;
 
@@ -65,6 +68,36 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	public CommitteeScheduleActItems addOtherActions(CommitteeScheduleActItems committeeScheduleActItems) {
 		hibernateTemplate.save(committeeScheduleActItems);
 		return committeeScheduleActItems;
+	}
+
+	@Override
+	public List<MinuteEntrytype> fetchAllMinuteEntryTypes() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(MinuteEntrytype.class);
+		criteria.addOrder(Order.asc("sortId"));
+		@SuppressWarnings("unchecked")
+		List<MinuteEntrytype> minuteEntrytypes = criteria.list();
+		return minuteEntrytypes;
+	}
+
+	@Override
+	public List<ProtocolContingency> fetchAllProtocolContingency() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProtocolContingency.class);
+		criteria.addOrder(Order.asc("description"));
+		@SuppressWarnings("unchecked")
+		List<ProtocolContingency> protocolContingencies = criteria.list();
+		return protocolContingencies;
+	}
+
+	@Override
+	public List<CommitteeScheduleAttachType> fetchAllCommitteeScheduleAttachType() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(CommitteeScheduleAttachType.class);
+		criteria.addOrder(Order.asc("description"));
+		@SuppressWarnings("unchecked")
+		List<CommitteeScheduleAttachType> committeeScheduleAttachTypes = criteria.list();
+		return committeeScheduleAttachTypes;
 	}
 
 }

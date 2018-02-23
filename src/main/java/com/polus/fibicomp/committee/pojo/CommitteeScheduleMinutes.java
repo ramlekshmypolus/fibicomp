@@ -4,12 +4,20 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE_MINUTES")
@@ -21,27 +29,35 @@ public class CommitteeScheduleMinutes implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "COMM_SCHEDULE_MINUTES_ID")
+	@GenericGenerator(name = "muinutesIdGererator", strategy = "increment", parameters = {
+			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
+	@GeneratedValue(generator = "muinutesIdGererator")
+	@Column(name = "COMM_SCHEDULE_MINUTES_ID", updatable = false, nullable = false)
 	private Integer commScheduleMinutesid;
 
-	@Column(name = "SCHEDULE_ID")
-	private Integer scheduleId;
-
+	@JsonBackReference
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_COMM_SCHEDULE_MINUTES"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_COMM_SCHEDULE_MINUTES"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID")
 	private CommitteeSchedule committeeSchedule;
 
 	@Column(name = "ENTRY_NUMBER")
 	private Integer entryNumber;
 
 	@Column(name = "MINUTE_ENTRY_TYPE_CODE")
-	private Integer minuteEntryTypecode;
+	private Integer minuteEntryTypeCode;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE_MINUTES"), name = "MINUTE_ENTRY_TYPE_CODE", referencedColumnName = "MINUTE_ENTRY_TYPE_CODE", insertable = false, updatable = false)
 	private MinuteEntrytype minuteEntrytype;
 
-	@Column(name = "PROTOCOL_NUMBE")
+	@Column(name = "PROTOCOL_CONTINGENCY_CODE")
+	private String protocolContingencyCode;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_MINUTES2"), name = "PROTOCOL_CONTINGENCY_CODE", referencedColumnName = "PROTOCOL_CONTINGENCY_CODE", insertable = false, updatable = false)
+	private ProtocolContingency protocolContingency;
+
+	@Column(name = "PROTOCOL_NUMBER")
 	private String protocolNumber;
 
 	@Column(name = "SEQUENCE_NUMBER")
@@ -60,16 +76,15 @@ public class CommitteeScheduleMinutes implements Serializable {
 	private Integer submissionNumber;
 
 	@Column(name = "PRIVATE_COMMENT_FLAG")
-	private String privateCommentFlag;
-
-	@Column(name = "PROTOCOL_CONTINGENCY_CODE")
-	private String protocolContingencyCode;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean privateCommentFlag;
 
 	@Column(name = "MINUTE_ENTRY")
 	private long minuteEntry;
 
 	@Column(name = "FINAL_FLAG")
-	private String finalFlag;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean finalFlag;
 
 	@Column(name = "PERSON_ID")
 	private String personId;
@@ -161,14 +176,6 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.submissionNumber = submissionNumber;
 	}
 
-	public String getPrivateCommentFlag() {
-		return privateCommentFlag;
-	}
-
-	public void setPrivateCommentFlag(String privateCommentFlag) {
-		this.privateCommentFlag = privateCommentFlag;
-	}
-
 	public String getProtocolContingencyCode() {
 		return protocolContingencyCode;
 	}
@@ -183,14 +190,6 @@ public class CommitteeScheduleMinutes implements Serializable {
 
 	public void setMinuteEntry(long minuteEntry) {
 		this.minuteEntry = minuteEntry;
-	}
-
-	public String getFinalFlag() {
-		return finalFlag;
-	}
-
-	public void setFinalFlag(String finalFlag) {
-		this.finalFlag = finalFlag;
 	}
 
 	public String getPersonId() {
@@ -253,20 +252,36 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.minuteEntrytype = minuteEntrytype;
 	}
 
-	public Integer getScheduleId() {
-		return scheduleId;
+	public Integer getMinuteEntryTypeCode() {
+		return minuteEntryTypeCode;
 	}
 
-	public void setScheduleId(Integer scheduleId) {
-		this.scheduleId = scheduleId;
+	public void setMinuteEntryTypeCode(Integer minuteEntryTypeCode) {
+		this.minuteEntryTypeCode = minuteEntryTypeCode;
 	}
 
-	public Integer getMinuteEntryTypecode() {
-		return minuteEntryTypecode;
+	public Boolean getPrivateCommentFlag() {
+		return privateCommentFlag;
 	}
 
-	public void setMinuteEntryTypecode(Integer minuteEntryTypecode) {
-		this.minuteEntryTypecode = minuteEntryTypecode;
+	public void setPrivateCommentFlag(Boolean privateCommentFlag) {
+		this.privateCommentFlag = privateCommentFlag;
+	}
+
+	public Boolean getFinalFlag() {
+		return finalFlag;
+	}
+
+	public void setFinalFlag(Boolean finalFlag) {
+		this.finalFlag = finalFlag;
+	}
+
+	public ProtocolContingency getProtocolContingency() {
+		return protocolContingency;
+	}
+
+	public void setProtocolContingency(ProtocolContingency protocolContingency) {
+		this.protocolContingency = protocolContingency;
 	}
 
 }

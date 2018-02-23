@@ -6,7 +6,12 @@ import java.util.List;
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachment;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
+import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
 
@@ -35,6 +40,16 @@ public class ScheduleVo {
 	private CommitteeScheduleActItems committeeScheduleActItems;
 
 	private Integer commScheduleActItemsId;
+
+	private List<MinuteEntrytype> minuteEntrytypes;
+
+	private List<ProtocolContingency> protocolContingencies;
+
+	private CommitteeScheduleAttachment newCommitteeScheduleAttachment;
+
+	private CommitteeScheduleMinutes newCommitteeScheduleMinute;
+
+	private List<CommitteeScheduleAttachType> attachmentTypes;
 
 	public ScheduleVo() {
 		memberAbsents = new ArrayList<CommitteeScheduleAttendance>();
@@ -135,5 +150,45 @@ public class ScheduleVo {
 
 	public void setCommScheduleActItemsId(Integer commScheduleActItemsId) {
 		this.commScheduleActItemsId = commScheduleActItemsId;
+	}
+
+	public List<MinuteEntrytype> getMinuteEntrytypes() {
+		return minuteEntrytypes;
+	}
+
+	public void setMinuteEntrytypes(List<MinuteEntrytype> minuteEntrytypes) {
+		this.minuteEntrytypes = minuteEntrytypes;
+	}
+
+	public List<ProtocolContingency> getProtocolContingencies() {
+		return protocolContingencies;
+	}
+
+	public void setProtocolContingencies(List<ProtocolContingency> protocolContingencies) {
+		this.protocolContingencies = protocolContingencies;
+	}
+
+	public CommitteeScheduleAttachment getNewCommitteeScheduleAttachment() {
+		return newCommitteeScheduleAttachment;
+	}
+
+	public void setNewCommitteeScheduleAttachment(CommitteeScheduleAttachment newCommitteeScheduleAttachment) {
+		this.newCommitteeScheduleAttachment = newCommitteeScheduleAttachment;
+	}
+
+	public CommitteeScheduleMinutes getNewCommitteeScheduleMinute() {
+		return newCommitteeScheduleMinute;
+	}
+
+	public void setNewCommitteeScheduleMinute(CommitteeScheduleMinutes newCommitteeScheduleMinute) {
+		this.newCommitteeScheduleMinute = newCommitteeScheduleMinute;
+	}
+
+	public List<CommitteeScheduleAttachType> getAttachmentTypes() {
+		return attachmentTypes;
+	}
+
+	public void setAttachmentTypes(List<CommitteeScheduleAttachType> attachmentTypes) {
+		this.attachmentTypes = attachmentTypes;
 	}
 }

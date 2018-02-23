@@ -113,6 +113,14 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<CommitteeScheduleActItems> committeeScheduleActItems;
 
+	@JsonManagedReference
+	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeScheduleMinutes> committeeScheduleMinutes;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<CommitteeScheduleAttachment> committeeScheduleAttachments;
+
 	@Transient
 	private String dayOfWeek;
 
@@ -446,6 +454,22 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	public void setProtocolSubmissions(List<ProtocolSubmission> protocolSubmissions) {
 		this.protocolSubmissions = protocolSubmissions;
+	}
+
+	public List<CommitteeScheduleMinutes> getCommitteeScheduleMinutes() {
+		return committeeScheduleMinutes;
+	}
+
+	public void setCommitteeScheduleMinutes(List<CommitteeScheduleMinutes> committeeScheduleMinutes) {
+		this.committeeScheduleMinutes = committeeScheduleMinutes;
+	}
+
+	public List<CommitteeScheduleAttachment> getCommitteeScheduleAttachments() {
+		return committeeScheduleAttachments;
+	}
+
+	public void setCommitteeScheduleAttachments(List<CommitteeScheduleAttachment> committeeScheduleAttachments) {
+		this.committeeScheduleAttachments = committeeScheduleAttachments;
 	}
 
 }

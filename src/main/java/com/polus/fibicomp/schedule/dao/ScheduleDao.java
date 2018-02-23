@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
+import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.view.ProtocolView;
 
@@ -19,5 +22,11 @@ public interface ScheduleDao {
 	public CommitteeSchedule updateCommitteeSchedule(CommitteeSchedule committeeSchedule);
 
 	public CommitteeScheduleActItems addOtherActions(CommitteeScheduleActItems committeeScheduleActItems);
+
+	public List<MinuteEntrytype> fetchAllMinuteEntryTypes();
+
+	public List<ProtocolContingency> fetchAllProtocolContingency();
+
+	public List<CommitteeScheduleAttachType> fetchAllCommitteeScheduleAttachType();
 
 }
