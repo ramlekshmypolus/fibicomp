@@ -329,13 +329,17 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public String addOtherActions(ScheduleVo scheduleVo) {
 		CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleVo.getScheduleId());
 		CommitteeScheduleActItems committeeScheduleActItems = scheduleVo.getCommitteeScheduleActItems();
+
 		CommitteeScheduleActItems scheduleActItem = new CommitteeScheduleActItems();
 		scheduleActItem.setCommitteeSchedule(committeeSchedule);
 		scheduleActItem.setScheduleActItemTypecode(committeeScheduleActItems.getScheduleActItemTypecode());
 		scheduleActItem.setItemDescription(committeeScheduleActItems.getItemDescription());
 		scheduleActItem.setScheduleActItemTypeDescription(committeeScheduleActItems.getScheduleActItemTypeDescription());
 		scheduleActItem.setActionItemNumber(getNextActionItemNumber(committeeSchedule));
+		scheduleActItem.setUpdateTimestamp(committeeScheduleActItems.getUpdateTimestamp());
+		scheduleActItem.setUpdateUser(committeeScheduleActItems.getUpdateUser());
 		scheduleActItem = scheduleDao.addOtherActions(scheduleActItem);
+
 		committeeSchedule.getCommitteeScheduleActItems().add(scheduleActItem);
 		Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
 		committeeSchedule.setCommittee(committee);
@@ -346,15 +350,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	public Integer getNextActionItemNumber(CommitteeSchedule committeeSchedule) {
-        Integer nextActionItemNumber = committeeSchedule.getCommitteeScheduleActItems().size();
-        for (CommitteeScheduleActItems commScheduleActItem : committeeSchedule.getCommitteeScheduleActItems()) {
-            if (commScheduleActItem.getActionItemNumber() > nextActionItemNumber) {
-                nextActionItemNumber = commScheduleActItem.getActionItemNumber();
-            }
-        }
-        return nextActionItemNumber + 1;
-
-    }
+		Integer nextActionItemNumber = committeeSchedule.getCommitteeScheduleActItems().size();
+		for (CommitteeScheduleActItems commScheduleActItem : committeeSchedule.getCommitteeScheduleActItems()) {
+			if (commScheduleActItem.getActionItemNumber() > nextActionItemNumber) {
+				nextActionItemNumber = commScheduleActItem.getActionItemNumber();
+			}
+		}
+		return nextActionItemNumber + 1;
+	}
 
 	@Override
 	public String deleteOtherActions(ScheduleVo scheduleVo) {
@@ -373,9 +376,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 					}
 					committeeSchedule.getCommitteeScheduleActItems().clear();
 					committeeSchedule.getCommitteeScheduleActItems().addAll(updatedlist);
+					scheduleVo.setCommitteeSchedule(committeeSchedule);
 				}
 			}
-			committeeDao.saveCommittee(committee);
+			committee = committeeDao.saveCommittee(committee);
 			scheduleVo.setCommittee(committee);
 			scheduleVo.setStatus(true);
 			scheduleVo.setMessage("Schedule other action item deleted successfully");
