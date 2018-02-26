@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -33,7 +34,7 @@ public class CommitteeScheduleMinutes implements Serializable {
 			@Parameter(name = "initial_value", value = "1"), @Parameter(name = "increment_size", value = "1") })
 	@GeneratedValue(generator = "muinutesIdGererator")
 	@Column(name = "COMM_SCHEDULE_MINUTES_ID", updatable = false, nullable = false)
-	private Integer commScheduleMinutesid;
+	private Integer commScheduleMinutesId;
 
 	@JsonBackReference
 	@ManyToOne(optional = false)
@@ -67,7 +68,7 @@ public class CommitteeScheduleMinutes implements Serializable {
 	private Integer protocolId;
 
 	@Column(name = "SUBMISSION_ID")
-	private Integer submissionId;
+	private Long submissionId;
 
 	@Column(name = "REVIEWER_ID")
 	private Integer reviewerId;
@@ -80,7 +81,7 @@ public class CommitteeScheduleMinutes implements Serializable {
 	private Boolean privateCommentFlag;
 
 	@Column(name = "MINUTE_ENTRY")
-	private long minuteEntry;
+	private String minuteEntry;
 
 	@Column(name = "FINAL_FLAG")
 	@Convert(converter = JpaCharBooleanConversion.class)
@@ -104,13 +105,15 @@ public class CommitteeScheduleMinutes implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	public Integer getCommScheduleMinutesid() {
-		return commScheduleMinutesid;
-	}
+	@Column(name = "COMM_SCHEDULE_ACT_ITEMS_ID")
+	private Integer commScheduleActItemsId;
 
-	public void setCommScheduleMinutesid(Integer commScheduleMinutesid) {
-		this.commScheduleMinutesid = commScheduleMinutesid;
-	}
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_MINUTES3"), name = "COMM_SCHEDULE_ACT_ITEMS_ID", referencedColumnName = "COMM_SCHEDULE_ACT_ITEMS_ID", insertable = false, updatable = false)
+	private CommitteeScheduleActItems scheduleActItems;
+
+	@Transient
+	private boolean generateAttendance = false;
 
 	public CommitteeSchedule getCommitteeSchedule() {
 		return committeeSchedule;
@@ -152,14 +155,6 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.protocolId = protocolId;
 	}
 
-	public Integer getSubmissionId() {
-		return submissionId;
-	}
-
-	public void setSubmissionId(Integer submissionId) {
-		this.submissionId = submissionId;
-	}
-
 	public Integer getReviewerId() {
 		return reviewerId;
 	}
@@ -182,14 +177,6 @@ public class CommitteeScheduleMinutes implements Serializable {
 
 	public void setProtocolContingencyCode(String protocolContingencyCode) {
 		this.protocolContingencyCode = protocolContingencyCode;
-	}
-
-	public long getMinuteEntry() {
-		return minuteEntry;
-	}
-
-	public void setMinuteEntry(long minuteEntry) {
-		this.minuteEntry = minuteEntry;
 	}
 
 	public String getPersonId() {
@@ -282,6 +269,54 @@ public class CommitteeScheduleMinutes implements Serializable {
 
 	public void setProtocolContingency(ProtocolContingency protocolContingency) {
 		this.protocolContingency = protocolContingency;
+	}
+
+	public Integer getCommScheduleMinutesId() {
+		return commScheduleMinutesId;
+	}
+
+	public void setCommScheduleMinutesId(Integer commScheduleMinutesId) {
+		this.commScheduleMinutesId = commScheduleMinutesId;
+	}
+
+	public Long getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(Long submissionId) {
+		this.submissionId = submissionId;
+	}
+
+	public String getMinuteEntry() {
+		return minuteEntry;
+	}
+
+	public void setMinuteEntry(String minuteEntry) {
+		this.minuteEntry = minuteEntry;
+	}
+
+	public boolean isGenerateAttendance() {
+		return generateAttendance;
+	}
+
+	public void setGenerateAttendance(boolean generateAttendance) {
+		this.generateAttendance = generateAttendance;
+	}
+
+	public Integer getCommScheduleActItemsId() {
+		return commScheduleActItemsId;
+	}
+
+	public void setCommScheduleActItemsId(Integer commScheduleActItemsId) {
+		this.commScheduleActItemsId = commScheduleActItemsId;
+	}
+
+	public CommitteeScheduleActItems getScheduleActItems() {
+		return scheduleActItems;
+	}
+
+	public void setScheduleActItems(CommitteeScheduleActItems scheduleActItems) {
+		this.scheduleActItems = scheduleActItems;
 	}
 
 }

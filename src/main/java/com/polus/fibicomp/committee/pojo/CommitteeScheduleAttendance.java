@@ -36,9 +36,6 @@ public class CommitteeScheduleAttendance implements Serializable {
 	@Column(name = "COMM_SCHEDULE_ATTENDANCE_ID", updatable = false, nullable = false)
 	private Integer committeeScheduleAttendanceId;
 
-	@Column(name = "SCHEDULE_ID")
-	private Integer scheduleId;
-
 	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_ATTENDANCE"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
@@ -146,14 +143,6 @@ public class CommitteeScheduleAttendance implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public Integer getScheduleId() {
-		return scheduleId;
-	}
-
-	public void setScheduleId(Integer scheduleId) {
-		this.scheduleId = scheduleId;
 	}
 
 	public Boolean getGuestFlag() {

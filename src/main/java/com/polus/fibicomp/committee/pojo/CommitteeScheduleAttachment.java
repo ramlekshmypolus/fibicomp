@@ -157,5 +157,4 @@ public class CommitteeScheduleAttachment implements Serializable {
 	public void setAttachmentType(CommitteeScheduleAttachType attachmentType) {
 		this.attachmentType = attachmentType;
 	}
-
 }

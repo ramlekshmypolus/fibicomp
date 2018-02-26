@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
 import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
 import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
@@ -98,6 +99,12 @@ public class ScheduleDaoImpl implements ScheduleDao {
 		@SuppressWarnings("unchecked")
 		List<CommitteeScheduleAttachType> committeeScheduleAttachTypes = criteria.list();
 		return committeeScheduleAttachTypes;
+	}
+
+	@Override
+	public CommitteeScheduleMinutes addCommitteeScheduleMinute(CommitteeScheduleMinutes committeeScheduleMinutes) {
+		hibernateTemplate.save(committeeScheduleMinutes);
+		return committeeScheduleMinutes;
 	}
 
 }

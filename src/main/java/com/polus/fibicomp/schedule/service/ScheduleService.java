@@ -15,4 +15,6 @@ public interface ScheduleService {
 
 	public String deleteOtherActions(ScheduleVo scheduleVo);
 
+	public String addCommitteeScheduleMinute(ScheduleVo scheduleVo);
+
 }

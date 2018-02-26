@@ -24,6 +24,7 @@ import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
 import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
 import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
@@ -76,6 +77,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 		if (committeeSchedule.getCommitteeScheduleAttendances().isEmpty() && !committeeSchedule.getCommittee().getCommitteeMemberships().isEmpty()) {
 			initAttendance(scheduleVo.getMemberAbsents(), committeeSchedule);
+			committeeSchedule.getCommitteeScheduleAttendances().clear();
+			committeeSchedule.getCommitteeScheduleAttendances().addAll(scheduleVo.getMemberAbsents());
+			committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
 		} else {
 			populateAttendanceToForm(scheduleVo, committeeSchedule.getCommittee().getCommitteeMemberships(), committeeSchedule);
 		}
@@ -106,6 +110,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 				// MemberAbsentBean memberAbsentBean = new MemberAbsentBean();
 				committeeScheduleAttendance.setRoleName(getRoleNameForMembership(committeeMembership, commSchedule.getScheduledDate()));
 				// memberAbsentBean.setAttendance(committeeScheduleAttendance);
+				committeeScheduleAttendance.setCommitteeSchedule(commSchedule);
 				committeeScheduleAttendances.add(committeeScheduleAttendance);
 			}
 		});
@@ -424,6 +429,136 @@ public class ScheduleServiceImpl implements ScheduleService {
 			e.printStackTrace();
 		}
 		return committeeDao.convertObjectToJSON(scheduleVo);
+	}
+
+	@Override
+	public String addCommitteeScheduleMinute(ScheduleVo scheduleVo) {
+		CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleVo.getScheduleId());
+		CommitteeScheduleMinutes committeeScheduleMinute = scheduleVo.getNewCommitteeScheduleMinute();
+
+		String protocolNumber = null;
+		Long submissionId = null;
+		Integer submissionNumber = null;
+
+		if (committeeScheduleMinute.getProtocolNumber() != null) {
+			protocolNumber = committeeScheduleMinute.getProtocolNumber();
+			for (ProtocolSubmission protocolSubmission : committeeSchedule.getProtocolSubmissions()) {
+				if (protocolSubmission.getProtocolNumber().equals(protocolNumber)) {
+					submissionId = protocolSubmission.getSubmissionId();
+					submissionNumber = protocolSubmission.getSubmissionNumber();
+				}
+			}
+		}
+
+		Integer entryNumber = getNextMinuteEntryNumber(committeeSchedule);
+		Integer minuteEntryTypeCode = committeeScheduleMinute.getMinuteEntryTypeCode();
+
+		committeeScheduleMinute.setSubmissionId(submissionId);
+		committeeScheduleMinute.setSubmissionNumber(submissionNumber);
+		committeeScheduleMinute.setProtocolNumber(protocolNumber);
+		committeeScheduleMinute.setEntryNumber(entryNumber);
+		committeeScheduleMinute.setCommitteeSchedule(committeeSchedule);
+
+		if (MinuteEntrytype.ATTENDANCE.equals(minuteEntryTypeCode)) {
+			addAttendanceMinuteEntry(committeeSchedule, committeeScheduleMinute);
+		} else if (MinuteEntrytype.ACTION_ITEM.equals(minuteEntryTypeCode)) {
+			addActionItem(committeeSchedule, committeeScheduleMinute);
+		} else if (MinuteEntrytype.PROTOCOL.equals(minuteEntryTypeCode)) {
+			resetActionItemFields(committeeScheduleMinute);
+		} else {
+			resetProtocolFields(committeeScheduleMinute);
+			resetActionItemFields(committeeScheduleMinute);
+		}
+		committeeScheduleMinute = scheduleDao.addCommitteeScheduleMinute(committeeScheduleMinute);
+		committeeSchedule.getCommitteeScheduleMinutes().add(committeeScheduleMinute);
+		committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+		scheduleVo.setCommitteeSchedule(committeeSchedule);
+		String response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
+	}
+
+	protected Integer getNextMinuteEntryNumber(CommitteeSchedule committeeSchedule) {
+		Integer nextMinuteEntryNumber = committeeSchedule.getCommitteeScheduleMinutes().size();
+		for (CommitteeScheduleMinutes committeeScheduleMinute : committeeSchedule.getCommitteeScheduleMinutes()) {
+			if (committeeScheduleMinute.getEntryNumber() > nextMinuteEntryNumber) {
+				nextMinuteEntryNumber = committeeScheduleMinute.getEntryNumber();
+			}
+		}
+		return nextMinuteEntryNumber + 1;
+	}
+
+	protected void addAttendanceMinuteEntry(CommitteeSchedule committeeSchedule,
+			CommitteeScheduleMinutes committeeScheduleMinutes) {
+		if (committeeScheduleMinutes.isGenerateAttendance()) {
+			committeeScheduleMinutes.setMinuteEntry(generateAttendanceComment(committeeSchedule.getCommitteeScheduleAttendances(), committeeSchedule));
+		}
+		resetProtocolFields(committeeScheduleMinutes);
+		resetActionItemFields(committeeScheduleMinutes);
+	}
+
+	protected String generateAttendanceComment(List<CommitteeScheduleAttendance> memberPresentList, CommitteeSchedule committeeSchedule) {
+		String comment = "";
+		String eol = System.getProperty("line.separator");
+		for (CommitteeScheduleAttendance memberPresent : memberPresentList) {
+			if (StringUtils.isNotBlank(comment)) {
+				comment = comment + eol;
+			}
+			comment = comment + memberPresent.getPersonName();
+			if (StringUtils.isNotBlank(memberPresent.getAlternateFor())) {
+				comment = comment + " Alternate For: "
+						+ getAlternateForName(committeeSchedule, memberPresent.getAlternateFor());
+			}
+			if (memberPresent.getGuestFlag()) {
+				comment = comment + memberPresent.getPersonName() + " Guest ";
+			}
+		}
+		return comment;
+	}
+
+	protected String getAlternateForName(CommitteeSchedule committeeSchedule, String alternateFor) {
+		String personName = "";
+		for (CommitteeMemberships committeeMembership : committeeSchedule.getCommittee().getCommitteeMemberships()) {
+			if ((StringUtils.isNotBlank(committeeMembership.getPersonId())
+					&& committeeMembership.getPersonId().equals(alternateFor))
+					|| (StringUtils.isBlank(committeeMembership.getPersonId())
+							&& committeeMembership.getRolodexId().toString().equals(alternateFor))) {
+				personName = committeeMembership.getPersonName();
+				break;
+			}
+		}
+		return personName;
+	}
+
+	protected void resetProtocolFields(CommitteeScheduleMinutes committeeScheduleMinutes) {
+		committeeScheduleMinutes.setProtocolId(null);
+		committeeScheduleMinutes.setProtocolNumber(null);
+		// committeeScheduleMinutes.setProtocol(null);
+	}
+
+	protected void resetActionItemFields(CommitteeScheduleMinutes committeeScheduleMinutes) {
+		committeeScheduleMinutes.setCommScheduleActItemsId(null);
+		committeeScheduleMinutes.setScheduleActItems(null);
+	}
+
+	protected void addActionItem(CommitteeSchedule committeeSchedule, CommitteeScheduleMinutes committeeScheduleMinutes) {
+		if (committeeScheduleMinutes.getCommScheduleActItemsId() != null) {
+			// in case adding non-persisted action item
+			committeeScheduleMinutes.setScheduleActItems(getActionItem(committeeScheduleMinutes.getCommScheduleActItemsId(), committeeSchedule.getCommitteeScheduleActItems()));
+		}
+		resetProtocolFields(committeeScheduleMinutes);
+	}
+
+	protected CommitteeScheduleActItems getActionItem(Integer commScheduleActItemsId, List<CommitteeScheduleActItems> commScheduleActItems) {
+		CommitteeScheduleActItems actionItem = null;
+
+		for (CommitteeScheduleActItems commScheduleActItem : commScheduleActItems) {
+			if (commScheduleActItem.getCommScheduleActItemsId().equals(commScheduleActItemsId)) {
+				actionItem = commScheduleActItem;
+				break;
+			}
+		}
+
+		return actionItem;
 	}
 
 }
