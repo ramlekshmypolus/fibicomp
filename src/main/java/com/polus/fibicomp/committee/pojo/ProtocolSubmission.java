@@ -31,7 +31,7 @@ public class ProtocolSubmission implements Serializable {
 
 	@JsonBackReference
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_PROTOCOL_SUBMISSION8"), name = "FIBI_SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_PROTOCOL_SUBMISSION8"), name = "FIBI_SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID")
 	private CommitteeSchedule committeeSchedule;
 
 	@Column(name = "SUBMISSION_NUMBER")

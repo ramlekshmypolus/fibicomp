@@ -38,7 +38,7 @@ public class CommitteeScheduleAttendance implements Serializable {
 
 	@JsonBackReference
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_ATTENDANCE"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_ATTENDANCE"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID")
 	private CommitteeSchedule committeeSchedule;
 
 	@Column(name = "PERSON_ID")
@@ -70,6 +70,10 @@ public class CommitteeScheduleAttendance implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
+
+	@Column(name = "MEMBER_PRESENT")
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean memberPresent;
 
 	@Transient
 	private String roleName;
@@ -183,6 +187,14 @@ public class CommitteeScheduleAttendance implements Serializable {
 
 	public void setGuestMemberActive(boolean guestMemberActive) {
 		this.guestMemberActive = guestMemberActive;
+	}
+
+	public Boolean getMemberPresent() {
+		return memberPresent;
+	}
+
+	public void setMemberPresent(Boolean memberPresent) {
+		this.memberPresent = memberPresent;
 	}
 
 }

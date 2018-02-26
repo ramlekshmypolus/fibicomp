@@ -1,5 +1,6 @@
 package com.polus.fibicomp.schedule.service;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -15,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.committee.pojo.Committee;
@@ -23,6 +25,7 @@ import com.polus.fibicomp.committee.pojo.CommitteeMemberships;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachment;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
 import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
@@ -76,12 +79,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 			}
 		}
 		if (committeeSchedule.getCommitteeScheduleAttendances().isEmpty() && !committeeSchedule.getCommittee().getCommitteeMemberships().isEmpty()) {
-			initAttendance(scheduleVo.getMemberAbsents(), committeeSchedule);
+			List<CommitteeScheduleAttendance> activeMembers = new ArrayList<CommitteeScheduleAttendance>();
+			initAttendance(activeMembers, committeeSchedule);
 			committeeSchedule.getCommitteeScheduleAttendances().clear();
-			committeeSchedule.getCommitteeScheduleAttendances().addAll(scheduleVo.getMemberAbsents());
+			committeeSchedule.getCommitteeScheduleAttendances().addAll(activeMembers);
 			committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
 		} else {
-			populateAttendanceToForm(scheduleVo, committeeSchedule.getCommittee().getCommitteeMemberships(), committeeSchedule);
+			//populateAttendanceToForm(scheduleVo, committeeSchedule.getCommittee().getCommitteeMemberships(), committeeSchedule);
+			List<CommitteeScheduleAttendance> activeMembers = new ArrayList<CommitteeScheduleAttendance>();
+			loadAttendance(activeMembers, committeeSchedule);
+			committeeSchedule.getCommitteeScheduleAttendances().clear();
+			committeeSchedule.getCommitteeScheduleAttendances().addAll(activeMembers);
+			committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
 		}
 		return committeeDao.convertObjectToJSON(scheduleVo);
 	}
@@ -110,10 +119,53 @@ public class ScheduleServiceImpl implements ScheduleService {
 				// MemberAbsentBean memberAbsentBean = new MemberAbsentBean();
 				committeeScheduleAttendance.setRoleName(getRoleNameForMembership(committeeMembership, commSchedule.getScheduledDate()));
 				// memberAbsentBean.setAttendance(committeeScheduleAttendance);
+				committeeScheduleAttendance.setMemberPresent(false);
 				committeeScheduleAttendance.setCommitteeSchedule(commSchedule);
+				committeeScheduleAttendance = scheduleDao.addCommitteeScheduleAttendance(committeeScheduleAttendance);
 				committeeScheduleAttendances.add(committeeScheduleAttendance);
 			}
 		});
+	}
+
+	protected void loadAttendance(List<CommitteeScheduleAttendance> committeeScheduleAttendances, CommitteeSchedule commSchedule) {
+		List<CommitteeMemberships> committeeMemberships = commSchedule.getCommittee().getCommitteeMemberships();
+		List<CommitteeMemberships> updatedlist = new ArrayList<CommitteeMemberships>(committeeMemberships);
+		Collections.copy(updatedlist, committeeMemberships);
+		List<CommitteeScheduleAttendance> commScheduleAttendances = commSchedule.getCommitteeScheduleAttendances();
+		committeeMemberships.forEach(committeeMembership -> {
+			if (isActiveMembership(committeeMembership, commSchedule.getScheduledDate())) {
+				for (CommitteeScheduleAttendance attendance : commScheduleAttendances) {
+					if ((attendance.getNonEmployeeFlag() && committeeMembership.getRolodexId() != null && attendance.getPersonId().equals(committeeMembership.getRolodexId().toString()))
+							|| (!attendance.getNonEmployeeFlag() && attendance.getPersonId().equals(committeeMembership.getPersonId()))) {
+						committeeScheduleAttendances.add(attendance);
+						updatedlist.remove(committeeMembership);
+					}
+				}
+			} else {
+				updatedlist.remove(committeeMembership);
+			}
+		});
+		for (CommitteeMemberships updated : updatedlist) {
+			CommitteeScheduleAttendance committeeScheduleAttendance = new CommitteeScheduleAttendance();
+			if (StringUtils.isBlank(updated.getPersonId())) {
+				committeeScheduleAttendance.setPersonId(updated.getRolodexId().toString());
+				committeeScheduleAttendance.setNonEmployeeFlag(true);
+			} else {
+				committeeScheduleAttendance.setPersonId(updated.getPersonId());
+				committeeScheduleAttendance.setNonEmployeeFlag(false);
+			}
+			committeeScheduleAttendance.setPersonName(updated.getPersonName());
+			if (isAlternate(updated, commSchedule.getScheduledDate())) {
+				committeeScheduleAttendance.setAlternateFlag(true);
+			} else {
+				committeeScheduleAttendance.setAlternateFlag(false);
+			}
+			committeeScheduleAttendance.setRoleName(getRoleNameForMembership(updated, commSchedule.getScheduledDate()));
+			committeeScheduleAttendance.setMemberPresent(false);
+			committeeScheduleAttendance.setCommitteeSchedule(commSchedule);
+			committeeScheduleAttendance = scheduleDao.addCommitteeScheduleAttendance(committeeScheduleAttendance);
+			committeeScheduleAttendances.add(committeeScheduleAttendance);
+		}
 	}
 
 	protected boolean isActiveMembership(CommitteeMemberships committeeMembership, Date scheduledDate) {
@@ -173,7 +225,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	 * populate 3 attendance form beans
 	 */
 	protected void populateAttendanceToForm(ScheduleVo scheduleVo, List<CommitteeMemberships> committeeMemberships, CommitteeSchedule commSchedule) {
-		populatePresentBean(scheduleVo, committeeMemberships, commSchedule);
+		//populatePresentBean(scheduleVo, committeeMemberships, commSchedule);
 		populateMemberAbsentBean(scheduleVo, committeeMemberships, commSchedule);
 	}
 
@@ -182,7 +234,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	 */
 	protected void populatePresentBean(ScheduleVo scheduleVo, List<CommitteeMemberships> committeeMemberships,
 			CommitteeSchedule commSchedule) {
-		scheduleVo.setOtherPresents(new ArrayList<CommitteeScheduleAttendance>());
+		//scheduleVo.setOtherPresents(new ArrayList<CommitteeScheduleAttendance>());
 		// commSchedule.setMemberPresents(new ArrayList<>());
 		for (CommitteeScheduleAttendance committeeScheduleAttendance : commSchedule.getCommitteeScheduleAttendances()) {
 			getRoleName(committeeScheduleAttendance, committeeMemberships, commSchedule.getScheduledDate());
@@ -194,7 +246,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 				if (StringUtils.isBlank(committeeScheduleAttendance.getRoleName())) {
 					committeeScheduleAttendance.setRoleName("Guest");
 				}
-				scheduleVo.getOtherPresents().add(committeeScheduleAttendance);
+				//scheduleVo.getOtherPresents().add(committeeScheduleAttendance);
 				// otherPresentBean.setAttendance(committeeScheduleAttendance);
 			}
 			/*
@@ -249,10 +301,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 	 * populate memberabsentbean
 	 */
 	protected void populateMemberAbsentBean(ScheduleVo scheduleVo, List<CommitteeMemberships> committeeMemberships, CommitteeSchedule commSchedule) {
-		scheduleVo.setMemberAbsents(new ArrayList<CommitteeScheduleAttendance>());
+		//scheduleVo.setMemberAbsents(new ArrayList<CommitteeScheduleAttendance>());
 		committeeMemberships.forEach(committeeMembership -> {
 			if (!isInMemberPresent(commSchedule.getCommitteeScheduleAttendances(), committeeMembership)
-					&& !isInOtherPresent(scheduleVo.getOtherPresents(), committeeMembership)) {
+					&& !isInOtherPresent(commSchedule.getCommitteeScheduleAttendances(), committeeMembership)) {
 				// MemberAbsentBean memberAbsentBean = new MemberAbsentBean();
 				CommitteeScheduleAttendance attendance = new CommitteeScheduleAttendance();
 				attendance.setRoleName(getRoleNameForMembership(committeeMembership, commSchedule.getScheduledDate()));
@@ -266,7 +318,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 					attendance.setAlternateFlag(false);
 					attendance.setNonEmployeeFlag(StringUtils.isBlank(committeeMembership.getPersonId()));
 					// memberAbsentBean.setAttendance(attendance);
-					scheduleVo.getMemberAbsents().add(attendance);
+					//scheduleVo.getMemberAbsents().add(attendance);
 				}
 			}
 		});
@@ -559,6 +611,134 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		return actionItem;
+	}
+
+	@Override
+	public String updateScheduleAttendance(ScheduleVo scheduleVo) {
+		String response = "";
+		Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+		List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+		CommitteeScheduleAttendance scheduleAttendance = scheduleVo.getUpdatedAttendance();
+		for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+			if (committeeSchedule.getScheduleId().equals(scheduleVo.getScheduleId())) {
+				List<CommitteeScheduleAttendance> attendances = committeeSchedule.getCommitteeScheduleAttendances();
+				for (CommitteeScheduleAttendance attendance : attendances) {
+					if (attendance.getCommitteeScheduleAttendanceId().equals(scheduleAttendance.getCommitteeScheduleAttendanceId())) {
+						attendance.setMemberPresent(scheduleAttendance.getMemberPresent());
+						attendance.setComments(scheduleAttendance.getComments());
+						attendance.setAlternateFor(scheduleAttendance.getAlternateFor());
+						attendance.setUpdateTimestamp(scheduleAttendance.getUpdateTimestamp());
+						attendance.setUpdateUser(scheduleAttendance.getUpdateUser());
+					}
+				}
+				scheduleVo.setCommitteeSchedule(committeeSchedule);
+			}
+		}
+		committeeDao.saveCommittee(committee);
+		scheduleVo.setCommittee(committee);
+		response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
+	}
+
+	@Override
+	public String addOthersPresent(ScheduleVo scheduleVo) {
+		String response = "";
+		CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleVo.getScheduleId());
+		CommitteeScheduleAttendance scheduleAttendance = scheduleVo.getUpdatedAttendance();
+		scheduleAttendance.setCommitteeSchedule(committeeSchedule);
+		scheduleAttendance = scheduleDao.addCommitteeScheduleAttendance(scheduleAttendance);
+		committeeSchedule.getCommitteeScheduleAttendances().add(scheduleAttendance);
+		committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+		scheduleVo.setCommitteeSchedule(committeeSchedule);
+		response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
+	}
+
+	@Override
+	public String deleteScheduleMinute(ScheduleVo scheduleVo) {
+		try {
+			Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+			List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+			for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+				if (committeeSchedule.getScheduleId().equals(scheduleVo.getScheduleId())) {
+					List<CommitteeScheduleMinutes> list = committeeSchedule.getCommitteeScheduleMinutes();
+					List<CommitteeScheduleMinutes> updatedlist = new ArrayList<CommitteeScheduleMinutes>(list);
+					Collections.copy(updatedlist, list);
+					for (CommitteeScheduleMinutes minutes : list) {
+						if (minutes.getCommScheduleMinutesId().equals(scheduleVo.getCommScheduleMinuteId())) {
+							updatedlist.remove(minutes);
+						}
+					}
+					committeeSchedule.getCommitteeScheduleMinutes().clear();
+					committeeSchedule.getCommitteeScheduleMinutes().addAll(updatedlist);
+					scheduleVo.setCommitteeSchedule(committeeSchedule);
+				}
+			}
+			committee = committeeDao.saveCommittee(committee);
+			scheduleVo.setCommittee(committee);
+			scheduleVo.setStatus(true);
+			scheduleVo.setMessage("Schedule minute deleted successfully");
+		} catch (Exception e) {
+			scheduleVo.setStatus(false);
+			scheduleVo.setMessage("Problem occurred in deleting Schedule minute");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(scheduleVo);
+	}
+
+	@Override
+	public String addScheduleAttachment(ScheduleVo scheduleVo, MultipartFile file) {
+		try {
+			CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleVo.getScheduleId());
+			CommitteeScheduleAttachment commScheduleAttachment = scheduleVo.getNewCommitteeScheduleAttachment();
+			CommitteeScheduleAttachment committeeScheduleAttachment = new CommitteeScheduleAttachment();
+			committeeScheduleAttachment.setCommitteeSchedule(committeeSchedule);
+			committeeScheduleAttachment.setAttachmentTypeCode(commScheduleAttachment.getAttachmentTypeCode());
+			committeeScheduleAttachment.setDescription(commScheduleAttachment.getDescription());
+			committeeScheduleAttachment.setAttachment(file.getBytes());
+			committeeScheduleAttachment.setUpdateTimestamp(commScheduleAttachment.getUpdateTimestamp());
+			committeeScheduleAttachment.setUpdateUser(commScheduleAttachment.getUpdateUser());
+			committeeScheduleAttachment = scheduleDao.addScheduleAttachment(committeeScheduleAttachment);
+			committeeSchedule.getCommitteeScheduleAttachments().add(committeeScheduleAttachment);
+			committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+			scheduleVo.setCommitteeSchedule(committeeSchedule);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
+	}
+
+	@Override
+	public String deleteScheduleAttachment(ScheduleVo scheduleVo) {
+		try {
+			Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+			List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+			for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+				if (committeeSchedule.getScheduleId().equals(scheduleVo.getScheduleId())) {
+					List<CommitteeScheduleAttachment> list = committeeSchedule.getCommitteeScheduleAttachments();
+					List<CommitteeScheduleAttachment> updatedlist = new ArrayList<CommitteeScheduleAttachment>(list);
+					Collections.copy(updatedlist, list);
+					for (CommitteeScheduleAttachment attachment : list) {
+						if (attachment.getCommScheduleAttachId().equals(scheduleVo.getCommScheduleAttachId())) {
+							updatedlist.remove(attachment);
+						}
+					}
+					committeeSchedule.getCommitteeScheduleAttachments().clear();
+					committeeSchedule.getCommitteeScheduleAttachments().addAll(updatedlist);
+					scheduleVo.setCommitteeSchedule(committeeSchedule);
+				}
+			}
+			committee = committeeDao.saveCommittee(committee);
+			scheduleVo.setCommittee(committee);
+			scheduleVo.setStatus(true);
+			scheduleVo.setMessage("Schedule attachment deleted successfully");
+		} catch (Exception e) {
+			scheduleVo.setStatus(false);
+			scheduleVo.setMessage("Problem occurred in deleting Schedule attachment");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(scheduleVo);
 	}
 
 }
