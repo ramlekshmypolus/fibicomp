@@ -59,4 +59,13 @@ public class ScheduleController {
 		logger.info("actionItemId : " + vo.getCommScheduleActItemsId());
 		return scheduleService.deleteOtherActions(vo);
 	}
+
+	@RequestMapping(value = "/addCommitteeScheduleMinute", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String addCommitteeScheduleMinute(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for addCommitteeScheduleMinute");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
+		return scheduleService.addCommitteeScheduleMinute(vo);
+	}
+
 }

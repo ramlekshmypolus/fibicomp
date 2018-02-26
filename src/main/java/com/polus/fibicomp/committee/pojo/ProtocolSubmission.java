@@ -34,6 +34,9 @@ public class ProtocolSubmission implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_PROTOCOL_SUBMISSION8"), name = "FIBI_SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID", insertable = false, updatable = false)
 	private CommitteeSchedule committeeSchedule;
 
+	@Column(name = "SUBMISSION_NUMBER")
+	private Integer submissionNumber;
+
 	@Column(name = "FIBI_COMMITTEE_ID")
 	private String committeeId;
 
@@ -244,6 +247,14 @@ public class ProtocolSubmission implements Serializable {
 
 	public void setDocumentNumber(String documentNumber) {
 		this.documentNumber = documentNumber;
+	}
+
+	public Integer getSubmissionNumber() {
+		return submissionNumber;
+	}
+
+	public void setSubmissionNumber(Integer submissionNumber) {
+		this.submissionNumber = submissionNumber;
 	}
 
 }
