@@ -10,7 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.polus.fibicomp.schedule.service.ScheduleService;
 import com.polus.fibicomp.schedule.vo.ScheduleVo;
@@ -66,6 +68,49 @@ public class ScheduleController {
 		logger.info("committeeId : " + vo.getCommitteeId());
 		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
 		return scheduleService.addCommitteeScheduleMinute(vo);
+	}
+
+	@RequestMapping(value = "/updateScheduleAttendance", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String updateCommitteeSchedule(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for updateScheduleAttendance");
+		logger.info("CommitteeId : " + vo.getCommitteeId());
+		logger.info("ScheduleId : " + vo.getScheduleId());
+		logger.info("AttendanceId : " + vo.getUpdatedAttendance().getCommitteeScheduleAttendanceId());
+		logger.info("MemberPresent : " + vo.getUpdatedAttendance().getMemberPresent());
+		return scheduleService.updateScheduleAttendance(vo);
+	}
+
+	@RequestMapping(value = "/addOthersPresent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String addOthersPresent(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for addOthersPresent");
+		logger.info("ScheduleId : " + vo.getScheduleId());
+		return scheduleService.addOthersPresent(vo);
+	}
+
+	@RequestMapping(value = "/addScheduleAttachment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String addScheduleAttachment(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response, @RequestParam("file") MultipartFile file) {
+		logger.info("Requesting for addScheduleAttachment");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
+		return scheduleService.addScheduleAttachment(vo, file);
+	}
+
+	@RequestMapping(value = "/deleteScheduleMinute", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteScheduleMinute(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteScheduleMinute");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
+		logger.info("CommitteeScheduleMinuteId : " + vo.getCommScheduleMinuteId());
+		return scheduleService.deleteScheduleMinute(vo);
+	}
+
+	@RequestMapping(value = "/deleteScheduleAttachment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteScheduleAttachment(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteScheduleAttachment");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
+		logger.info("CommitteeScheduleAttachId : " + vo.getCommScheduleAttachId());
+		return scheduleService.deleteScheduleAttachment(vo);
 	}
 
 }

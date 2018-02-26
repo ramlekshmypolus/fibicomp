@@ -1,6 +1,5 @@
 package com.polus.fibicomp.schedule.vo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.polus.fibicomp.committee.pojo.Committee;
@@ -31,10 +30,6 @@ public class ScheduleVo {
 
 	private List<ScheduleStatus> scheduleStatus;
 
-	private List<CommitteeScheduleAttendance> memberAbsents;
-
-	private List<CommitteeScheduleAttendance> otherPresents;
-
 	private List<ScheduleActItemType> scheduleActItemTypes;
 
 	private CommitteeScheduleActItems committeeScheduleActItems;
@@ -51,10 +46,11 @@ public class ScheduleVo {
 
 	private List<CommitteeScheduleAttachType> attachmentTypes;
 
-	public ScheduleVo() {
-		memberAbsents = new ArrayList<CommitteeScheduleAttendance>();
-		otherPresents = new ArrayList<CommitteeScheduleAttendance>();
-	}
+	private CommitteeScheduleAttendance updatedAttendance;
+
+	private Integer commScheduleMinuteId;
+
+	private Integer commScheduleAttachId;
 
 	public CommitteeSchedule getCommitteeSchedule() {
 		return committeeSchedule;
@@ -110,22 +106,6 @@ public class ScheduleVo {
 
 	public void setScheduleStatus(List<ScheduleStatus> scheduleStatus) {
 		this.scheduleStatus = scheduleStatus;
-	}
-
-	public List<CommitteeScheduleAttendance> getMemberAbsents() {
-		return memberAbsents;
-	}
-
-	public void setMemberAbsents(List<CommitteeScheduleAttendance> memberAbsents) {
-		this.memberAbsents = memberAbsents;
-	}
-
-	public List<CommitteeScheduleAttendance> getOtherPresents() {
-		return otherPresents;
-	}
-
-	public void setOtherPresents(List<CommitteeScheduleAttendance> otherPresents) {
-		this.otherPresents = otherPresents;
 	}
 
 	public List<ScheduleActItemType> getScheduleActItemTypes() {
@@ -190,5 +170,29 @@ public class ScheduleVo {
 
 	public void setAttachmentTypes(List<CommitteeScheduleAttachType> attachmentTypes) {
 		this.attachmentTypes = attachmentTypes;
+	}
+
+	public CommitteeScheduleAttendance getUpdatedAttendance() {
+		return updatedAttendance;
+	}
+
+	public void setUpdatedAttendance(CommitteeScheduleAttendance updatedAttendance) {
+		this.updatedAttendance = updatedAttendance;
+	}
+
+	public Integer getCommScheduleMinuteId() {
+		return commScheduleMinuteId;
+	}
+
+	public void setCommScheduleMinuteId(Integer commScheduleMinuteId) {
+		this.commScheduleMinuteId = commScheduleMinuteId;
+	}
+
+	public Integer getCommScheduleAttachId() {
+		return commScheduleAttachId;
+	}
+
+	public void setCommScheduleAttachId(Integer commScheduleAttachId) {
+		this.commScheduleAttachId = commScheduleAttachId;
 	}
 }

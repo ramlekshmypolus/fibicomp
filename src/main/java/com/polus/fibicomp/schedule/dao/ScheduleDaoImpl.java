@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachment;
+import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
 import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
 import com.polus.fibicomp.committee.pojo.ProtocolContingency;
@@ -105,6 +107,18 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	public CommitteeScheduleMinutes addCommitteeScheduleMinute(CommitteeScheduleMinutes committeeScheduleMinutes) {
 		hibernateTemplate.save(committeeScheduleMinutes);
 		return committeeScheduleMinutes;
+	}
+
+	@Override
+	public CommitteeScheduleAttendance addCommitteeScheduleAttendance(CommitteeScheduleAttendance scheduleAttendance) {
+		hibernateTemplate.save(scheduleAttendance);
+		return scheduleAttendance;
+	}
+
+	@Override
+	public CommitteeScheduleAttachment addScheduleAttachment(CommitteeScheduleAttachment committeeScheduleAttachment) {
+		hibernateTemplate.save(committeeScheduleAttachment);
+		return committeeScheduleAttachment;
 	}
 
 }
