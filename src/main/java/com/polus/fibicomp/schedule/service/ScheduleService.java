@@ -26,6 +26,10 @@ public interface ScheduleService {
 
 	public String deleteScheduleAttachment(ScheduleVo scheduleVo);
 
-	public String addScheduleAttachment(ScheduleVo scheduleVo, MultipartFile file);
+	public String addScheduleAttachment(MultipartFile[] files, String formDataJSON);
+
+	public String deleteScheduleAttendance(ScheduleVo scheduleVo);
+
+	public String updateScheduleAttachment(ScheduleVo scheduleVo);
 
 }
