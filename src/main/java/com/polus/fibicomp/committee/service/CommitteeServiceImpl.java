@@ -455,6 +455,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 					committeeSchedule.setScheduledDate(schedule.getScheduledDate());
 					committeeSchedule.setPlace(schedule.getPlace());
 					committeeSchedule.setTime(schedule.getTime());
+					committeeSchedule.setScheduleStatus(schedule.getScheduleStatus());
+					committeeSchedule.setScheduleStatusCode(schedule.getScheduleStatusCode());
 					int daysToAdd = committeeSchedule.getCommittee().getAdvSubmissionDaysReq();
 					java.sql.Date sqlDate = calculateAdvancedSubmissionDays(schedule.getScheduledDate(), daysToAdd);
 					committeeSchedule.setProtocolSubDeadline(sqlDate);

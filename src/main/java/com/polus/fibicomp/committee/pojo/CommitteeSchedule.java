@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.polus.fibicomp.committee.schedule.DayOfWeek;
 import com.polus.fibicomp.committee.schedule.Time12HrFmt;
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE")
@@ -99,7 +101,8 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 	private String updateUser;
 
 	@Column(name = "AVAILABLE_TO_REVIEWERS")
-	private String availableToReviewers;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean availableToReviewers;
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "committeeSchedule", orphanRemoval = true, cascade = { CascadeType.ALL })
@@ -204,14 +207,6 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
-	}
-
-	public String getAvailableToReviewers() {
-		return availableToReviewers;
-	}
-
-	public void setAvailableToReviewers(String availableToReviewers) {
-		this.availableToReviewers = availableToReviewers;
 	}
 
 	public static long getSerialversionuid() {
@@ -470,6 +465,14 @@ public class CommitteeSchedule implements Serializable, Comparable<CommitteeSche
 
 	public void setCommitteeScheduleAttachments(List<CommitteeScheduleAttachment> committeeScheduleAttachments) {
 		this.committeeScheduleAttachments = committeeScheduleAttachments;
+	}
+
+	public Boolean getAvailableToReviewers() {
+		return availableToReviewers;
+	}
+
+	public void setAvailableToReviewers(Boolean availableToReviewers) {
+		this.availableToReviewers = availableToReviewers;
 	}
 
 }
