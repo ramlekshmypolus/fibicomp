@@ -87,12 +87,20 @@ public class ScheduleController {
 		return scheduleService.addOthersPresent(vo);
 	}
 
-	@RequestMapping(value = "/addScheduleAttachment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String addScheduleAttachment(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response, @RequestParam("file") MultipartFile file) {
+	/*@RequestMapping(value = "/addScheduleAttachment", method = RequestMethod.POST, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public String addScheduleAttachment(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for addScheduleAttachment");
 		logger.info("committeeId : " + vo.getCommitteeId());
 		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
-		return scheduleService.addScheduleAttachment(vo, file);
+		return scheduleService.addScheduleAttachment(vo, vo.getFile());
+	}*/
+
+	@RequestMapping(value = "/addScheduleAttachment", method = RequestMethod.POST)
+	public String addScheduleAttachment(@RequestParam("file") MultipartFile multipartFile) {
+		logger.info("Requesting for addScheduleAttachment");
+		/*logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());*/
+		return scheduleService.addScheduleAttachment(null, multipartFile);
 	}
 
 	@RequestMapping(value = "/deleteScheduleMinute", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

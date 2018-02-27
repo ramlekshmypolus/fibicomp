@@ -88,9 +88,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 			//populateAttendanceToForm(scheduleVo, committeeSchedule.getCommittee().getCommitteeMemberships(), committeeSchedule);
 			List<CommitteeScheduleAttendance> activeMembers = new ArrayList<CommitteeScheduleAttendance>();
 			loadAttendance(activeMembers, committeeSchedule);
-			committeeSchedule.getCommitteeScheduleAttendances().clear();
-			committeeSchedule.getCommitteeScheduleAttendances().addAll(activeMembers);
-			committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+			//committeeSchedule.getCommitteeScheduleAttendances().clear();
+			if (!activeMembers.isEmpty()) {
+				committeeSchedule.getCommitteeScheduleAttendances().addAll(activeMembers);
+				committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+			}
 		}
 		return committeeDao.convertObjectToJSON(scheduleVo);
 	}
@@ -135,9 +137,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 		committeeMemberships.forEach(committeeMembership -> {
 			if (isActiveMembership(committeeMembership, commSchedule.getScheduledDate())) {
 				for (CommitteeScheduleAttendance attendance : commScheduleAttendances) {
-					if ((attendance.getNonEmployeeFlag() && committeeMembership.getRolodexId() != null && attendance.getPersonId().equals(committeeMembership.getRolodexId().toString()))
+					if ((attendance.getNonEmployeeFlag() && committeeMembership.getRolodexId() != null && 
+							attendance.getPersonId().equals(committeeMembership.getRolodexId().toString()))
 							|| (!attendance.getNonEmployeeFlag() && attendance.getPersonId().equals(committeeMembership.getPersonId()))) {
-						committeeScheduleAttendances.add(attendance);
+						//committeeScheduleAttendances.add(attendance);
 						updatedlist.remove(committeeMembership);
 					}
 				}

@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "FIBI_MINUTE_ENTRY_TYPE ")
+@Table(name = "FIBI_MINUTE_ENTRY_TYPE")
 public class MinuteEntrytype implements Serializable {
 
 	/**

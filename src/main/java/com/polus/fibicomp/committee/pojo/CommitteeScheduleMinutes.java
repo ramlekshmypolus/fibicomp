@@ -3,6 +3,7 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class CommitteeScheduleMinutes implements Serializable {
 	private Integer commScheduleMinutesId;
 
 	@JsonBackReference
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_COMM_SCHEDULE_MINUTES"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID")
 	private CommitteeSchedule committeeSchedule;
 
@@ -54,7 +55,7 @@ public class CommitteeScheduleMinutes implements Serializable {
 	@Column(name = "PROTOCOL_CONTINGENCY_CODE")
 	private String protocolContingencyCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_MINUTES2"), name = "PROTOCOL_CONTINGENCY_CODE", referencedColumnName = "PROTOCOL_CONTINGENCY_CODE", insertable = false, updatable = false)
 	private ProtocolContingency protocolContingency;
 
@@ -108,12 +109,20 @@ public class CommitteeScheduleMinutes implements Serializable {
 	@Column(name = "COMM_SCHEDULE_ACT_ITEMS_ID")
 	private Integer commScheduleActItemsId;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCH_MINUTES3"), name = "COMM_SCHEDULE_ACT_ITEMS_ID", referencedColumnName = "COMM_SCHEDULE_ACT_ITEMS_ID", insertable = false, updatable = false)
 	private CommitteeScheduleActItems scheduleActItems;
 
 	@Transient
 	private boolean generateAttendance = false;
+
+	public Integer getCommScheduleMinutesId() {
+		return commScheduleMinutesId;
+	}
+
+	public void setCommScheduleMinutesId(Integer commScheduleMinutesId) {
+		this.commScheduleMinutesId = commScheduleMinutesId;
+	}
 
 	public CommitteeSchedule getCommitteeSchedule() {
 		return committeeSchedule;
@@ -129,6 +138,38 @@ public class CommitteeScheduleMinutes implements Serializable {
 
 	public void setEntryNumber(Integer entryNumber) {
 		this.entryNumber = entryNumber;
+	}
+
+	public Integer getMinuteEntryTypeCode() {
+		return minuteEntryTypeCode;
+	}
+
+	public void setMinuteEntryTypeCode(Integer minuteEntryTypeCode) {
+		this.minuteEntryTypeCode = minuteEntryTypeCode;
+	}
+
+	public MinuteEntrytype getMinuteEntrytype() {
+		return minuteEntrytype;
+	}
+
+	public void setMinuteEntrytype(MinuteEntrytype minuteEntrytype) {
+		this.minuteEntrytype = minuteEntrytype;
+	}
+
+	public String getProtocolContingencyCode() {
+		return protocolContingencyCode;
+	}
+
+	public void setProtocolContingencyCode(String protocolContingencyCode) {
+		this.protocolContingencyCode = protocolContingencyCode;
+	}
+
+	public ProtocolContingency getProtocolContingency() {
+		return protocolContingency;
+	}
+
+	public void setProtocolContingency(ProtocolContingency protocolContingency) {
+		this.protocolContingency = protocolContingency;
 	}
 
 	public String getProtocolNumber() {
@@ -155,6 +196,14 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.protocolId = protocolId;
 	}
 
+	public Long getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(Long submissionId) {
+		this.submissionId = submissionId;
+	}
+
 	public Integer getReviewerId() {
 		return reviewerId;
 	}
@@ -171,12 +220,28 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.submissionNumber = submissionNumber;
 	}
 
-	public String getProtocolContingencyCode() {
-		return protocolContingencyCode;
+	public Boolean getPrivateCommentFlag() {
+		return privateCommentFlag;
 	}
 
-	public void setProtocolContingencyCode(String protocolContingencyCode) {
-		this.protocolContingencyCode = protocolContingencyCode;
+	public void setPrivateCommentFlag(Boolean privateCommentFlag) {
+		this.privateCommentFlag = privateCommentFlag;
+	}
+
+	public String getMinuteEntry() {
+		return minuteEntry;
+	}
+
+	public void setMinuteEntry(String minuteEntry) {
+		this.minuteEntry = minuteEntry;
+	}
+
+	public Boolean getFinalFlag() {
+		return finalFlag;
+	}
+
+	public void setFinalFlag(Boolean finalFlag) {
+		this.finalFlag = finalFlag;
 	}
 
 	public String getPersonId() {
@@ -227,82 +292,6 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.updateUser = updateUser;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public MinuteEntrytype getMinuteEntrytype() {
-		return minuteEntrytype;
-	}
-
-	public void setMinuteEntrytype(MinuteEntrytype minuteEntrytype) {
-		this.minuteEntrytype = minuteEntrytype;
-	}
-
-	public Integer getMinuteEntryTypeCode() {
-		return minuteEntryTypeCode;
-	}
-
-	public void setMinuteEntryTypeCode(Integer minuteEntryTypeCode) {
-		this.minuteEntryTypeCode = minuteEntryTypeCode;
-	}
-
-	public Boolean getPrivateCommentFlag() {
-		return privateCommentFlag;
-	}
-
-	public void setPrivateCommentFlag(Boolean privateCommentFlag) {
-		this.privateCommentFlag = privateCommentFlag;
-	}
-
-	public Boolean getFinalFlag() {
-		return finalFlag;
-	}
-
-	public void setFinalFlag(Boolean finalFlag) {
-		this.finalFlag = finalFlag;
-	}
-
-	public ProtocolContingency getProtocolContingency() {
-		return protocolContingency;
-	}
-
-	public void setProtocolContingency(ProtocolContingency protocolContingency) {
-		this.protocolContingency = protocolContingency;
-	}
-
-	public Integer getCommScheduleMinutesId() {
-		return commScheduleMinutesId;
-	}
-
-	public void setCommScheduleMinutesId(Integer commScheduleMinutesId) {
-		this.commScheduleMinutesId = commScheduleMinutesId;
-	}
-
-	public Long getSubmissionId() {
-		return submissionId;
-	}
-
-	public void setSubmissionId(Long submissionId) {
-		this.submissionId = submissionId;
-	}
-
-	public String getMinuteEntry() {
-		return minuteEntry;
-	}
-
-	public void setMinuteEntry(String minuteEntry) {
-		this.minuteEntry = minuteEntry;
-	}
-
-	public boolean isGenerateAttendance() {
-		return generateAttendance;
-	}
-
-	public void setGenerateAttendance(boolean generateAttendance) {
-		this.generateAttendance = generateAttendance;
-	}
-
 	public Integer getCommScheduleActItemsId() {
 		return commScheduleActItemsId;
 	}
@@ -317,6 +306,18 @@ public class CommitteeScheduleMinutes implements Serializable {
 
 	public void setScheduleActItems(CommitteeScheduleActItems scheduleActItems) {
 		this.scheduleActItems = scheduleActItems;
+	}
+
+	public boolean isGenerateAttendance() {
+		return generateAttendance;
+	}
+
+	public void setGenerateAttendance(boolean generateAttendance) {
+		this.generateAttendance = generateAttendance;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

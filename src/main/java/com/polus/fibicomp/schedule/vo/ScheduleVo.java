@@ -2,6 +2,8 @@ package com.polus.fibicomp.schedule.vo;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleActItems;
@@ -51,6 +53,8 @@ public class ScheduleVo {
 	private Integer commScheduleMinuteId;
 
 	private Integer commScheduleAttachId;
+
+	private MultipartFile file;
 
 	public CommitteeSchedule getCommitteeSchedule() {
 		return committeeSchedule;
@@ -194,5 +198,13 @@ public class ScheduleVo {
 
 	public void setCommScheduleAttachId(Integer commScheduleAttachId) {
 		this.commScheduleAttachId = commScheduleAttachId;
+	}
+
+	public MultipartFile getFile() {
+		return file;
+	}
+
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
 }
