@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberRoles;
@@ -506,7 +507,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		Integer entryNumber = getNextMinuteEntryNumber(committeeSchedule);
-		Integer minuteEntryTypeCode = committeeScheduleMinute.getMinuteEntryTypeCode();
+		String minuteEntryTypeCode = committeeScheduleMinute.getMinuteEntryTypeCode().toString();
 
 		committeeScheduleMinute.setSubmissionId(submissionId);
 		committeeScheduleMinute.setSubmissionNumber(submissionNumber);
@@ -518,12 +519,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 			addAttendanceMinuteEntry(committeeSchedule, committeeScheduleMinute);
 		} else if (MinuteEntrytype.ACTION_ITEM.equals(minuteEntryTypeCode)) {
 			addActionItem(committeeSchedule, committeeScheduleMinute);
-		} else if (MinuteEntrytype.PROTOCOL.equals(minuteEntryTypeCode)) {
+		} else if (MinuteEntrytype.PROTOCOL.equals(minuteEntryTypeCode) || MinuteEntrytype.PROTOCOL_REVIEWER_COMMENT.equals(minuteEntryTypeCode)) {
 			resetActionItemFields(committeeScheduleMinute);
 		} else {
 			resetProtocolFields(committeeScheduleMinute);
 			resetActionItemFields(committeeScheduleMinute);
 		}
+
 		committeeScheduleMinute = scheduleDao.addCommitteeScheduleMinute(committeeScheduleMinute);
 		committeeSchedule.getCommitteeScheduleMinutes().add(committeeScheduleMinute);
 		committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
@@ -690,29 +692,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public String addScheduleAttachment(ScheduleVo scheduleVo, MultipartFile file) {
-		try {
-			CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(scheduleVo.getScheduleId());
-			CommitteeScheduleAttachment commScheduleAttachment = scheduleVo.getNewCommitteeScheduleAttachment();
-			CommitteeScheduleAttachment committeeScheduleAttachment = new CommitteeScheduleAttachment();
-			committeeScheduleAttachment.setCommitteeSchedule(committeeSchedule);
-			committeeScheduleAttachment.setAttachmentTypeCode(commScheduleAttachment.getAttachmentTypeCode());
-			committeeScheduleAttachment.setDescription(commScheduleAttachment.getDescription());
-			committeeScheduleAttachment.setAttachment(file.getBytes());
-			committeeScheduleAttachment.setUpdateTimestamp(commScheduleAttachment.getUpdateTimestamp());
-			committeeScheduleAttachment.setUpdateUser(commScheduleAttachment.getUpdateUser());
-			committeeScheduleAttachment = scheduleDao.addScheduleAttachment(committeeScheduleAttachment);
-			committeeSchedule.getCommitteeScheduleAttachments().add(committeeScheduleAttachment);
-			committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
-			scheduleVo.setCommitteeSchedule(committeeSchedule);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String response = committeeDao.convertObjectToJSON(scheduleVo);
-		return response;
-	}
-
-	@Override
 	public String deleteScheduleAttachment(ScheduleVo scheduleVo) {
 		try {
 			Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
@@ -742,6 +721,94 @@ public class ScheduleServiceImpl implements ScheduleService {
 			e.printStackTrace();
 		}
 		return committeeDao.convertObjectToJSON(scheduleVo);
+	}
+
+	@Override
+	public String addScheduleAttachment(MultipartFile[] files, String formDataJSON) {
+		ScheduleVo scheduleVo = new ScheduleVo();
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			ScheduleVo jsonObj = mapper.readValue(formDataJSON, ScheduleVo.class);
+			CommitteeSchedule committeeSchedule = committeeDao.getCommitteeScheduleById(jsonObj.getScheduleId());
+			CommitteeScheduleAttachment newAttachment = jsonObj.getNewCommitteeScheduleAttachment();
+			List<CommitteeScheduleAttachment> attachments = new ArrayList<CommitteeScheduleAttachment>();
+			for (int i = 0; i < files.length; i++) {
+				CommitteeScheduleAttachment committeeScheduleAttachment = new CommitteeScheduleAttachment();
+				committeeScheduleAttachment.setAttachmentType(newAttachment.getAttachmentType());
+				committeeScheduleAttachment.setCommitteeSchedule(committeeSchedule);
+				committeeScheduleAttachment.setAttachmentTypeCode(newAttachment.getAttachmentTypeCode());
+				committeeScheduleAttachment.setDescription(newAttachment.getDescription());
+				committeeScheduleAttachment.setUpdateTimestamp(newAttachment.getUpdateTimestamp());
+				committeeScheduleAttachment.setUpdateUser(newAttachment.getUpdateUser());
+				committeeScheduleAttachment.setAttachment(files[i].getBytes());
+				committeeScheduleAttachment.setFileName(files[i].getOriginalFilename());
+				committeeScheduleAttachment.setMimeType(files[i].getContentType());
+				committeeScheduleAttachment = scheduleDao.addScheduleAttachment(committeeScheduleAttachment);
+				attachments.add(committeeScheduleAttachment);
+			}
+			committeeSchedule.getCommitteeScheduleAttachments().addAll(attachments);
+			committeeSchedule = scheduleDao.updateCommitteeSchedule(committeeSchedule);
+			scheduleVo.setCommitteeSchedule(committeeSchedule);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
+	}
+
+	@Override
+	public String deleteScheduleAttendance(ScheduleVo scheduleVo) {
+		try {
+			Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+			List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+			for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+				if (committeeSchedule.getScheduleId().equals(scheduleVo.getScheduleId())) {
+					List<CommitteeScheduleAttendance> list = committeeSchedule.getCommitteeScheduleAttendances();
+					List<CommitteeScheduleAttendance> updatedlist = new ArrayList<CommitteeScheduleAttendance>(list);
+					Collections.copy(updatedlist, list);
+					for (CommitteeScheduleAttendance attachment : list) {
+						if (attachment.getCommitteeScheduleAttendanceId().equals(scheduleVo.getCommScheduleAttendanceId())) {
+							updatedlist.remove(attachment);
+						}
+					}
+					committeeSchedule.getCommitteeScheduleAttendances().clear();
+					committeeSchedule.getCommitteeScheduleAttendances().addAll(updatedlist);
+					scheduleVo.setCommitteeSchedule(committeeSchedule);
+				}
+			}
+			committee = committeeDao.saveCommittee(committee);
+			scheduleVo.setCommittee(committee);
+			scheduleVo.setStatus(true);
+			scheduleVo.setMessage("Schedule attendance deleted successfully");
+		} catch (Exception e) {
+			scheduleVo.setStatus(false);
+			scheduleVo.setMessage("Problem occurred in deleting Schedule attendance");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(scheduleVo);
+	}
+
+	@Override
+	public String updateScheduleAttachment(ScheduleVo scheduleVo) {
+		String response = "";
+		Committee committee = committeeDao.fetchCommitteeById(scheduleVo.getCommitteeId());
+		List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+		CommitteeScheduleAttachment scheduleAttachment = scheduleVo.getNewCommitteeScheduleAttachment();
+		for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+			if (committeeSchedule.getScheduleId().equals(scheduleVo.getScheduleId())) {
+				List<CommitteeScheduleAttachment> attachments = committeeSchedule.getCommitteeScheduleAttachments();
+				for (CommitteeScheduleAttachment attachment : attachments) {
+					if (attachment.getCommScheduleAttachId().equals(scheduleAttachment.getCommScheduleAttachId())) {
+						attachment.setDescription(scheduleAttachment.getDescription());
+					}
+				}
+				scheduleVo.setCommitteeSchedule(committeeSchedule);
+			}
+		}
+		committeeDao.saveCommittee(committee);
+		scheduleVo.setCommittee(committee);
+		response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
 	}
 
 }

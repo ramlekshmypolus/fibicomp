@@ -87,22 +87,6 @@ public class ScheduleController {
 		return scheduleService.addOthersPresent(vo);
 	}
 
-	/*@RequestMapping(value = "/addScheduleAttachment", method = RequestMethod.POST, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public String addScheduleAttachment(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for addScheduleAttachment");
-		logger.info("committeeId : " + vo.getCommitteeId());
-		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
-		return scheduleService.addScheduleAttachment(vo, vo.getFile());
-	}*/
-
-	@RequestMapping(value = "/addScheduleAttachment", method = RequestMethod.POST)
-	public String addScheduleAttachment(@RequestParam("file") MultipartFile multipartFile) {
-		logger.info("Requesting for addScheduleAttachment");
-		/*logger.info("committeeId : " + vo.getCommitteeId());
-		logger.info("CommitteeScheduleId : " + vo.getScheduleId());*/
-		return scheduleService.addScheduleAttachment(null, multipartFile);
-	}
-
 	@RequestMapping(value = "/deleteScheduleMinute", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String deleteScheduleMinute(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for deleteScheduleMinute");
@@ -119,6 +103,30 @@ public class ScheduleController {
 		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
 		logger.info("CommitteeScheduleAttachId : " + vo.getCommScheduleAttachId());
 		return scheduleService.deleteScheduleAttachment(vo);
+	}
+
+	@RequestMapping(value = "/addScheduleAttachment", method = RequestMethod.POST)
+	public String addScheduleAttachment(@RequestParam(value = "files", required = false) MultipartFile[] files, @RequestParam("formDataJson") String formDataJson) {
+		logger.info("Requesting for addScheduleAttachment");
+		return scheduleService.addScheduleAttachment(files, formDataJson);
+	}
+
+	@RequestMapping(value = "/updateScheduleAttachment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String updateScheduleAttachment(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for updateScheduleAttendance");
+		logger.info("CommitteeId : " + vo.getCommitteeId());
+		logger.info("ScheduleId : " + vo.getScheduleId());
+		logger.info("AttachmentId : " + vo.getNewCommitteeScheduleAttachment().getCommScheduleAttachId());
+		return scheduleService.updateScheduleAttachment(vo);
+	}
+
+	@RequestMapping(value = "/deleteScheduleAttendance", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteScheduleAttendance(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteScheduleAttachment");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
+		logger.info("CommitteeScheduleAttendanceId : " + vo.getCommScheduleAttendanceId());
+		return scheduleService.deleteScheduleAttendance(vo);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.polus.fibicomp.committee.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -34,11 +35,11 @@ public class CommitteeScheduleAttachment implements Serializable {
 	private Integer commScheduleAttachId;
 
 	@JsonBackReference
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_SCHEDULE_ATTACHMENT"), name = "SCHEDULE_ID", referencedColumnName = "SCHEDULE_ID")
 	private CommitteeSchedule committeeSchedule;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_SCHE_ATTACH_TYPE"), name = "ATTACHMENT_TYPE_CODE", referencedColumnName = "ATTACHMENT_TYPE_CODE", insertable = false, updatable = false)
 	private CommitteeScheduleAttachType attachmentType;
 
