@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "PROTOCOL_CONTINGENCY")
@@ -29,6 +30,13 @@ public class ProtocolContingency implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
+
+	@Version
+	@Column(name = "VER_NBR", length = 8)
+	protected Long versionNumber;
+
+	@Column(name = "OBJ_ID", length = 36, unique = true)
+	protected String objectId;
 
 	public String getProtocolContingencyCode() {
 		return protocolContingencyCode;
@@ -64,5 +72,21 @@ public class ProtocolContingency implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Long getVersionNumber() {
+		return versionNumber;
+	}
+
+	public void setVersionNumber(Long versionNumber) {
+		this.versionNumber = versionNumber;
+	}
+
+	public String getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
 	}
 }
