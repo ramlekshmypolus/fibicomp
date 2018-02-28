@@ -16,6 +16,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -1060,6 +1061,16 @@ public class DashboardDaoImpl implements DashboardDao {
 			int count = pageNumber * (currentPage - 1);
 			searchCriteria.setFirstResult(count);
 			searchCriteria.setMaxResults(pageNumber);
+
+			ProjectionList projList = Projections.projectionList();
+			projList.add(Projections.property("scheduleId"), "scheduleId");
+			projList.add(Projections.property("scheduledDate"), "scheduledDate");
+			projList.add(Projections.property("place"), "place");
+			projList.add(Projections.property("protocolSubDeadline"), "protocolSubDeadline");
+			projList.add(Projections.property("committee"), "committee");
+			projList.add(Projections.property("scheduleStatus"), "scheduleStatus");
+
+			searchCriteria.setProjection(projList).setResultTransformer(new AliasToBeanResultTransformer(CommitteeSchedule.class));
 			@SuppressWarnings("unchecked")
 			List<CommitteeSchedule> committeeSchedules = searchCriteria.list();
 			dashBoardProfile.setCommitteeSchedules(committeeSchedules);
