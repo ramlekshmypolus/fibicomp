@@ -62,8 +62,14 @@ public class FibiRepoConfig {
 	@Value("${hibernate.c3p0.testConnectionOnCheckout}")
 	private String hibernateTestConnectionOnCheckout;
 
-	@Value("${hibernate.temp.use_jdbc_metadata_defaults}")
-	private String hibernateMetadataDefaults;
+	/*@Value("${hibernate.temp.use_jdbc_metadata_defaults}")
+	private String hibernateMetadataDefaults;*/
+
+	@Value("${hibernate.jdbc.lob.non_contextual_creation}")
+	private String hibernateContextualCreation;
+
+	@Value("${spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults}")
+	private String hibernateSpringJDBCMetadataDefault;
 
 	@Bean
 	public DataSource getDataSource() {
@@ -115,7 +121,9 @@ public class FibiRepoConfig {
 		properties.put("hibernate.c3p0.timeout", hibernateTimeOut);
 		properties.put("hibernate.c3p0.max_statement", hibernateMaxStmnt);
 		properties.put("hibernate.c3p0.testConnectionOnCheckout", hibernateTestConnectionOnCheckout);
-		properties.put("hibernate.temp.use_jdbc_metadata_defaults", hibernateMetadataDefaults);
+		//properties.put("hibernate.temp.use_jdbc_metadata_defaults", hibernateMetadataDefaults);
+		properties.put("hibernate.jdbc.lob.non_contextual_creation", hibernateContextualCreation);
+		properties.put("spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults", hibernateSpringJDBCMetadataDefault);
 		return properties;
 	}
 }
