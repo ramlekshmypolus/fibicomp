@@ -1028,6 +1028,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			logger.info("----------- getDashBoardDataForCommitteeSchedule ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(CommitteeSchedule.class);
+			searchCriteria.createAlias("committee", "committee");
 			Criteria countCriteria = session.createCriteria(CommitteeSchedule.class);
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimestamp"));
