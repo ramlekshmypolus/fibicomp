@@ -38,4 +38,6 @@ public interface ScheduleDao {
 
 	public CommitteeScheduleAttachment addScheduleAttachment(CommitteeScheduleAttachment committeeScheduleAttachment);
 
+	public CommitteeScheduleAttachment fetchAttachmentById(Integer attachmentId);
+
 }

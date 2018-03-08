@@ -10,10 +10,16 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -808,6 +814,49 @@ public class ScheduleServiceImpl implements ScheduleService {
 		committeeDao.saveCommittee(committee);
 		scheduleVo.setCommittee(committee);
 		response = committeeDao.convertObjectToJSON(scheduleVo);
+		return response;
+	}
+
+	@Override
+	public ResponseEntity<byte[]> downloadScheduleAttachment(Integer attachmentId, HttpServletResponse response) {
+		CommitteeScheduleAttachment attachment = scheduleDao.fetchAttachmentById(attachmentId);
+		ResponseEntity<byte[]> attachmentData = null;
+		try {
+			byte[] data = attachment.getAttachment();
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.parseMediaType(attachment.getMimeType()));
+			String filename = attachment.getFileName();
+			headers.setContentDispositionFormData(filename, filename);
+			headers.setContentLength(data.length);
+			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+			headers.setPragma("public");
+			attachmentData = new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return attachmentData;
+	}
+
+	@Override
+	public String updateCommitteeScheduleMinute(ScheduleVo vo) {
+		String response = "";
+		Committee committee = committeeDao.fetchCommitteeById(vo.getCommitteeId());
+		List<CommitteeSchedule> committeeSchedules = committee.getCommitteeSchedules();
+		CommitteeScheduleMinutes scheduleMinutes = vo.getNewCommitteeScheduleMinute();
+		for (CommitteeSchedule committeeSchedule : committeeSchedules) {
+			if (committeeSchedule.getScheduleId().equals(vo.getScheduleId())) {
+				List<CommitteeScheduleMinutes> minutes = committeeSchedule.getCommitteeScheduleMinutes();
+				for (CommitteeScheduleMinutes minute : minutes) {
+					if (minute.getCommScheduleMinutesId().equals(scheduleMinutes.getCommScheduleMinutesId())) {
+						minute.setMinuteEntry(scheduleMinutes.getMinuteEntry());
+					}
+				}
+				vo.setCommitteeSchedule(committeeSchedule);
+			}
+		}
+		committeeDao.saveCommittee(committee);
+		vo.setCommittee(committee);
+		response = committeeDao.convertObjectToJSON(vo);
 		return response;
 	}
 
