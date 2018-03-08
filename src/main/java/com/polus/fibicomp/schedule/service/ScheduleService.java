@@ -1,5 +1,8 @@
 package com.polus.fibicomp.schedule.service;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,5 +34,9 @@ public interface ScheduleService {
 	public String deleteScheduleAttendance(ScheduleVo scheduleVo);
 
 	public String updateScheduleAttachment(ScheduleVo scheduleVo);
+
+	public ResponseEntity<byte[]> downloadScheduleAttachment(Integer attachmentId, HttpServletResponse response);
+
+	public String updateCommitteeScheduleMinute(ScheduleVo vo);
 
 }

@@ -7,7 +7,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -127,6 +129,22 @@ public class ScheduleController {
 		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
 		logger.info("CommitteeScheduleAttendanceId : " + vo.getCommScheduleAttendanceId());
 		return scheduleService.deleteScheduleAttendance(vo);
+	}
+
+	@RequestMapping(value = "/downloadScheduleAttachment", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> downloadScheduleAttachment(HttpServletResponse response, @RequestHeader("commScheduleAttachId") String commScheduleAttachId) {
+		logger.info("Requesting for downloadScheduleAttachment");
+		logger.info("commScheduleAttachId : " + commScheduleAttachId);
+		Integer attachmentid = Integer.parseInt(commScheduleAttachId);
+		return scheduleService.downloadScheduleAttachment(attachmentid, response);
+	}
+
+	@RequestMapping(value = "/updateCommitteeScheduleMinute", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String updateCommitteeScheduleMinute(@RequestBody ScheduleVo vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for updateCommitteeScheduleMinute");
+		logger.info("committeeId : " + vo.getCommitteeId());
+		logger.info("CommitteeScheduleId : " + vo.getScheduleId());
+		return scheduleService.updateCommitteeScheduleMinute(vo);
 	}
 
 }

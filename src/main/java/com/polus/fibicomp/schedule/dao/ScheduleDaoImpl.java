@@ -121,4 +121,9 @@ public class ScheduleDaoImpl implements ScheduleDao {
 		return committeeScheduleAttachment;
 	}
 
+	@Override
+	public CommitteeScheduleAttachment fetchAttachmentById(Integer attachmentId) {
+		return hibernateTemplate.get(CommitteeScheduleAttachment.class, attachmentId);
+	}
+
 }

@@ -18,6 +18,8 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeMemberExpertise;
@@ -115,6 +117,7 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		String response = "";
 		ObjectMapper mapper = new ObjectMapper();
 		try {
+			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 			response = mapper.writeValueAsString(object);
 		} catch (Exception e) {
 			e.printStackTrace();
