@@ -1,5 +1,6 @@
 package com.polus.fibicomp.vo;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +65,10 @@ public class CommonVO {
 	private String comments;
 
 	private List<HashMap<String, String>> answerList;
+
+	private Date filterStartDate;
+
+	private Date filterEndDate;
 
 	public String getUserName() {
 		return userName;
@@ -287,5 +292,21 @@ public class CommonVO {
 
 	public void setAnswerList(List<HashMap<String, String>> answerList) {
 		this.answerList = answerList;
+	}
+
+	public Date getFilterEndDate() {
+		return filterEndDate;
+	}
+
+	public void setFilterEndDate(Date filterEndDate) {
+		this.filterEndDate = filterEndDate;
+	}
+
+	public Date getFilterStartDate() {
+		return filterStartDate;
+	}
+
+	public void setFilterStartDate(Date filterStartDate) {
+		this.filterStartDate = filterStartDate;
 	}
 }
