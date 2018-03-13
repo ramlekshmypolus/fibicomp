@@ -25,9 +25,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "FIBI_COMM_SCHEDULE_MINUTES")
 public class CommitteeScheduleMinutes implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -50,7 +47,7 @@ public class CommitteeScheduleMinutes implements Serializable {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_COMM_SCHEDULE_MINUTES"), name = "MINUTE_ENTRY_TYPE_CODE", referencedColumnName = "MINUTE_ENTRY_TYPE_CODE", insertable = false, updatable = false)
-	private MinuteEntrytype minuteEntrytype;
+	private MinuteEntryType minuteEntrytype;
 
 	@Column(name = "PROTOCOL_CONTINGENCY_CODE")
 	private String protocolContingencyCode;
@@ -148,11 +145,11 @@ public class CommitteeScheduleMinutes implements Serializable {
 		this.minuteEntryTypeCode = minuteEntryTypeCode;
 	}
 
-	public MinuteEntrytype getMinuteEntrytype() {
+	public MinuteEntryType getMinuteEntrytype() {
 		return minuteEntrytype;
 	}
 
-	public void setMinuteEntrytype(MinuteEntrytype minuteEntrytype) {
+	public void setMinuteEntrytype(MinuteEntryType minuteEntrytype) {
 		this.minuteEntrytype = minuteEntrytype;
 	}
 

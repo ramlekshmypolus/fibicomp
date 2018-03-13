@@ -14,9 +14,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "RESEARCH_AREAS")
 public class ResearchArea implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

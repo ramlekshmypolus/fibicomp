@@ -10,7 +10,7 @@ import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachment;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
-import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.MinuteEntryType;
 import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.view.ProtocolView;
@@ -51,7 +51,7 @@ public interface ScheduleDao {
 	 * This method is used to fetch all minute entry types.
 	 * @return a list of MinuteEntryType.
 	 */
-	public List<MinuteEntrytype> fetchAllMinuteEntryTypes();
+	public List<MinuteEntryType> fetchAllMinuteEntryTypes();
 
 	/**
 	 * This method is used to fetch all protocol contingency.

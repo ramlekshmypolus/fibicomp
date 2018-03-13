@@ -15,9 +15,6 @@ import javax.persistence.Table;
 @Table(name = "FIBI_SCHEDULE_AGENDA")
 public class ScheduleAgenda implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

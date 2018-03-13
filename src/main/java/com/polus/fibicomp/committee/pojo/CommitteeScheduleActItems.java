@@ -22,9 +22,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "FIBI_COMM_SCHEDULE_ACT_ITEMS")
 public class CommitteeScheduleActItems implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

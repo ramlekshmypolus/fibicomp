@@ -33,12 +33,13 @@ import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachment;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
-import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.MinuteEntryType;
 import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ProtocolSubmission;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
 import com.polus.fibicomp.committee.schedule.Time12HrFmt;
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.schedule.dao.ScheduleDao;
 import com.polus.fibicomp.schedule.vo.ScheduleVo;
 import com.polus.fibicomp.view.ProtocolView;
@@ -65,7 +66,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		scheduleVo.setScheduleStatus(scheduleStatus);
 		List<ScheduleActItemType> scheduleActItemTypes = scheduleDao.fetchAllScheduleActItemType();
 		scheduleVo.setScheduleActItemTypes(scheduleActItemTypes);
-		List<MinuteEntrytype> minuteEntrytypes = scheduleDao.fetchAllMinuteEntryTypes();
+		List<MinuteEntryType> minuteEntrytypes = scheduleDao.fetchAllMinuteEntryTypes();
 		scheduleVo.setMinuteEntrytypes(minuteEntrytypes);
 		List<ProtocolContingency> protocolContingencies = scheduleDao.fetchAllProtocolContingency();
 		scheduleVo.setProtocolContingencies(protocolContingencies);
@@ -188,7 +189,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	private boolean hasActiveMembershipRoleForScheduledDate(List<CommitteeMemberRoles> committeeMembershipRoles,
 			Date scheduledDate) {
 		for (CommitteeMemberRoles membershipRole : committeeMembershipRoles) {
-			if (!membershipRole.getMembershipRoleCode().equals(CommitteeMemberRoles.INACTIVE_ROLE)
+			if (!membershipRole.getMembershipRoleCode().equals(Constants.INACTIVE_ROLE)
 					&& isActiveForScheduledDate(scheduledDate, membershipRole.getStartDate(), membershipRole.getEndDate())) {
 				return true;
 			}
@@ -219,7 +220,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	protected boolean isAlternate(CommitteeMemberships committeeMembership, Date scheduledDate) {
 		boolean isAlternate = false;
 		for (CommitteeMemberRoles membershipRole : committeeMembership.getCommitteeMemberRoles()) {
-			if (membershipRole.getMembershipRoleCode().equals(CommitteeMemberRoles.ALTERNATE_ROLE)
+			if (membershipRole.getMembershipRoleCode().equals(Constants.ALTERNATE_ROLE)
 					&& !membershipRole.getStartDate().after(scheduledDate)
 					&& !membershipRole.getEndDate().before(scheduledDate)) {
 				isAlternate = true;
@@ -519,11 +520,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		committeeScheduleMinute.setEntryNumber(entryNumber);
 		committeeScheduleMinute.setCommitteeSchedule(committeeSchedule);
 
-		if (MinuteEntrytype.ATTENDANCE.equals(minuteEntryTypeCode)) {
+		if (Constants.ATTENDANCE.equals(minuteEntryTypeCode)) {
 			addAttendanceMinuteEntry(committeeSchedule, committeeScheduleMinute);
-		} else if (MinuteEntrytype.ACTION_ITEM.equals(minuteEntryTypeCode)) {
+		} else if (Constants.ACTION_ITEM.equals(minuteEntryTypeCode)) {
 			addActionItem(committeeSchedule, committeeScheduleMinute);
-		} else if (MinuteEntrytype.PROTOCOL.equals(minuteEntryTypeCode) || MinuteEntrytype.PROTOCOL_REVIEWER_COMMENT.equals(minuteEntryTypeCode)) {
+		} else if (Constants.PROTOCOL.equals(minuteEntryTypeCode) || Constants.PROTOCOL_REVIEWER_COMMENT.equals(minuteEntryTypeCode)) {
 			resetActionItemFields(committeeScheduleMinute);
 		} else {
 			resetProtocolFields(committeeScheduleMinute);

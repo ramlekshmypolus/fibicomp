@@ -19,9 +19,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "KRIM_PRNCPL_T")
 public class PrincipalBo implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@GenericGenerator(name = "SEQ_PRINCIPAL", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {

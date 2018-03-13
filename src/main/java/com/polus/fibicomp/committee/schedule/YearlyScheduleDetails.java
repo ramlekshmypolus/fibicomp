@@ -6,9 +6,6 @@ package com.polus.fibicomp.committee.schedule;
  */
 public class YearlyScheduleDetails extends ScheduleDetails {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Integer day;

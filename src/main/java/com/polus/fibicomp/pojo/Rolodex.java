@@ -17,9 +17,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "ROLODEX")
 public class Rolodex implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

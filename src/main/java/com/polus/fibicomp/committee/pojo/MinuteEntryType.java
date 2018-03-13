@@ -10,20 +10,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "FIBI_MINUTE_ENTRY_TYPE")
-public class MinuteEntrytype implements Serializable {
+public class MinuteEntryType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-	public static final String ATTENDANCE = "2";
-
-    public static final String PROTOCOL = "3";
-
-    public static final String ACTION_ITEM = "4";
-
-    public static final String PROTOCOL_REVIEWER_COMMENT = "6";
 
 	@Id
 	@Column(name = "MINUTE_ENTRY_TYPE_CODE")

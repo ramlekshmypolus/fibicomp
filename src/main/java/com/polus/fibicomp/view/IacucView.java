@@ -14,9 +14,6 @@ import javax.persistence.Version;
 @Table(name = "IACUC_MV")
 public class IacucView implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

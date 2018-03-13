@@ -24,9 +24,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "FIBI_COMM_SCHEDULE_ATTENDANCE")
 public class CommitteeScheduleAttendance implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

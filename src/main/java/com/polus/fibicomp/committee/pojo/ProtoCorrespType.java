@@ -12,9 +12,6 @@ import javax.persistence.Table;
 @Table(name = "PROTO_CORRESP_TYPE")
 public class ProtoCorrespType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

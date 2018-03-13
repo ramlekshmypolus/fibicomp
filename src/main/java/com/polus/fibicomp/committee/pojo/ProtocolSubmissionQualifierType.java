@@ -12,9 +12,6 @@ import javax.persistence.Table;
 @Table(name = "SUBMISSION_TYPE_QUALIFIER")
 public class ProtocolSubmissionQualifierType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -11,9 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "FIBI_COMM_MEMBERSHIP_TYPE")
 public class CommitteeMembershipType implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Id

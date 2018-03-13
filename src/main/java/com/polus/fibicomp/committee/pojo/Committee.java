@@ -26,9 +26,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "FIBI_COMMITTEE")
 public class Committee implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -9,9 +9,6 @@ import java.sql.Date;
  */
 public class ScheduleDetails implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Date scheduleEndDate;

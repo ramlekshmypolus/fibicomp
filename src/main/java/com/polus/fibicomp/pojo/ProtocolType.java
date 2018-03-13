@@ -16,9 +16,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "PROTOCOL_TYPE")
 public class ProtocolType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

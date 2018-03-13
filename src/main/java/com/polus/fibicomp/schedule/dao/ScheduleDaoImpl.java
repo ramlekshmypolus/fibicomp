@@ -21,7 +21,7 @@ import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachment;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
-import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.MinuteEntryType;
 import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.view.ProtocolView;
@@ -74,12 +74,12 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	}
 
 	@Override
-	public List<MinuteEntrytype> fetchAllMinuteEntryTypes() {
+	public List<MinuteEntryType> fetchAllMinuteEntryTypes() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(MinuteEntrytype.class);
+		Criteria criteria = session.createCriteria(MinuteEntryType.class);
 		criteria.addOrder(Order.asc("sortId"));
 		@SuppressWarnings("unchecked")
-		List<MinuteEntrytype> minuteEntrytypes = criteria.list();
+		List<MinuteEntryType> minuteEntrytypes = criteria.list();
 		return minuteEntrytypes;
 	}
 

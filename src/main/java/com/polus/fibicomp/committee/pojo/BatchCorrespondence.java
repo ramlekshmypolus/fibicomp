@@ -15,9 +15,6 @@ import javax.persistence.Table;
 @Table(name = "BATCH_CORRESPONDENCE")
 public class BatchCorrespondence implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

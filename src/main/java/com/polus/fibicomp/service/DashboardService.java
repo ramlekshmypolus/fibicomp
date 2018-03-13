@@ -81,46 +81,6 @@ public interface DashboardService {
 	public String getProposalsBySearchCriteria(CommonVO vo) throws Exception;
 
 	/**
-	 * This method is used to retrieve proposal action list data for fibiMobile.
-	 * @param vo
-	 * @return list of actions
-	 * @throws Exception 
-	 */
-	public String getFibiActionList(CommonVO vo) throws Exception;
-
-	/**
-	 * This method is used to retrieve detailed proposal data for FibiMobile.
-	 * @param proposalNumber - Proposal Number
-	 * @return Details of Proposal Summary, Personnel Details and Budget
-	 * @throws Exception 
-	 */
-	public String getFibiProposalDetails(String proposalNumber) throws Exception;
-
-	/**
-	 * This method is used to accept/reject a proposal from mobile application.
-	 * @param documentNo - Proposal Number
-	 * @return Success or Failure Message
-	 * @throws Exception 
-	 */
-	public String manageFibiProposal(String documentNo) throws Exception;
-
-	/**
-	 * This method is used to retrieve questionnaire for FibiMobile.
-	 * @param vo - object of CommonVO
-	 * @return List of questions
-	 * @throws Exception 
-	 */
-	public String getFibiQuestionnaire(CommonVO vo) throws Exception;
-
-	/**
-	 * This method is used to submit answers for questionnaire in FibiMobile.
-	 * @param vo
-	 * @return Success or Failure Message
-	 * @throws Exception 
-	 */
-	public String submitQuestionnaire(CommonVO vo) throws Exception;
-	
-	/**
 	 * This method is used to get list of selected type in ResearchSummaryTable.
 	 * @param personId - Logged User ID
 	 * @param researchSummaryIndex - Selected row in Summary table

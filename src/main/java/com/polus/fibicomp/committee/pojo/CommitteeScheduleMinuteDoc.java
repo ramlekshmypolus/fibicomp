@@ -15,9 +15,6 @@ import javax.persistence.Table;
 @Table(name = "FIBI_COMM_SCHEDULE_MINUTE_DOC")
 public class CommitteeScheduleMinuteDoc implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -20,9 +20,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "PROTOCOL_SUBMISSION_V")
 public class ProtocolSubmission implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

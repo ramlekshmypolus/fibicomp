@@ -14,9 +14,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "PROTOCOL_REVIEW_TYPE")
 public class ProtocolReviewType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

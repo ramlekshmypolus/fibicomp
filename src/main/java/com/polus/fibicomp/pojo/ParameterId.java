@@ -10,9 +10,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class ParameterId implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "NMSPC_CD")
