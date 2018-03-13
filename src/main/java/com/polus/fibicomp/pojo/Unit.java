@@ -23,9 +23,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "UNIT")
 public class Unit implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -9,9 +9,6 @@ import com.polus.fibicomp.view.AwardView;
 @Table(name = "AWARD_PERSONS")*/
 public class AwardPerson implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/*@Id

@@ -3,6 +3,8 @@ package com.polus.fibicomp.committee.schedule;
 import org.quartz.CronTrigger;
 import org.quartz.TriggerUtils;
 
+import com.polus.fibicomp.constants.Constants;
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +29,7 @@ public class DefaultScheduleSequence implements ScheduleSequence {
 	@SuppressWarnings("unchecked")
 	public List<Date> executeScheduleSequence(String expression, Date startDate, Date endDate) throws ParseException {
 
-		CronTrigger ct = new CronTrigger(NAME, GROUP, JOBNAME, JOBGROUP, startDate, null, expression);
+		CronTrigger ct = new CronTrigger(Constants.NAME, Constants.GROUP, Constants.JOBNAME, Constants.JOBGROUP, startDate, null, expression);
 		return TriggerUtils.computeFireTimesBetween(ct, null, startDate, endDate);
 	}
 

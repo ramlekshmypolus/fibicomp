@@ -18,9 +18,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "PROPOSALS_MV")
 public class ProposalView implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

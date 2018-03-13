@@ -11,9 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "FIBI_COMM_SCHEDULE_ATTACH_TYPE")
 public class CommitteeScheduleAttachType implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Id

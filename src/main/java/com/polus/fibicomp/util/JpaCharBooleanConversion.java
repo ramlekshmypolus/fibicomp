@@ -2,10 +2,9 @@ package com.polus.fibicomp.util;
 
 import javax.persistence.AttributeConverter;
 
-public class JpaCharBooleanConversion implements AttributeConverter<Boolean, String> {
+import com.polus.fibicomp.constants.Constants;
 
-	public static final String DATABASE_BOOLEAN_TRUE_STRING_REPRESENTATION = "Y";
-	public static final String DATABASE_BOOLEAN_FALSE_STRING_REPRESENTATION = "N";
+public class JpaCharBooleanConversion implements AttributeConverter<Boolean, String> {
 
 	@Override
 	public String convertToDatabaseColumn(Boolean b) {
@@ -13,9 +12,9 @@ public class JpaCharBooleanConversion implements AttributeConverter<Boolean, Str
 			return null;
 		}
 		if (b.booleanValue()) {
-			return DATABASE_BOOLEAN_TRUE_STRING_REPRESENTATION;
+			return Constants.DATABASE_BOOLEAN_TRUE_STRING_REPRESENTATION;
 		}
-		return DATABASE_BOOLEAN_FALSE_STRING_REPRESENTATION;
+		return Constants.DATABASE_BOOLEAN_FALSE_STRING_REPRESENTATION;
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import org.hibernate.annotations.Parameter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.polus.fibicomp.committee.schedule.DateUtils;
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.pojo.Rolodex;
 import com.polus.fibicomp.util.JpaCharBooleanConversion;
 import com.polus.fibicomp.view.PersonDetailsView;
@@ -33,9 +34,6 @@ import com.polus.fibicomp.view.PersonDetailsView;
 @Table(name = "FIBI_COMM_MEMBERSHIPS")
 public class CommitteeMemberships implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -282,7 +280,7 @@ public class CommitteeMemberships implements Serializable {
         boolean isActive = false;
         for (CommitteeMemberRoles role : committeeMemberRoles) {
             if (role.getStartDate() != null && role.getEndDate() != null && !date.before(role.getStartDate()) && !date.after(role.getEndDate())) {
-                if (role.getMembershipRoleCode().equals(CommitteeMemberRoles.INACTIVE_ROLE)) {
+                if (role.getMembershipRoleCode().equals(Constants.INACTIVE_ROLE)) {
                     isActive = false;
                     break;
                 } else {

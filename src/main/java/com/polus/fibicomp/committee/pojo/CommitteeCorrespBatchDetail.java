@@ -15,9 +15,6 @@ import javax.persistence.Table;
 @Table(name = "FIBI_COMM_CORRESP_BATCH_DETAIL")
 public class CommitteeCorrespBatchDetail implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

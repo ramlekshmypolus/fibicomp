@@ -16,9 +16,6 @@ import org.hibernate.annotations.NamedNativeQuery;
 		@NamedNativeQuery(name = "get_fibi_award_details", query = "{ call get_fibi_award_details(?, :av_award_id) }", resultClass = Award.class, callable = true) })
 public class Award implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

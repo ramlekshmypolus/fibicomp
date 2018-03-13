@@ -5,13 +5,11 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import com.polus.fibicomp.constants.Constants;
+
 public class Time12HrFmt implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	public static final String COLON = ":";
-
-	public static final String ZERO = "0";
 
 	public enum MERIDIEM {
 		AM, PM
@@ -77,14 +75,14 @@ public class Time12HrFmt implements Serializable {
 		StringBuilder str = new StringBuilder();
 
 		if (hrs < 10)
-			str.append(ZERO).append(hrs);
+			str.append(Constants.ZERO).append(hrs);
 		else
 			str.append(hrs);
 
-		str.append(COLON);
+		str.append(Constants.COLON);
 
 		if (mins < 10)
-			str.append(ZERO).append(mins);
+			str.append(Constants.ZERO).append(mins);
 		else
 			str.append(mins);
 
@@ -93,7 +91,7 @@ public class Time12HrFmt implements Serializable {
 
 	public int findMinutes() {
 
-		String[] result = time.split(COLON);
+		String[] result = time.split(Constants.COLON);
 
 		int hrs = new Integer(result[0]);
 		int min = new Integer(result[1]);

@@ -29,9 +29,6 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 		@NamedNativeQuery(name = "getIRBDashboard", query = "{ call GET_IRB_FOR_DASHBOARD(?,:av_person_id,:av_from_row,:av_to_row,:av_sort_column,:av_sort_order,:av_search_field) }", resultClass = Protocol.class, callable = true) })
 public class Protocol implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@GenericGenerator(name = "SEQ_PROTOCOL", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {

@@ -13,9 +13,6 @@ import javax.persistence.Version;
 @Table(name = "PROTOCOL_STATUS")
 public class ProtocolStatus implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

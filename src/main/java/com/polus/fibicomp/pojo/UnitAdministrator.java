@@ -24,9 +24,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @IdClass(UnitAdministrator.UnitAdministratorId.class)
 public class UnitAdministrator implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(UnitAdministrator.class);
@@ -146,9 +143,6 @@ public class UnitAdministrator implements Serializable {
 
 	public static final class UnitAdministratorId implements Serializable {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 
 		private String unitNumber;

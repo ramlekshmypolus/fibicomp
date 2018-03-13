@@ -12,9 +12,6 @@ import javax.persistence.Table;
 @Table(name = "SUBMISSION_TYPE")
 public class ProtocolSubmissionType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

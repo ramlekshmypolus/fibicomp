@@ -12,4 +12,24 @@ public interface Constants {
 	String NIH_MULTIPLE_PI_HIERARCHY = "NIH Multiple PI";
 	String DEFAULT_SPONSOR_HIERARCHY_NAME = "DEFAULT";
 	String INVALID_TIME = "Invalid Time";
+	String ALTERNATE_ROLE = "12";
+    String INACTIVE_ROLE = "14";
+    String DEFAULTTIME = "12:00";
+    String NAME = "t";    
+    String GROUP = "g";    
+    String JOBNAME = "j";    
+    String JOBGROUP = "g";
+	String COLON = ":";
+	String ZERO = "0";
+	String PRINCIPAL_INVESTIGATOR = "PI";
+	String MULTI_PI = "MPI";
+	String CO_INVESTIGATOR = "COI";
+	String KEY_PERSON = "KP";
+	String DATABASE_BOOLEAN_TRUE_STRING_REPRESENTATION = "Y";
+	String DATABASE_BOOLEAN_FALSE_STRING_REPRESENTATION = "N";
+	String ATTENDANCE = "2";
+    String PROTOCOL = "3";
+    String ACTION_ITEM = "4";
+    String PROTOCOL_REVIEWER_COMMENT = "6";
+
 }

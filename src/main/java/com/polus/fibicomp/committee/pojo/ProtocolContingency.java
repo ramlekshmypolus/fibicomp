@@ -13,9 +13,6 @@ import javax.persistence.Version;
 @Table(name = "PROTOCOL_CONTINGENCY")
 public class ProtocolContingency implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

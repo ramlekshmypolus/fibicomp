@@ -11,9 +11,6 @@ import javax.persistence.Table;
 @Table(name = "KC_PERSON_MV")
 public class PersonDetailsView implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

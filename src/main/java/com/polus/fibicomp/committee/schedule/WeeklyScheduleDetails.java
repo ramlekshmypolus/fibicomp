@@ -12,9 +12,6 @@ import java.util.List;
  */
 public class WeeklyScheduleDetails extends ScheduleDetails {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Integer week;

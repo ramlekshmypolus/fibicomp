@@ -13,18 +13,7 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 @Table(name = "EPS_PROP_PERSON_ROLE")
 public class ProposalPersonRole implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-	public static final String PRINCIPAL_INVESTIGATOR = "PI";
-
-	public static final String MULTI_PI = "MPI";
-
-	public static final String CO_INVESTIGATOR = "COI";
-
-	public static final String KEY_PERSON = "KP";
 
 	@GenericGenerator(name = "SEQ_EPS_PROP_PERSON", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "SEQ_EPS_PROP_PERSON_ROLE"),

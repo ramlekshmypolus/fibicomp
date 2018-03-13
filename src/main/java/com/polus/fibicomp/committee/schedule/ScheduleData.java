@@ -1,6 +1,7 @@
 package com.polus.fibicomp.committee.schedule;
 
 import com.polus.fibicomp.committee.schedule.Time12HrFmt.MERIDIEM;
+import com.polus.fibicomp.constants.Constants;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -9,8 +10,6 @@ import java.util.List;
 public class ScheduleData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	public static final String DEFAULTTIME = "12:00";
 
 	private Date scheduleStartDate;
 
@@ -38,7 +37,7 @@ public class ScheduleData implements Serializable {
 		super();
 		this.setScheduleStartDate(new Date(new java.util.Date().getTime()));
 
-		this.setTime(new Time12HrFmt(DEFAULTTIME, MERIDIEM.PM));
+		this.setTime(new Time12HrFmt(Constants.DEFAULTTIME, MERIDIEM.PM));
 
 		this.setRecurrenceType(StyleKey.NEVER.toString());
 
@@ -141,7 +140,7 @@ public class ScheduleData implements Serializable {
 	}
 
 	public static String getDefaulttime() {
-		return DEFAULTTIME;
+		return Constants.DEFAULTTIME;
 	}
 
 	public static CronSpecialChars getMonthOfWeek(String month) {

@@ -37,31 +37,6 @@ public class FibiMobileDashboardController {
 		return dashboardService.getProposalsBySearchCriteria(vo);
 	}
 
-	@RequestMapping(value = "/getFibiActionList", method = RequestMethod.POST)
-	public String requestFibiActionList(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		return dashboardService.getFibiActionList(vo);
-	}
-
-	@RequestMapping(value = "/getFibiProposalDetails", method = RequestMethod.POST)
-	public String requestFibiProposalDetails(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		return dashboardService.getFibiProposalDetails(vo.getDocumentNo());
-	}
-
-	@RequestMapping(value = "/handleProposal", method = RequestMethod.POST)
-	public String manageFibiProposal(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		return dashboardService.manageFibiProposal(vo.getDocumentNo());
-	}
-
-	@RequestMapping(value = "/getQuestionnaire", method = RequestMethod.POST)
-	public String requestQuestionnaire(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		return dashboardService.getFibiQuestionnaire(vo);
-	}
-
-	@RequestMapping(value = "/submitFibiQuestionnaire", method = RequestMethod.POST)
-	public String requestSubmitQuestionnaire(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		return dashboardService.submitQuestionnaire(vo);
-	}
-
 	@RequestMapping(value = "/getFibiResearchSummary", method = RequestMethod.POST)
 	public String requestFibiResearchSummary(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return dashboardService.getFibiResearchSummary(vo.getPersonId(), vo.getResearchSummaryIndex());

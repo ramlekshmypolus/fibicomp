@@ -9,7 +9,7 @@ import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachType;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttachment;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleAttendance;
 import com.polus.fibicomp.committee.pojo.CommitteeScheduleMinutes;
-import com.polus.fibicomp.committee.pojo.MinuteEntrytype;
+import com.polus.fibicomp.committee.pojo.MinuteEntryType;
 import com.polus.fibicomp.committee.pojo.ProtocolContingency;
 import com.polus.fibicomp.committee.pojo.ScheduleActItemType;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
@@ -36,7 +36,7 @@ public class ScheduleVo {
 
 	private Integer commScheduleActItemsId;
 
-	private List<MinuteEntrytype> minuteEntrytypes;
+	private List<MinuteEntryType> minuteEntrytypes;
 
 	private List<ProtocolContingency> protocolContingencies;
 
@@ -134,11 +134,11 @@ public class ScheduleVo {
 		this.commScheduleActItemsId = commScheduleActItemsId;
 	}
 
-	public List<MinuteEntrytype> getMinuteEntrytypes() {
+	public List<MinuteEntryType> getMinuteEntrytypes() {
 		return minuteEntrytypes;
 	}
 
-	public void setMinuteEntrytypes(List<MinuteEntrytype> minuteEntrytypes) {
+	public void setMinuteEntrytypes(List<MinuteEntryType> minuteEntrytypes) {
 		this.minuteEntrytypes = minuteEntrytypes;
 	}
 

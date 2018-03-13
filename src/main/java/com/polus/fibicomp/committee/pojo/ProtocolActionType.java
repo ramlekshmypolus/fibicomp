@@ -12,9 +12,6 @@ import javax.persistence.Table;
 @Table(name = "PROTOCOL_ACTION_TYPE")
 public class ProtocolActionType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

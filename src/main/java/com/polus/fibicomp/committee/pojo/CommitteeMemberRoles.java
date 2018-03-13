@@ -22,14 +22,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "FIBI_COMM_MEMBER_ROLES")
 public class CommitteeMemberRoles implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-
-	public static final String ALTERNATE_ROLE = "12";
-
-    public static final String INACTIVE_ROLE = "14";
 
     @Id
 	@GenericGenerator(name = "commMemberRolesIdGererator", strategy = "increment", parameters = {

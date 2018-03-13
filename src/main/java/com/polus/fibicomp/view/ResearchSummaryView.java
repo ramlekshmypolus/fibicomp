@@ -11,9 +11,6 @@ import javax.persistence.Table;
 @Table(name = "MY_RESEARCH_SUMMARY_V")
 public class ResearchSummaryView implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

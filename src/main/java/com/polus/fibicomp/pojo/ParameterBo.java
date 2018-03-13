@@ -9,9 +9,6 @@ import javax.persistence.*;
 @Table(name = "KRCR_PARM_T")
 public class ParameterBo implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

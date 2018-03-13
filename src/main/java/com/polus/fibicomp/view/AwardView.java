@@ -13,9 +13,6 @@ import javax.persistence.Transient;
 @Table(name = "AWARD_MV")
 public class AwardView implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

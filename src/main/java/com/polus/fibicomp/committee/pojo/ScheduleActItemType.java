@@ -11,9 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "FIBI_SCHEDULE_ACT_ITEM_TYPE")
 public class ScheduleActItemType implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
