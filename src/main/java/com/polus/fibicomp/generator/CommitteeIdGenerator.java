@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.id.IdentifierGenerator;
@@ -13,6 +14,8 @@ import org.hibernate.id.IdentifierGenerator;
 import com.polus.fibicomp.committee.pojo.Committee;
 
 public class CommitteeIdGenerator implements IdentifierGenerator {
+
+	protected static Logger logger = Logger.getLogger(CommitteeIdGenerator.class.getName());
 
 	@Override
 	public Serializable generate(SessionImplementor sessionImplementor, Object object) throws HibernateException {
@@ -28,7 +31,7 @@ public class CommitteeIdGenerator implements IdentifierGenerator {
 			if (rs.next()) {
 				int id = rs.getInt(1) + 101;
 				String generatedId = prefix + "-" + new Integer(id).toString();
-				System.out.println("Generated Id: " + generatedId);
+				logger.info("Generated Id: " + generatedId);
 				return generatedId;
 			}
 		} catch (SQLException e) {

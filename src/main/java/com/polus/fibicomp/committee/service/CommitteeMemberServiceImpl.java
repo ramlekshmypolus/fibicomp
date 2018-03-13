@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,8 @@ import com.polus.fibicomp.view.PersonDetailsView;
 @Transactional
 @Service(value = "committeeMemberService")
 public class CommitteeMemberServiceImpl implements CommitteeMemberService {
+
+	protected static Logger logger = Logger.getLogger(CommitteeMemberServiceImpl.class.getName());
 
 	@Autowired
 	private CommitteeDao committeeDao;

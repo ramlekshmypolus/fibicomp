@@ -136,7 +136,7 @@ public class ScheduleController {
 		logger.info("Requesting for downloadScheduleAttachment");
 		logger.info("commScheduleAttachId : " + commScheduleAttachId);
 		Integer attachmentid = Integer.parseInt(commScheduleAttachId);
-		return scheduleService.downloadScheduleAttachment(attachmentid, response);
+		return scheduleService.downloadScheduleAttachment(attachmentid);
 	}
 
 	@RequestMapping(value = "/updateCommitteeScheduleMinute", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

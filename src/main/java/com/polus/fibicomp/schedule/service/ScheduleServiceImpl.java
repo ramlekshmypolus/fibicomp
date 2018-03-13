@@ -10,8 +10,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
@@ -818,7 +816,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public ResponseEntity<byte[]> downloadScheduleAttachment(Integer attachmentId, HttpServletResponse response) {
+	public ResponseEntity<byte[]> downloadScheduleAttachment(Integer attachmentId) {
 		CommitteeScheduleAttachment attachment = scheduleDao.fetchAttachmentById(attachmentId);
 		ResponseEntity<byte[]> attachmentData = null;
 		try {

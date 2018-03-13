@@ -493,7 +493,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer dashBoardCount = null;
 		try {
 			if (pageNumber == 10) {
-				Session session = hibernateTemplate.getSessionFactory().openSession();
+				Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 				Query query = null;
 				if (requestType.equals("AWARD")) {
 					query = session.createQuery("select COUNT(*) from AwardView");

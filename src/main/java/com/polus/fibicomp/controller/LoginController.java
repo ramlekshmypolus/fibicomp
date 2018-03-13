@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,8 +24,6 @@ import com.polus.fibicomp.view.MobileProfile;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev",
-		"http://192.168.1.76:8080/fibi30" })
 public class LoginController {
 
 	protected static Logger logger = Logger.getLogger(LoginController.class.getName());

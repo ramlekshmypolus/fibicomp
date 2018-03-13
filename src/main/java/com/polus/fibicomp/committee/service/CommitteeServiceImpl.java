@@ -67,7 +67,6 @@ public class CommitteeServiceImpl implements CommitteeService {
 		committeeVo.setResearchAreas(researchAreas);
 		List<ScheduleStatus> scheduleStatus = committeeDao.fetchAllScheduleStatus();
 		committeeVo.setScheduleStatus(scheduleStatus);
-
 		String response = committeeDao.convertObjectToJSON(committeeVo);
 		return response;
 	}

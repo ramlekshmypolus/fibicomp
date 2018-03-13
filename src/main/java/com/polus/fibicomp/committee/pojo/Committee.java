@@ -32,8 +32,8 @@ public class Committee implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GenericGenerator(name = "sequence_dep_id", strategy = "com.polus.fibicomp.generator.CommitteeIdGenerator")
-	@GeneratedValue(generator = "sequence_dep_id")  
+	@GenericGenerator(name = "seq_comm_id", strategy = "com.polus.fibicomp.generator.CommitteeIdGenerator")
+	@GeneratedValue(generator = "seq_comm_id")  
 	@Column(name = "COMMITTEE_ID")
 	private String committeeId;
 

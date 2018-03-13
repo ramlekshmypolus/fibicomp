@@ -15,9 +15,8 @@ import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-/*@CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30", "http://demo.fibiweb.com/kc-dev",
-		"http://192.168.1.76:8080/fibi30" })*/
 public class FibiMobileDashboardController {
+
 	protected static Logger logger = Logger.getLogger(FibiMobileDashboardController.class.getName());
 
 	@Autowired

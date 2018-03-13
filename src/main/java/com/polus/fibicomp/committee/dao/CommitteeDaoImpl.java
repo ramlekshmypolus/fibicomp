@@ -168,16 +168,6 @@ public class CommitteeDaoImpl implements CommitteeDao {
 	}
 
 	@Override
-	public void deleteAreaOfResearch(Integer researchAreaId) {
-		hibernateTemplate.delete(hibernateTemplate.get(CommitteeResearchAreas.class, researchAreaId));
-	}
-
-	@Override
-	public void deleteSchedule(CommitteeSchedule committeeSchedule) {
-		hibernateTemplate.delete(committeeSchedule);
-	}
-
-	@Override
 	public List<PersonDetailsView> getAllEmployees() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(PersonDetailsView.class);

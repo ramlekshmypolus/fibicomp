@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.log4j.Logger;
 import org.quartz.SimpleTrigger;
 import org.quartz.TriggerUtils;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ import com.polus.fibicomp.committee.schedule.YearMonthDayOfWeekCronExpression;
 @Transactional
 @Service(value = "committeeScheduleService")
 public class CommitteeScheduleServiceImpl implements CommitteeScheduleService {
+
+	protected static Logger logger = Logger.getLogger(CommitteeScheduleServiceImpl.class.getName());
 
 	@Override
 	public List<Date> getScheduledDates(Date startDate, Date endDate, Time24HrFmt time,

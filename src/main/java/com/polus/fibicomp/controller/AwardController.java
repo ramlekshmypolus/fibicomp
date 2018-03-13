@@ -14,10 +14,6 @@ import com.polus.fibicomp.service.AwardService;
 import com.polus.fibicomp.vo.CommonVO;
 
 @RestController
-/*
- * @CrossOrigin(origins = { "http://demo.fibiweb.com/fibi30",
- * "http://demo.fibiweb.com/kc-dev", "http://192.168.1.76:8080/fibi30" })
- */
 public class AwardController {
 
 	protected static Logger logger = Logger.getLogger(AwardController.class.getName());
