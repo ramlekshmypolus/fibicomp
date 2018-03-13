@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -1022,6 +1024,8 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		Date filterStartDate = vo.getFilterStartDate();
+		Date filterEndDate = vo.getFilterEndDate();
 
 		Conjunction and = Restrictions.conjunction();
 		try {
@@ -1074,12 +1078,25 @@ public class DashboardDaoImpl implements DashboardDao {
 			searchCriteria.setProjection(projList).setResultTransformer(new AliasToBeanResultTransformer(CommitteeSchedule.class));
 			@SuppressWarnings("unchecked")
 			List<CommitteeSchedule> committeeSchedules = searchCriteria.list();
-			dashBoardProfile.setCommitteeSchedules(committeeSchedules);
+			Date scheduleDate = null;
+			if (filterStartDate != null && filterEndDate != null) {
+				Date startDate = DateUtils.addDays(filterStartDate, -1);
+				Date endDate = DateUtils.addDays(filterEndDate, 1);
+				List<CommitteeSchedule> filteredSchedules = new ArrayList<CommitteeSchedule>();
+				for (CommitteeSchedule schedule : committeeSchedules) {
+					scheduleDate = schedule.getScheduledDate();
+					if ((scheduleDate != null) && scheduleDate.after(startDate) && scheduleDate.before(endDate)) {
+						filteredSchedules.add(schedule);
+					}
+				}
+				dashBoardProfile.setCommitteeSchedules(filteredSchedules);
+			} else {
+				dashBoardProfile.setCommitteeSchedules(committeeSchedules);
+			}
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardDataForCommitteeSchedule");
 			e.printStackTrace();
 		}
 		return dashBoardProfile;
 	}
-
 }
