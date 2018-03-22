@@ -31,5 +31,15 @@ public interface Constants {
 	String PROTOCOL = "3";
 	String ACTION_ITEM = "4";
 	String PROTOCOL_REVIEWER_COMMENT = "6";
+	String DESCRIPTION = "description";
+	String HASH_ALGORITHM = "SHA";
+	String CHARSET = "UTF-8";
+
+	// Security constants
+	String SECRET = "SecretKeyToGenJWTs";
+    long EXPIRATION_TIME = 864_000_000; // 10 days
+    String TOKEN_PREFIX = "Bearer ";
+    String HEADER_STRING = "Authorization";
+    String SIGN_UP_URL = "/fibi-comp/login";
 
 }

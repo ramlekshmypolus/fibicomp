@@ -32,6 +32,7 @@ import com.polus.fibicomp.committee.pojo.MembershipRole;
 import com.polus.fibicomp.committee.pojo.ProtocolReviewType;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.committee.pojo.ScheduleStatus;
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.pojo.Rolodex;
 import com.polus.fibicomp.pojo.Unit;
 import com.polus.fibicomp.view.PersonDetailsView;
@@ -42,10 +43,6 @@ public class CommitteeDaoImpl implements CommitteeDao {
 
 	protected static Logger logger = Logger.getLogger(CommitteeDaoImpl.class.getName());
 
-	private static final String DESCRIPTION = "description";
-
-    private static final String SCHEDULED = "Scheduled";
-
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
@@ -55,9 +52,9 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		Criteria criteria = session.createCriteria(ProtocolReviewType.class);
 		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.property("reviewTypeCode"), "reviewTypeCode");
-		projList.add(Projections.property(DESCRIPTION), DESCRIPTION);
+		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ProtocolReviewType.class));
-		criteria.addOrder(Order.asc(DESCRIPTION));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
 		@SuppressWarnings("unchecked")
 		List<ProtocolReviewType> reviewTypes = criteria.list();
 		return reviewTypes;
@@ -84,10 +81,10 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		Criteria criteria = session.createCriteria(ResearchArea.class);
 		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.property("researchAreaCode"), "researchAreaCode");
-		projList.add(Projections.property(DESCRIPTION), DESCRIPTION);
+		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ResearchArea.class));
 		criteria.add(Restrictions.eq("active", true));
-		criteria.addOrder(Order.asc(DESCRIPTION));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
 		@SuppressWarnings("unchecked")
 		List<ResearchArea> researchAreas = criteria.list();
 		return researchAreas;
@@ -144,7 +141,7 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		ScheduleStatus status = null;
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(ScheduleStatus.class);
-		criteria.add(Restrictions.eq(DESCRIPTION, SCHEDULED));
+		criteria.add(Restrictions.eq(Constants.DESCRIPTION, "Scheduled"));
 		status = (ScheduleStatus) criteria.list().get(0);
 		return status;
 	}
@@ -207,7 +204,7 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		projList.add(Projections.property("membershipTypeCode"), "membershipTypeCode");
 		projList.add(Projections.property("description"), "description");
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(CommitteeMembershipType.class));
-		criteria.addOrder(Order.asc(DESCRIPTION));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
 		@SuppressWarnings("unchecked")
 		List<CommitteeMembershipType> membershipTypeList = criteria.list();
 		return membershipTypeList;
@@ -221,7 +218,7 @@ public class CommitteeDaoImpl implements CommitteeDao {
 		projList.add(Projections.property("membershipRoleCode"), "membershipRoleCode");
 		projList.add(Projections.property("description"), "description");
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(MembershipRole.class));
-		criteria.addOrder(Order.asc(DESCRIPTION));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
 		@SuppressWarnings("unchecked")
 		List<MembershipRole> membershipRoleList = criteria.list();
 		return membershipRoleList;

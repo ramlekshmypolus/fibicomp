@@ -8,9 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.service.LoginService;
 import com.polus.fibicomp.view.MobileProfile;
 import com.polus.fibicomp.vo.CommonVO;
@@ -35,7 +32,7 @@ public class LoginController {
 	@Value("${LOGIN_MODE}")
 	private String login_mode;
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	/*@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> loginUser(@RequestBody CommonVO vo, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		logger.debug("Received request for login: ");
@@ -49,12 +46,11 @@ public class LoginController {
 		ObjectMapper mapper = new ObjectMapper();
 		String responseData = mapper.writeValueAsString(personDTO);
 		return new ResponseEntity<String>(responseData, status);
-	}
+	}*/
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		logger.debug("Log Out");
-		// invalidate the session if exists
 		HttpSession session = request.getSession(false);
 		if (session != null) {
 			session.invalidate();

@@ -10,7 +10,7 @@ import com.polus.fibicomp.committee.vo.CommitteeVo;
 public interface CommitteeService {
 
 	/**
-	 * This method is used to create a committee.
+	 * This method is used to create committee.
 	 * @param committeeTypeCode - Type code of committee.
 	 * @return committee
 	 */

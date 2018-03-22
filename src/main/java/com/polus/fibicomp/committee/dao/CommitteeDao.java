@@ -26,7 +26,7 @@ public interface CommitteeDao {
 
 	/**
 	 * This method is used fetch committeeType.
-	 * @param committeeTypeCode - Type code of committee.
+	 * @param committeeTypeCode - code of committee type.
 	 * @return committeeType.
 	 */
 	public CommitteeType fetchCommitteeType(Integer committeeTypeCode);
