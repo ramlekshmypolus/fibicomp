@@ -33,8 +33,10 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getDashBoardData(CommonVO vo) throws Exception {
+		logger.info("-------- getDashBoardData ---------");
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		String requestType = vo.getTabIndex();
+		logger.info("requestType : " + requestType);
 		try {
 			if (requestType.equals("AWARD")) {
 				dashBoardProfile = dashboardDao.getDashBoardDataForAward(vo);
@@ -59,7 +61,7 @@ public class DashboardServiceImpl implements DashboardService {
 			}
 			// dashBoardProfile.setPersonDTO(personDTO);
 		} catch (Exception e) {
-			logger.error("Error in methord getDashBoardData", e);
+			logger.error("Error in method getDashBoardData", e);
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(dashBoardProfile);
@@ -72,10 +74,14 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getPieChartDataByType(CommonVO vo) throws Exception {
+		logger.info("---------getPieChartDataByType---------");
 		String pieChartDataByType = null;
 		String personId = vo.getPersonId();
 		String sponsorCode = vo.getSponsorCode();
 		String pieChartIndex = vo.getPieChartIndex();
+		logger.info("personId :"+ personId);
+		logger.info("sponsorCode :"+ sponsorCode);
+		logger.info("sponsorCode :"+ sponsorCode);
 		try {
 			if (pieChartIndex.equals("AWARD")) {
 				pieChartDataByType = dashboardDao.getAwardBySponsorTypes(personId, sponsorCode);
@@ -91,6 +97,7 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getDetailedSummaryData(String personId, String researchSummaryIndex) throws Exception {
+		logger.info("---------getDetailedSummaryData---------");
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		try {
 			if (researchSummaryIndex.equals("PROPOSALSINPROGRESS")) {
@@ -112,10 +119,14 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getDonutChartDataBySponsor(CommonVO vo) {
+		logger.info("---------getDonutChartDataBySponsor---------");
 		String donutChartData = null;
 		String personId = vo.getPersonId();
 		String sponsorCode = vo.getSponsorCode();
 		String donutChartIndex = vo.getDonutChartIndex();
+		logger.info("personId :"+ personId);
+		logger.info("sponsorCode :"+ sponsorCode);
+		logger.info("donutChartIndex :"+ donutChartIndex);
 		try {
 			if (donutChartIndex.equals("INPROGRESS")) {
 				donutChartData = dashboardDao.getInProgressProposalsBySponsorExpanded(personId, sponsorCode);
@@ -131,6 +142,7 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getFibiResearchSummary(String personId) throws Exception {
+		logger.info("---------getFibiResearchSummary---------");
 		MobileProfile mobileProfile = new MobileProfile();
 		mobileProfile.setStatus(false);
 		mobileProfile.setMessage("Failed");
@@ -167,8 +179,10 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getProposalsBySearchCriteria(CommonVO vo) throws Exception {
+		logger.info("---------getProposalsBySearchCriteria---------");
 		MobileProfile mobileProfile = new MobileProfile();
 		String requestType = vo.getTabIndex();
+		logger.info("requestType : " + requestType);
 		mobileProfile.setStatus(false);
 		mobileProfile.setMessage("No Search Results Found");
 		try {
@@ -197,6 +211,7 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getFibiResearchSummary(String personId, String researchSummaryIndex) throws Exception {
+		logger.info("---------getFibiResearchSummary---------");
 		DashBoardProfile dashBoardProfile = new DashBoardProfile();
 		MobileProfile mobileProfile = new MobileProfile();
 		mobileProfile.setStatus(false);
@@ -222,6 +237,7 @@ public class DashboardServiceImpl implements DashboardService {
 
 	@Override
 	public String getProposalsForCertification(String personId) {
+		logger.info("---------getProposalsForCertification---------");
 		MobileProfile mobileProfile = new MobileProfile();
 		mobileProfile.setStatus(false);
 		mobileProfile.setMessage("Error fetching certification data");

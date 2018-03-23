@@ -12,9 +12,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Immutable;
+
 import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
+@Immutable
 @Table(name = "PROPOSALS_MV")
 public class ProposalView implements Serializable {
 

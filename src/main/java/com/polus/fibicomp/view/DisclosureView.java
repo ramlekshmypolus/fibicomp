@@ -9,7 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Immutable;
+
 @Entity
+@Immutable
 @Table(name = "DISCLOSURE_MV")
 public class DisclosureView implements Serializable {
 

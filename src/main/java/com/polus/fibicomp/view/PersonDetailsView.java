@@ -7,7 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Immutable;
+
 @Entity
+@Immutable
 @Table(name = "KC_PERSON_MV")
 public class PersonDetailsView implements Serializable {
 
