@@ -19,7 +19,7 @@ import com.polus.fibicomp.view.ProtocolView;
 public interface ScheduleDao {
 
 	/**
-	 * This method is used to get a protocol based on the parameters.
+	 * This method is used to get a protocol based on parameters.
 	 * @param protocolId - Id of the submitted protocol.
 	 * @param personId - personId of the PI of submitted protocol.
 	 * @param fullName - fullName of the PI of submitted protocol.

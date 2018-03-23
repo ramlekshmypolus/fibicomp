@@ -1,6 +1,9 @@
 package com.polus.fibicomp.pojo;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Person DTO with basic details about a person
@@ -32,6 +35,8 @@ public class PersonDTO {
 	private boolean isLogin = false;
 
 	private String accessToken = "p6creG39TOQL3Je";
+
+	private Collection<? extends GrantedAuthority> jwtRoles;
 
 	public boolean isLogin() {
 		return isLogin;
@@ -136,4 +141,13 @@ public class PersonDTO {
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
+
+	public Collection<? extends GrantedAuthority> getJwtRoles() {
+		return jwtRoles;
+	}
+
+	public void setJwtRoles(Collection<? extends GrantedAuthority> jwtRoles) {
+		this.jwtRoles = jwtRoles;
+	}
+
 }

@@ -62,6 +62,7 @@ public class LoginDaoImpl implements LoginDao {
 				personDTO.setUnitNumber(person.getUnitNumber());
 				personDTO.setUserName(userName);
 				personDTO.setUnitAdmin(isUnitAdmin(person.getPrncplId()));
+				personDTO.setLogin(true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

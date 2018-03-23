@@ -8,7 +8,7 @@ import com.polus.fibicomp.committee.vo.CommitteeVo;
 public interface CommitteeMemberService {
 
 	/**
-	 * This method is used to add committee member.
+	 * This method is used to add committee members.
 	 * @param committeeVo - Object of CommitteeVo.
 	 * @return a String of details of committee with CommitteeMembership.
 	 */
