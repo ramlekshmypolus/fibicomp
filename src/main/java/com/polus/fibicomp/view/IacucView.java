@@ -10,7 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Immutable;
+
 @Entity
+@Immutable
 @Table(name = "IACUC_MV")
 public class IacucView implements Serializable {
 

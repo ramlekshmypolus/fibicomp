@@ -9,7 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Immutable;
+
 @Entity
+@Immutable
 @Table(name = "AWARD_MV")
 public class AwardView implements Serializable {
 
