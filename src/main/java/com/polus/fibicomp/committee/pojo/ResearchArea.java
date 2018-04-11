@@ -17,7 +17,7 @@ public class ResearchArea implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "RESEARCH_AREA_CODE")
+	@Column(name = "RESEARCH_AREA_CODE", updatable = false, nullable = false)
 	private String researchAreaCode;
 
 	@Column(name = "DESCRIPTION")
