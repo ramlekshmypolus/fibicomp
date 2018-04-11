@@ -175,4 +175,11 @@ public interface DashboardDao {
 	 */
 	public List<MobileProposalView> getProposalsForCertification(String personId);
 
+	/**
+	 * This method is used to get list of Grant Calls.
+	 * @param vo - Object of CommonVO class.
+	 * @return A list of grantCalls.
+	 */
+	public DashBoardProfile getDashBoardDataForGrantCall(CommonVO vo);
+
 }

@@ -59,6 +59,9 @@ public class DashboardServiceImpl implements DashboardService {
 			if (requestType.equals("SCHEDULE")) {
 				dashBoardProfile = dashboardDao.getDashBoardDataForCommitteeSchedule(vo);
 			}
+			if (requestType.equals("GRANT")) {
+				dashBoardProfile = dashboardDao.getDashBoardDataForGrantCall(vo);
+			}
 			// dashBoardProfile.setPersonDTO(personDTO);
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardData", e);

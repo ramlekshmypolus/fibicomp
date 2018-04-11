@@ -42,4 +42,8 @@ public interface Constants {
     String HEADER_STRING = "Authorization";
     String SIGN_UP_URL = "/fibi-comp/login";
 
+    // Grant Call
+    Integer GRANT_CALL_STATUS_CODE_DRAFT = 1;
+    Integer GRANT_CALL_STATUS_CODE_OPEN = 2;
+
 }

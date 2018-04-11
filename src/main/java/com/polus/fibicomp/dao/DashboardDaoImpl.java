@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.constants.Constants;
+import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.pojo.ActionItem;
 import com.polus.fibicomp.pojo.DashBoardProfile;
 import com.polus.fibicomp.pojo.ParameterBo;
@@ -144,7 +145,6 @@ public class DashboardDaoImpl implements DashboardDao {
 		if (activeAwardsCount != null && !activeAwardsCount.isEmpty()) {
 			summaryTable.addAll(activeAwardsCount);
 		}
-
 		return summaryTable;
 	}
 
@@ -182,7 +182,7 @@ public class DashboardDaoImpl implements DashboardDao {
 
 		Conjunction and = Restrictions.conjunction();
 		try {
-			logger.info("-------- getDashBoardDataForAward ---------");
+			logger.info("--------- getDashBoardDataForAward ---------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(AwardView.class);
 			Criteria countCriteria = session.createCriteria(AwardView.class);
@@ -489,45 +489,6 @@ public class DashboardDaoImpl implements DashboardDao {
 		return dashBoardProfile;
 	}
 
-	public Integer getDashBoardCount(String requestType, Integer pageNumber) {
-		Integer dashBoardCount = null;
-		try {
-			if (pageNumber == 10) {
-				Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-				Query query = null;
-				if (requestType.equals("AWARD")) {
-					query = session.createQuery("select COUNT(*) from AwardView");
-					dashBoardCount = (int) (long) query.uniqueResult();
-					logger.info("AWARD dashBoardCount : " + dashBoardCount);
-				}
-				if (requestType.equals("PROPOSAL")) {
-					query = session.createQuery("select count(*) from ProposalView");
-					dashBoardCount = (int) (long) query.uniqueResult();
-					logger.info("PROPOSAL dashBoardCount : " + dashBoardCount);
-				}
-				if (requestType.equals("IRB")) {
-					query = session.createQuery("select count(*) from ProtocolView");
-					dashBoardCount = (int) (long) query.uniqueResult();
-					logger.info("IRB dashBoardCount : " + dashBoardCount);
-				}
-				if (requestType.equals("IACUC")) {
-					query = session.createQuery("select count(*) from IacucView");
-					dashBoardCount = (int) (long) query.uniqueResult();
-					logger.info("IACUC dashBoardCount : " + dashBoardCount);
-				}
-				if (requestType.equals("DISCLOSURE")) {
-					query = session.createQuery("select count(*) from DisclosureView");
-					dashBoardCount = (int) (long) query.uniqueResult();
-					logger.info("DISCLOSURE dashBoardCount : " + dashBoardCount);
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Error in method getDashBoardCount");
-			e.printStackTrace();
-		}
-		return dashBoardCount;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ActionItem> getUserNotification(String principalId) {
@@ -549,8 +510,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query awardList = session.createSQLQuery(
 					"SELECT t1.sequence_number, t1.award_id, t1.document_number, t1.award_number, t1.account_number, t1.title, t2.sponsor_name, t3.full_name AS PI FROM award t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN award_persons t3 ON t1.award_id = t3.award_id AND t3.contact_role_code = 'PI' WHERE t2.sponsor_type_code = :sponsorCode and t1.award_sequence_status = 'ACTIVE' AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE perm_nm = 'View Award' AND person_id = :personId)");
-			awardList.setString("personId", personId)
-					 .setString("sponsorCode", sponsorCode);
+			awardList.setString("personId", personId).setString("sponsorCode", sponsorCode);
 			awardBySponsorTypes = awardList.list();
 			logger.info("awardsBySponsorTypes : " + awardBySponsorTypes);
 			dashBoardProfile.setAwardViews(awardBySponsorTypes);
@@ -571,8 +531,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query proposalList = session.createSQLQuery(
 					"SELECT t1.DOCUMENT_NUMBER, t1.proposal_number, t1.title, t2.sponsor_name, t4.DESCRIPTION as Proposal_Type, t3.full_name AS PI FROM eps_proposal t1 INNER JOIN sponsor t2 ON t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN eps_prop_person t3 ON t1.proposal_number = t3.proposal_number AND t3.prop_person_role_id = 'PI' INNER JOIN proposal_type t4 ON t1.PROPOSAL_TYPE_CODE=t4.PROPOSAL_TYPE_CODE WHERE t2.sponsor_type_code = :sponsorCode AND t1.owned_by_unit IN(SELECT DISTINCT unit_number FROM   mitkc_user_right_mv WHERE  perm_nm = 'View Proposal' AND person_id = :personId)");
-			proposalList.setString("personId", personId)
-						.setString("sponsorCode", sponsorCode);
+			proposalList.setString("personId", personId).setString("sponsorCode", sponsorCode);
 			proposalBySponsorTypes = proposalList.list();
 			logger.info("proposalsBySponsorTypes : " + proposalBySponsorTypes);
 			dashBoardProfile.setProposalViews(proposalBySponsorTypes);
@@ -657,7 +616,7 @@ public class DashboardDaoImpl implements DashboardDao {
 					"SELECT t1.award_id, t1.document_number, t1.award_number, t1.account_number, t1.title, t4.sponsor_name, t5.full_name  AS PI, t3.total_cost AS total_amount FROM award t1 INNER JOIN award_budget_ext t2 ON t1.award_id = t2.award_id INNER JOIN budget t3 ON t2.budget_id = t3.budget_id AND t3.final_version_flag = 'Y' INNER JOIN sponsor t4 ON t1.sponsor_code = t4.sponsor_code LEFT OUTER JOIN award_persons t5 ON t1.award_id = t5.award_id AND t5.contact_role_code = 'PI' WHERE t1.award_sequence_status = 'ACTIVE' AND t1.lead_unit_number IN(SELECT DISTINCT unit_number FROM mitkc_user_right_mv WHERE  perm_nm = 'View Award' AND person_id = :personId)");
 			activeAwardList.setString("personId", personId);
 			List<Object[]> activeAwardsList = activeAwardList.list();
-			for(Object[] award: activeAwardsList){
+			for (Object[] award : activeAwardsList) {
 				AwardView awardView = new AwardView();
 				awardView.setAwardId(Integer.valueOf(award[0].toString()));
 				awardView.setDocumentNumber(award[1].toString());
@@ -666,13 +625,13 @@ public class DashboardDaoImpl implements DashboardDao {
 					awardView.setAccountNumber(award[3].toString());
 				}
 				awardView.setTitle(award[4].toString());
-				if(award[5] != null){
+				if (award[5] != null) {
 					awardView.setSponsor(award[5].toString());
 				}
-				if(award[6] != null){
+				if (award[6] != null) {
 					awardView.setFullName(award[6].toString());
 				}
-				if(award[7] != null){
+				if (award[7] != null) {
 					awardView.setTotal_cost(award[7].toString());
 				}
 				activeAwards.add(awardView);
@@ -715,8 +674,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query proposalQuery = session.createSQLQuery(
 					"select t1.DOCUMENT_NUMBER, t1.proposal_number, t1.title, t4.full_name AS PI, t1.PROPOSAL_TYPE_CODE, t5.DESCRIPTION as Proposal_Type, t7.TOTAL_COST as BUDGET from eps_proposal t1 LEFT OUTER JOIN eps_prop_person t4 ON t1.proposal_number = t4.proposal_number AND t4.prop_person_role_id = 'PI' INNER JOIN proposal_type t5 ON t1.PROPOSAL_TYPE_CODE=t5.PROPOSAL_TYPE_CODE LEFT OUTER JOIN eps_proposal_budget_ext t6 ON t1.proposal_number = t6.proposal_number LEFT OUTER JOIN budget t7 ON t6.budget_id = t7.budget_id and t7.final_version_flag = 'Y' where t1.status_code=1 and t1.sponsor_code = :sponsorCode and t1.OWNED_BY_UNIT in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :personId )");
-			proposalQuery.setString("personId", personId)
-						.setString("sponsorCode", sponsorCode);
+			proposalQuery.setString("personId", personId).setString("sponsorCode", sponsorCode);
 			inProgressProposal = proposalQuery.list();
 			logger.info("inProgressProposal : " + inProgressProposal);
 			dashBoardProfile.setProposalViews(inProgressProposal);
@@ -737,8 +695,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Query proposalQuery = session.createSQLQuery(
 					"select t1.DOCUMENT_NUMBER, t1.proposal_number, t1.title, t4.full_name AS PI, t1.ACTIVITY_TYPE_CODE, t5.DESCRIPTION as ACTIVITY_TYPE, T1.PROPOSAL_TYPE_CODE, T6.description as PROPOSAL_TYPE, t1.sponsor_code from proposal t1 INNER JOIN SPONSOR t2 on t1.sponsor_code = t2.sponsor_code LEFT OUTER JOIN PROPOSAL_PERSONS t4 ON t1.proposal_id = t4.proposal_id AND t4.CONTACT_ROLE_CODE = 'PI' INNER JOIN ACTIVITY_TYPE t5 on t1.ACTIVITY_TYPE_CODE = t5.ACTIVITY_TYPE_CODE INNER JOIN PROPOSAL_TYPE t6 on T1.PROPOSAL_TYPE_CODE = T6.PROPOSAL_TYPE_CODE where  t1.status_code = 2 and t1.PROPOSAL_SEQUENCE_STATUS='ACTIVE' and t1.sponsor_code = :sponsorCode and t1.LEAD_UNIT_NUMBER in( select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM = 'View Proposal' and person_id = :personId ) ");
-			proposalQuery.setString("personId", personId)
-						.setString("sponsorCode", sponsorCode);
+			proposalQuery.setString("personId", personId).setString("sponsorCode", sponsorCode);
 			awardedProposal = proposalQuery.list();
 			logger.info("awardedProposal : " + awardedProposal);
 			dashBoardProfile.setProposalViews(awardedProposal);
@@ -774,7 +731,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			summaryTable.addAll(inPropCount);
 		}
 
-		return summaryTable;	
+		return summaryTable;
 	}
 
 	@Override
@@ -814,7 +771,8 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (proposals != null && !proposals.isEmpty()) {
 				proposalViews = new ArrayList<MobileProposalView>();
 				for (ProposalView proposal : proposals) {
-					if (proposal.getProposalPersonRoleCode() == null || proposal.getProposalPersonRoleCode().equals("PI")) {
+					if (proposal.getProposalPersonRoleCode() == null
+							|| proposal.getProposalPersonRoleCode().equals("PI")) {
 						MobileProposalView mobileProposal = new MobileProposalView();
 						mobileProposal.setDocumentNo(proposal.getDocumentNumber());
 						mobileProposal.setLeadUnit(proposal.getLeadUnit());
@@ -843,7 +801,8 @@ public class DashboardDaoImpl implements DashboardDao {
 							mobileProposal.setActionRequestCode("A");
 						}
 						mobileProposal.setPersonId(proposal.getPersonId());
-						mobileProposal.setPersonName(hibernateTemplate.get(PrincipalBo.class, proposal.getPersonId()).getPrincipalName());
+						mobileProposal.setPersonName(
+								hibernateTemplate.get(PrincipalBo.class, proposal.getPersonId()).getPrincipalName());
 						mobileProposal.setProposalPersonRoleId(proposal.getProposalPersonRoleCode());
 						proposalViews.add(mobileProposal);
 					}
@@ -1075,7 +1034,8 @@ public class DashboardDaoImpl implements DashboardDao {
 			projList.add(Projections.property("committee"), "committee");
 			projList.add(Projections.property("scheduleStatus"), "scheduleStatus");
 
-			searchCriteria.setProjection(projList).setResultTransformer(new AliasToBeanResultTransformer(CommitteeSchedule.class));
+			searchCriteria.setProjection(projList)
+					.setResultTransformer(new AliasToBeanResultTransformer(CommitteeSchedule.class));
 			@SuppressWarnings("unchecked")
 			List<CommitteeSchedule> committeeSchedules = searchCriteria.list();
 			Date scheduleDate = null;
@@ -1095,6 +1055,74 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardDataForCommitteeSchedule");
+			e.printStackTrace();
+		}
+		return dashBoardProfile;
+	}
+
+	@Override
+	public DashBoardProfile getDashBoardDataForGrantCall(CommonVO vo) {
+		DashBoardProfile dashBoardProfile = new DashBoardProfile();
+		Integer pageNumber = vo.getPageNumber();
+		String sortBy = vo.getSortBy();
+		String reverse = vo.getReverse();
+		String property1 = vo.getProperty1();
+		String property2 = vo.getProperty2();
+		String property3 = vo.getProperty3();
+		String property4 = vo.getProperty4();
+		Integer currentPage = vo.getCurrentPage();
+
+		Conjunction and = Restrictions.conjunction();
+		try {
+			logger.info("----------- getDashBoardDataForGrantCall ------------");
+			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			Criteria searchCriteria = session.createCriteria(GrantCall.class);
+			Criteria countCriteria = session.createCriteria(GrantCall.class);
+			if (sortBy.isEmpty() || reverse.isEmpty()) {
+				searchCriteria.addOrder(Order.desc("updateTimeStamp"));
+			} else {
+				if (reverse.equals("DESC")) {
+					searchCriteria.addOrder(Order.desc(sortBy));
+				} else {
+					searchCriteria.addOrder(Order.asc(sortBy));
+				}
+			}
+			if (property1 != null && !property1.isEmpty()) {
+				and.add(Restrictions.like("grantCallId", "%" + property1 + "%").ignoreCase());
+			}
+			if (property2 != null && !property2.isEmpty()) {
+				and.add(Restrictions.like("grantCallName", "%" + property2 + "%").ignoreCase());
+			}
+			if (property3 != null && !property3.isEmpty()) {
+				and.add(Restrictions.like("grantCallStatus.description", "%" + property3 + "%").ignoreCase());
+			}
+			if (property4 != null && !property4.isEmpty()) {
+				and.add(Restrictions.like("sponsorType.description", "%" + property4 + "%").ignoreCase());
+			}
+
+			searchCriteria.add(and);
+			ProjectionList projList = Projections.projectionList();
+			projList.add(Projections.property("grantCallId"), "grantCallId");
+			projList.add(Projections.property("grantCallName"), "grantCallName");
+			projList.add(Projections.property("grantCallStatus"), "grantCallStatus");
+			projList.add(Projections.property("description"), "description");
+			projList.add(Projections.property("openingDate"), "openingDate");
+			projList.add(Projections.property("closingDate"), "closingDate");
+			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(GrantCall.class));
+			countCriteria.add(and);
+
+			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
+			logger.info("dashboardCount : " + dashboardCount);
+			dashBoardProfile.setTotalServiceRequest(dashboardCount.intValue());
+
+			int count = pageNumber * (currentPage - 1);
+			searchCriteria.setFirstResult(count);
+			searchCriteria.setMaxResults(pageNumber);
+			@SuppressWarnings("unchecked")
+			List<GrantCall> grantCalls = searchCriteria.list();
+			dashBoardProfile.setGrantCalls(grantCalls);
+		} catch (Exception e) {
+			logger.error("Error in method getDashBoardDataForGrantCall");
 			e.printStackTrace();
 		}
 		return dashBoardProfile;
