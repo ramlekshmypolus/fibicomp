@@ -38,8 +38,7 @@ public class GrantCallController {
 	@RequestMapping(value = "/createGrantCall", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String createGrantCall(@RequestBody GrantCallVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for createGrantCall");
-		GrantCallVO grantCall = new GrantCallVO();
-		return grantCallService.createGrantCall(grantCall);
+		return grantCallService.createGrantCall(vo);
 	}
 
 	@RequestMapping(value = "/saveUpdateGrantCall", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
