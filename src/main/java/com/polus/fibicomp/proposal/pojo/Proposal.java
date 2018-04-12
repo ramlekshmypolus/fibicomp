@@ -35,7 +35,7 @@ public class Proposal implements Serializable {
 	private String proposalNumber;
 
 	@Column(name = "GRANT_HEADER_ID")
-	private Integer grantHeaderId;
+	private Integer grantCallId;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK4_FIBI_SMU_PROPOSAL"), name = "GRANT_HEADER_ID", referencedColumnName = "GRANT_HEADER_ID", insertable = false, updatable = false)
@@ -117,12 +117,12 @@ public class Proposal implements Serializable {
 		this.proposalNumber = proposalNumber;
 	}
 
-	public Integer getGrantHeaderId() {
-		return grantHeaderId;
+	public Integer getGrantCallId() {
+		return grantCallId;
 	}
 
-	public void setGrantHeaderId(Integer grantHeaderId) {
-		this.grantHeaderId = grantHeaderId;
+	public void setGrantCallId(Integer grantCallId) {
+		this.grantCallId = grantCallId;
 	}
 
 	public GrantCall getGrantCall() {

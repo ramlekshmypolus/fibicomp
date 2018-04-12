@@ -106,6 +106,9 @@ public class Protocol implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_PROTOCOL_2"), name = "PROTOCOL_STATUS_CODE", referencedColumnName = "PROTOCOL_STATUS_CODE", insertable = false, updatable = false)
 	private ProtocolStatus protocolStatus;
 
+	@Column(name = "APPROVAL_DATE")
+	private Date approvalDate;
+
 	public String getProtocolNumber() {
 		return protocolNumber;
 	}
@@ -284,6 +287,14 @@ public class Protocol implements Serializable {
 
 	public void setProtocolStatus(ProtocolStatus protocolStatus) {
 		this.protocolStatus = protocolStatus;
+	}
+
+	public Date getApprovalDate() {
+		return approvalDate;
+	}
+
+	public void setApprovalDate(Date approvalDate) {
+		this.approvalDate = approvalDate;
 	}
 
 }
