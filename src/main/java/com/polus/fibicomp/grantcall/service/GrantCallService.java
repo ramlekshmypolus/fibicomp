@@ -1,5 +1,6 @@
 package com.polus.fibicomp.grantcall.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +28,7 @@ public interface GrantCallService {
 	 * @param vo - Object of GrantCallVO class.
 	 * @return set of values to figure out details about a grant call.
 	 */
-	public String saveOrUpdateGrantCall(GrantCallVO vo);
+	public String saveUpdateGrantCall(GrantCallVO vo);
 
 	/**
 	 * This method is used to publish grant call.
@@ -42,14 +43,6 @@ public interface GrantCallService {
 	 * @return A list of sponsors.
 	 */
 	public String fetchSponsorsBySponsorType(GrantCallVO vo);
-
-	/**
-	 * This method is used to save grant call with attachment.
-	 * @param files - Files to upload.
-	 * @param formDataJSON - form data for saving grant call.
-	 * @return a String of details of grant call.
-	 */
-	public String saveUpdateGrantCall(MultipartFile[] files, String formDataJSON);
 
 	/**
 	 * This method is used to delete keywords from grant call.
@@ -93,5 +86,12 @@ public interface GrantCallService {
 	 * @return a String of details of grant call data with list of attachments.
 	 */
 	public String addGrantCallAttachment(MultipartFile[] files, String formDataJSON);
+
+	/**
+	 * This method is used to download grant call attachment.
+	 * @param attachmentId - Id of the attachment to download.
+	 * @return attachmentData.
+	 */
+	public ResponseEntity<byte[]> downloadGrantCallAttachment(Integer attachmentId);
 
 }

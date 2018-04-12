@@ -1,13 +1,15 @@
 package com.polus.fibicomp.grantcall.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,27 +58,36 @@ public class GrantCallServiceImpl implements GrantCallService {
 		}
 		List<GrantCallType> grantCallTypes = grantCallDao.fetchAllGrantCallTypes();
 		grantCallVO.setGrantCallTypes(grantCallTypes);
-		//List<GrantCallStatus> grantCallStatus = grantCallDao.fetchAllGrantCallStatus();
-		//grantCallVO.setGrantCallStatus(grantCallStatus);
+
 		GrantCallStatus grantCallStatus = grantCallDao.fetchStatusByStatusCode(Constants.GRANT_CALL_STATUS_CODE_DRAFT);
-		grantCallVO.setGrantStatus(grantCallStatus);
-		grantCallVO.setGrantStatusCode(Constants.GRANT_CALL_STATUS_CODE_DRAFT);
+		GrantCall grantCall = grantCallVO.getGrantCall();
+		grantCall.setGrantStatusCode(Constants.GRANT_CALL_STATUS_CODE_DRAFT);
+		grantCall.setGrantCallStatus(grantCallStatus);
+
 		List<ScienceKeyword> scienceKeywords = grantCallDao.fetchAllScienceKeywords();
 		grantCallVO.setScienceKeywords(scienceKeywords);
+
 		List<SponsorType> sponsorTypes = grantCallDao.fetchAllSponsorTypes();
 		grantCallVO.setSponsorTypes(sponsorTypes);
+
 		List<ActivityType> activityTypes = grantCallDao.fetchAllResearchTypes();
 		grantCallVO.setActivityTypes(activityTypes);
+
 		List<FundingSourceType> fundingSourceTypes = grantCallDao.fetchAllFundingSourceTypes();
 		grantCallVO.setFundingSourceTypes(fundingSourceTypes);
+
 		List<GrantCallCriteria> grantCallCriterias = grantCallDao.fetchAllGrantCallCriteria();
 		grantCallVO.setGrantCallCriterias(grantCallCriterias);
+
 		List<GrantCallEligibilityType> grantCallEligibilityTypes = grantCallDao.fetchAllEligibilityTypes();
 		grantCallVO.setGrantCallEligibilityTypes(grantCallEligibilityTypes);
+
 		List<ResearchArea> researchAreas = committeeDao.fetchAllResearchAreas();
 		grantCallVO.setResearchAreas(researchAreas);
+
 		List<GrantCallAttachType> grantCallAttachTypes = grantCallDao.fetchAllGrantCallAttachTypes();
 		grantCallVO.setGrantCallAttachTypes(grantCallAttachTypes);
+
 		String response = committeeDao.convertObjectToJSON(grantCallVO);
 		return response;
 	}
@@ -94,7 +105,7 @@ public class GrantCallServiceImpl implements GrantCallService {
 	}
 
 	@Override
-	public String saveOrUpdateGrantCall(GrantCallVO vo) {
+	public String saveUpdateGrantCall(GrantCallVO vo) {
 		GrantCall grantCall = vo.getGrantCall();
 		grantCall = grantCallDao.saveOrUpdateGrantCall(grantCall);
 		vo.setStatus(true);
@@ -113,6 +124,8 @@ public class GrantCallServiceImpl implements GrantCallService {
 	public String publishGrantCall(GrantCallVO vo) {
 		GrantCall grantCall = vo.getGrantCall();
 		grantCall.setGrantStatusCode(Constants.GRANT_CALL_STATUS_CODE_OPEN);
+		GrantCallStatus grantCallStatus = grantCallDao.fetchStatusByStatusCode(Constants.GRANT_CALL_STATUS_CODE_OPEN);
+		grantCall.setGrantCallStatus(grantCallStatus);
 		grantCall = grantCallDao.saveOrUpdateGrantCall(grantCall);
 		vo.setGrantCall(grantCall);
 		String response = committeeDao.convertObjectToJSON(vo);
@@ -124,46 +137,6 @@ public class GrantCallServiceImpl implements GrantCallService {
 		List<Sponsor> sponsors = grantCallDao.fetchSponsorsBySponsorType(vo.getSponsorTypeCode());
 		vo.setSponsors(sponsors);
 		String response = committeeDao.convertObjectToJSON(vo);
-		return response;
-	}
-
-	@Override
-	public String saveUpdateGrantCall(MultipartFile[] files, String formDataJSON) {
-		ObjectMapper mapper = new ObjectMapper();
-		GrantCallVO grantCallVO = new GrantCallVO();
-		try {
-			grantCallVO = mapper.readValue(formDataJSON, GrantCallVO.class);
-			GrantCall grantCall = grantCallVO.getGrantCall();
-			Map<String, GrantCallAttachment> newAttachments = grantCallVO.getNewAttachments();
-			// GrantCallAttachment grantAttachment = grantCallVO.getGrantCallAttachments();
-			List<GrantCallAttachment> grantCallAttachments = new ArrayList<GrantCallAttachment>();
-			for (int i = 0; i < files.length; i++) {
-				GrantCallAttachment grantCallAttachment = newAttachments.get(files[i].getOriginalFilename());
-				// grantCallAttachment.setGrantAttachmentTypeCode(grantAttachment.getGrantAttachmentTypeCode());
-				// grantCallAttachment.setGrantCall(grantCall);
-				// grantCallAttachment.setGrantCallAttachType(grantAttachment.getGrantCallAttachType());
-				// grantCallAttachment.setDescription(grantAttachment.getDescription());
-				// grantCallAttachment.setUpdateTimestamp(grantAttachment.getUpdateTimestamp());
-				// grantCallAttachment.setUpdateUser(grantAttachment.getUpdateUser());
-				grantCallAttachment.setAttachment(files[i].getBytes());
-				grantCallAttachment.setFileName(files[i].getOriginalFilename());
-				grantCallAttachment.setMimeType(files[i].getContentType());
-				grantCallAttachments.add(grantCallAttachment);
-			}
-			grantCall.getGrantCallAttachments().addAll(grantCallAttachments);
-			grantCall = grantCallDao.saveOrUpdateGrantCall(grantCall);
-			grantCallVO.setStatus(true);
-			String updateType = grantCallVO.getUpdateType();
-			if (updateType != null && updateType.equals("SAVE")) {
-				grantCallVO.setMessage("Grant Call saved successfully");
-			} else {
-				grantCallVO.setMessage("Grant Call updated successfully");
-			}
-			grantCallVO.setGrantCall(grantCall);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String response = committeeDao.convertObjectToJSON(grantCallVO);
 		return response;
 	}
 
@@ -324,6 +297,26 @@ public class GrantCallServiceImpl implements GrantCallService {
 		}
 		String response = committeeDao.convertObjectToJSON(grantCallVO);
 		return response;
+	}
+
+	@Override
+	public ResponseEntity<byte[]> downloadGrantCallAttachment(Integer attachmentId) {
+		GrantCallAttachment attachment = grantCallDao.fetchAttachmentById(attachmentId);
+		ResponseEntity<byte[]> attachmentData = null;
+		try {
+			byte[] data = attachment.getAttachment();
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.parseMediaType(attachment.getMimeType()));
+			String filename = attachment.getFileName();
+			headers.setContentDispositionFormData(filename, filename);
+			headers.setContentLength(data.length);
+			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+			headers.setPragma("public");
+			attachmentData = new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return attachmentData;
 	}
 
 }

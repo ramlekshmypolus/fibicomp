@@ -1,7 +1,6 @@
 package com.polus.fibicomp.grantcall.vo;
 
 import java.util.List;
-import java.util.Map;
 
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
@@ -54,8 +53,6 @@ public class GrantCallVO {
 	private String message;
 
 	private String updateType;
-
-	private Map<String, GrantCallAttachment> newAttachments;
 
 	private Integer grantContactId;
 
@@ -217,14 +214,6 @@ public class GrantCallVO {
 
 	public void setUpdateType(String updateType) {
 		this.updateType = updateType;
-	}
-
-	public Map<String, GrantCallAttachment> getNewAttachments() {
-		return newAttachments;
-	}
-
-	public void setNewAttachments(Map<String, GrantCallAttachment> newAttachments) {
-		this.newAttachments = newAttachments;
 	}
 
 	public Integer getGrantContactId() {

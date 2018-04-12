@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallAttachType;
+import com.polus.fibicomp.grantcall.pojo.GrantCallAttachment;
 import com.polus.fibicomp.grantcall.pojo.GrantCallCriteria;
 import com.polus.fibicomp.grantcall.pojo.GrantCallEligibilityType;
 import com.polus.fibicomp.grantcall.pojo.GrantCallStatus;
@@ -100,4 +101,12 @@ public interface GrantCallDao {
 	 * @return An object of grant call status.
 	 */
 	public GrantCallStatus fetchStatusByStatusCode(Integer grantStatusCode);
+
+	/**
+	 * This method is used to fetch attachment by Id.
+	 * @param attachmentId - Id of the attachment.
+	 * @return an object of GrantCallAttachment.
+	 */
+	public GrantCallAttachment fetchAttachmentById(Integer attachmentId);
+
 }
