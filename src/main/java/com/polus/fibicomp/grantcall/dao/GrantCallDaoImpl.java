@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallAttachType;
+import com.polus.fibicomp.grantcall.pojo.GrantCallAttachment;
 import com.polus.fibicomp.grantcall.pojo.GrantCallCriteria;
 import com.polus.fibicomp.grantcall.pojo.GrantCallEligibilityType;
 import com.polus.fibicomp.grantcall.pojo.GrantCallStatus;
@@ -194,9 +195,12 @@ public class GrantCallDaoImpl implements GrantCallDao {
 
 	@Override
 	public GrantCallStatus fetchStatusByStatusCode(Integer grantStatusCode) {
-		GrantCallStatus grantCallStatus = null;
-		grantCallStatus = hibernateTemplate.get(GrantCallStatus.class, grantStatusCode);
-		return grantCallStatus;
+		return hibernateTemplate.get(GrantCallStatus.class, grantStatusCode);
+	}
+
+	@Override
+	public GrantCallAttachment fetchAttachmentById(Integer attachmentId) {
+		return hibernateTemplate.get(GrantCallAttachment.class, attachmentId);
 	}
 
 }

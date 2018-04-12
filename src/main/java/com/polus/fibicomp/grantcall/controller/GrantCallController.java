@@ -7,7 +7,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,45 +32,33 @@ public class GrantCallController {
 	public String loadGrantCallById(@RequestBody GrantCallVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for loadGrantCallById");
 		logger.info("grantCallId : " + vo.getGrantCallId());
-		String grantCallDatas = grantCallService.loadGrantCallById(vo.getGrantCallId());
-		return grantCallDatas;
+		return grantCallService.loadGrantCallById(vo.getGrantCallId());
 	}
 
 	@RequestMapping(value = "/createGrantCall", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String createGrantCall(@RequestBody GrantCallVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for createGrantCall");
 		GrantCallVO grantCall = new GrantCallVO();
-		String grantCallDatas = grantCallService.createGrantCall(grantCall);
-		return grantCallDatas;
+		return grantCallService.createGrantCall(grantCall);
 	}
 
 	@RequestMapping(value = "/saveUpdateGrantCall", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String saveOrUpdateGrantCall(@RequestBody GrantCallVO vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for saveOrUpdateGrantCall");
-		String grantCallDatas = grantCallService.saveOrUpdateGrantCall(vo);
-		return grantCallDatas;
+	public String saveUpdateGrantCall(@RequestBody GrantCallVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for saveUpdateGrantCall");
+		return grantCallService.saveUpdateGrantCall(vo);
 	}
 
 	@RequestMapping(value = "/publishGrantCall", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String publishGrantCall(@RequestBody GrantCallVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for publishGrantCall");
-		String grantCallDatas = grantCallService.publishGrantCall(vo);
-		return grantCallDatas;
+		return grantCallService.publishGrantCall(vo);
 	}
 
 	@RequestMapping(value = "/fetchSponsorsBySponsorType", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String fetchSponsorsBySponsorType(@RequestBody GrantCallVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for fetchSponsorsBySponsorType");
 		logger.info("SponsorTypeCode : " + vo.getSponsorTypeCode());
-		String grantCallDatas = grantCallService.fetchSponsorsBySponsorType(vo);
-		return grantCallDatas;
-	}
-
-	@RequestMapping(value = "/saveOrUpdateGrantCall", method = RequestMethod.POST)
-	public String saveUpdateGrantCall(@RequestParam(value = "files", required = false) MultipartFile[] files, @RequestParam("formDataJson") String formDataJson) {
-		logger.info("Requesting for saveUpdateGrantCall");
-		String grantCallDatas = grantCallService.saveUpdateGrantCall(files, formDataJson);
-		return grantCallDatas;
+		return grantCallService.fetchSponsorsBySponsorType(vo);
 	}
 
 	@RequestMapping(value = "/deleteGrantCallKeyword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -115,6 +105,14 @@ public class GrantCallController {
 	public String addGrantCallAttachment(@RequestParam(value = "files", required = false) MultipartFile[] files, @RequestParam("formDataJson") String formDataJson) {
 		logger.info("Requesting for addGrantCallAttachment");
 		return grantCallService.addGrantCallAttachment(files, formDataJson);
+	}
+
+	@RequestMapping(value = "/downloadGrantCallAttachment", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> downloadGrantCallAttachment(HttpServletResponse response, @RequestHeader("attachmentId") String attachmentId) {
+		logger.info("Requesting for downloadGrantCallAttachment");
+		logger.info("attachmentId : " + attachmentId);
+		Integer attachmentid = Integer.parseInt(attachmentId);
+		return grantCallService.downloadGrantCallAttachment(attachmentid);
 	}
 
 }
