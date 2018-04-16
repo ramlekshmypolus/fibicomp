@@ -10,18 +10,16 @@ import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.pojo.Protocol;
 import com.polus.fibicomp.pojo.ScienceKeyword;
 import com.polus.fibicomp.proposal.pojo.Proposal;
-import com.polus.fibicomp.proposal.pojo.ProposalCategory;
-import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
-import com.polus.fibicomp.proposal.pojo.ProposalStatus;
+import com.polus.fibicomp.proposal.pojo.ProposalAttachment;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
+import com.polus.fibicomp.proposal.pojo.ProposalBudgetCategory;
+import com.polus.fibicomp.proposal.pojo.ProposalCategory;
+import com.polus.fibicomp.proposal.pojo.ProposalCostElement;
+import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 
 public class ProposalVO {
 
 	private Integer grantCallId;
-
-	private Integer statusCode;
-
-	private ProposalStatus proposalStatus;
 
 	private Proposal proposal;
 
@@ -44,7 +42,23 @@ public class ProposalVO {
 	private List<GrantCall> grantCalls;
 
 	private List<ProposalPersonRole> proposalPersonRoles;
-	
+
+	private ProposalAttachment newAttachment;
+
+	private Boolean status;
+
+	private String message;
+
+	private String updateType;
+
+	private Integer proposalId;
+
+	private List<ProposalCostElement> proposalCostElements;
+
+	private List<ProposalBudgetCategory> proposalBudgetCategories;
+
+	private String budgetCategoryCode;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -55,22 +69,6 @@ public class ProposalVO {
 
 	public void setGrantCallId(Integer grantCallId) {
 		this.grantCallId = grantCallId;
-	}
-
-	public Integer getStatusCode() {
-		return statusCode;
-	}
-
-	public void setStatusCode(Integer statusCode) {
-		this.statusCode = statusCode;
-	}
-
-	public ProposalStatus getProposalStatus() {
-		return proposalStatus;
-	}
-
-	public void setProposalStatus(ProposalStatus proposalStatus) {
-		this.proposalStatus = proposalStatus;
 	}
 
 	public Proposal getProposal() {
@@ -159,5 +157,69 @@ public class ProposalVO {
 
 	public void setProposalPersonRoles(List<ProposalPersonRole> proposalPersonRoles) {
 		this.proposalPersonRoles = proposalPersonRoles;
+	}
+
+	public ProposalAttachment getNewAttachment() {
+		return newAttachment;
+	}
+
+	public void setNewAttachment(ProposalAttachment newAttachment) {
+		this.newAttachment = newAttachment;
+	}
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getUpdateType() {
+		return updateType;
+	}
+
+	public void setUpdateType(String updateType) {
+		this.updateType = updateType;
+	}
+
+	public Integer getProposalId() {
+		return proposalId;
+	}
+
+	public void setProposalId(Integer proposalId) {
+		this.proposalId = proposalId;
+	}
+
+	public List<ProposalCostElement> getProposalCostElements() {
+		return proposalCostElements;
+	}
+
+	public void setProposalCostElements(List<ProposalCostElement> proposalCostElements) {
+		this.proposalCostElements = proposalCostElements;
+	}
+
+	public List<ProposalBudgetCategory> getProposalBudgetCategories() {
+		return proposalBudgetCategories;
+	}
+
+	public void setProposalBudgetCategories(List<ProposalBudgetCategory> proposalBudgetCategories) {
+		this.proposalBudgetCategories = proposalBudgetCategories;
+	}
+
+	public String getBudgetCategoryCode() {
+		return budgetCategoryCode;
+	}
+
+	public void setBudgetCategoryCode(String budgetCategoryCode) {
+		this.budgetCategoryCode = budgetCategoryCode;
 	}
 }

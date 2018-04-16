@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 
 @Entity
@@ -29,9 +30,7 @@ public class ProposalResearchArea implements Serializable {
 	@Column(name = "RESRCH_AREA_ID")
 	private Integer researchAreaId;
 
-	@Column(name = "PROPOSAL_ID")
-	private Integer proposalId;
-
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_SMU_PROP_RESRCH_AREA"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID", insertable = false, updatable = false)
 	private Proposal proposal;
@@ -65,14 +64,6 @@ public class ProposalResearchArea implements Serializable {
 
 	public void setResearchAreaId(Integer researchAreaId) {
 		this.researchAreaId = researchAreaId;
-	}
-
-	public Integer getProposalId() {
-		return proposalId;
-	}
-
-	public void setProposalId(Integer proposalId) {
-		this.proposalId = proposalId;
 	}
 
 	public Proposal getProposal() {

@@ -47,6 +47,6 @@ public interface Constants {
     Integer GRANT_CALL_STATUS_CODE_OPEN = 2;
 
     // Proposal
-    Integer PROPOSAL_STATUS_CODE = 1;
+    Integer PROPOSAL_STATUS_CODE_IN_PROGRESS = 1;
 
 }

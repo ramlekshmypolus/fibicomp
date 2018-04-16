@@ -3,7 +3,9 @@ package com.polus.fibicomp.proposal.pojo;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -11,11 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 
 @Entity
@@ -37,28 +41,28 @@ public class Proposal implements Serializable {
 	@Column(name = "GRANT_HEADER_ID")
 	private Integer grantCallId;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK4_FIBI_SMU_PROPOSAL"), name = "GRANT_HEADER_ID", referencedColumnName = "GRANT_HEADER_ID", insertable = false, updatable = false)
 	private GrantCall grantCall;
 
 	@Column(name = "STATUS_CODE")
 	private Integer statusCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROPOSAL"), name = "STATUS_CODE", referencedColumnName = "STATUS_CODE", insertable = false, updatable = false)
 	private ProposalStatus proposalStatus;
 
 	@Column(name = "TYPE_CODE")
 	private Integer typeCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_SMU_PROPOSAL"), name = "TYPE_CODE", referencedColumnName = "TYPE_CODE", insertable = false, updatable = false)
 	private ProposalType proposalType;
 
 	@Column(name = "CATEGORY_CODE")
 	private Integer categoryCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_SMU_PROPOSAL"), name = "CATEGORY_CODE", referencedColumnName = "CATEGORY_CODE", insertable = false, updatable = false)
 	private ProposalCategory proposalCategory;
 
@@ -100,6 +104,34 @@ public class Proposal implements Serializable {
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProposalAttachment> proposalAttachments;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProposalBudget> proposalBudgets;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProposalKeyword> proposalKeywords;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProposalPerson> proposalPersons;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProposalIrbProtocol> proposalIrbProtocols;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProposalResearchArea> proposalResearchAreas;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<ProposalSponsor> proposalSponsors;
 
 	public Integer getProposalId() {
 		return proposalId;
@@ -287,6 +319,62 @@ public class Proposal implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public List<ProposalAttachment> getProposalAttachments() {
+		return proposalAttachments;
+	}
+
+	public void setProposalAttachments(List<ProposalAttachment> proposalAttachments) {
+		this.proposalAttachments = proposalAttachments;
+	}
+
+	public List<ProposalBudget> getProposalBudgets() {
+		return proposalBudgets;
+	}
+
+	public void setProposalBudgets(List<ProposalBudget> proposalBudgets) {
+		this.proposalBudgets = proposalBudgets;
+	}
+
+	public List<ProposalKeyword> getProposalKeywords() {
+		return proposalKeywords;
+	}
+
+	public void setProposalKeywords(List<ProposalKeyword> proposalKeywords) {
+		this.proposalKeywords = proposalKeywords;
+	}
+
+	public List<ProposalPerson> getProposalPersons() {
+		return proposalPersons;
+	}
+
+	public void setProposalPersons(List<ProposalPerson> proposalPersons) {
+		this.proposalPersons = proposalPersons;
+	}
+
+	public List<ProposalIrbProtocol> getProposalIrbProtocols() {
+		return proposalIrbProtocols;
+	}
+
+	public void setProposalIrbProtocols(List<ProposalIrbProtocol> proposalIrbProtocols) {
+		this.proposalIrbProtocols = proposalIrbProtocols;
+	}
+
+	public List<ProposalResearchArea> getProposalResearchAreas() {
+		return proposalResearchAreas;
+	}
+
+	public void setProposalResearchAreas(List<ProposalResearchArea> proposalResearchAreas) {
+		this.proposalResearchAreas = proposalResearchAreas;
+	}
+
+	public List<ProposalSponsor> getProposalSponsors() {
+		return proposalSponsors;
+	}
+
+	public void setProposalSponsors(List<ProposalSponsor> proposalSponsors) {
+		this.proposalSponsors = proposalSponsors;
 	}
 
 }

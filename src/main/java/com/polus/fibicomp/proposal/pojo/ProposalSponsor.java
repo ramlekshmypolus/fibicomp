@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.polus.fibicomp.pojo.Sponsor;
 
 @Entity
@@ -30,9 +31,7 @@ public class ProposalSponsor implements Serializable {
 	@Column(name = "SPONSOR_ID")
 	private Integer sponsorId;
 
-	@Column(name = "PROPOSAL_ID")
-	private Integer proposalId;
-
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_SMU_PROPOSAL_SPONSORS"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID", insertable = false, updatable = false)
 	private Proposal proposal;
@@ -65,14 +64,6 @@ public class ProposalSponsor implements Serializable {
 
 	public void setSponsorId(Integer sponsorId) {
 		this.sponsorId = sponsorId;
-	}
-
-	public Integer getProposalId() {
-		return proposalId;
-	}
-
-	public void setProposalId(Integer proposalId) {
-		this.proposalId = proposalId;
 	}
 
 	public Proposal getProposal() {

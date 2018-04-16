@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.polus.fibicomp.pojo.Protocol;
 
 @Entity
@@ -31,9 +32,7 @@ public class ProposalIrbProtocol implements Serializable {
 	@Column(name = "IRB_PROTOCOL_ID")
 	private Integer irbProtocolId;
 
-	@Column(name = "PROPOSAL_ID")
-	private Integer proposalId;
-
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_SMU_PROP_PROTOCOL"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID", insertable = false, updatable = false)
 	private Proposal proposal;
@@ -66,14 +65,6 @@ public class ProposalIrbProtocol implements Serializable {
 
 	public void setIrbProtocolId(Integer irbProtocolId) {
 		this.irbProtocolId = irbProtocolId;
-	}
-
-	public Integer getProposalId() {
-		return proposalId;
-	}
-
-	public void setProposalId(Integer proposalId) {
-		this.proposalId = proposalId;
 	}
 
 	public Proposal getProposal() {

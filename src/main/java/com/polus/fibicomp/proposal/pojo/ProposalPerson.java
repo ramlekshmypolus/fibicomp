@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "FIBI_SMU_PROPOSAL_PERSONS")
 public class ProposalPerson implements Serializable {
@@ -28,9 +30,7 @@ public class ProposalPerson implements Serializable {
 	@Column(name = "PROPOSAL_PERSON_ID")
 	private Integer proposalPersonId;
 
-	@Column(name = "PROPOSAL_ID")
-	private Integer proposalId;
-
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_SMU_PROPOSAL_PERSONS"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID", insertable = false, updatable = false)
 	private Proposal proposal;
@@ -62,14 +62,6 @@ public class ProposalPerson implements Serializable {
 
 	public void setProposalPersonId(Integer proposalPersonId) {
 		this.proposalPersonId = proposalPersonId;
-	}
-
-	public Integer getProposalId() {
-		return proposalId;
-	}
-
-	public void setProposalId(Integer proposalId) {
-		this.proposalId = proposalId;
 	}
 
 	public Proposal getProposal() {
