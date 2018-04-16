@@ -59,6 +59,9 @@ public class GrantCall implements Serializable {
 	@Column(name = "GRANT_TYPE_CODE")
 	private Integer grantTypeCode;
 
+	@Column(name = "GRANT_THEME")
+	private String grantTheme;
+
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_GRANT_CALL_HEDAER"), name = "GRANT_TYPE_CODE", referencedColumnName = "GRANT_TYPE_CODE", insertable = false, updatable = false)
 	private GrantCallType grantCallType;
@@ -73,28 +76,28 @@ public class GrantCall implements Serializable {
 	@Column(name = "SPONSOR_CODE")
 	private String sponsorCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK6_FIBI_GRANT_CALL_HEDAER"), name = "SPONSOR_CODE", referencedColumnName = "SPONSOR_CODE", insertable = false, updatable = false)
 	private Sponsor sponsor;
 
 	@Column(name = "SPONSOR_TYPE_CODE")
 	private String sponsorTypeCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK4_FIBI_GRANT_CALL_HEDAER"), name = "SPONSOR_TYPE_CODE", referencedColumnName = "SPONSOR_TYPE_CODE", insertable = false, updatable = false)
 	private SponsorType sponsorType;
 
 	@Column(name = "ACTIVITY_TYPE_CODE")
 	private String activityTypeCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK5_FIBI_GRANT_CALL_HEDAER"), name = "ACTIVITY_TYPE_CODE", referencedColumnName = "ACTIVITY_TYPE_CODE", insertable = false, updatable = false)
 	private ActivityType activityType;
 
 	@Column(name = "FUNDING_SOURCE_TYPE_CODE")
 	private String fundingSourceTypeCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_GRANT_CALL_HEDAER"), name = "FUNDING_SOURCE_TYPE_CODE", referencedColumnName = "FUNDING_SOURCE_TYPE_CODE", insertable = false, updatable = false)
 	private FundingSourceType fundingSourceType;
 
@@ -217,6 +220,14 @@ public class GrantCall implements Serializable {
 
 	public void setGrantTypeCode(Integer grantTypeCode) {
 		this.grantTypeCode = grantTypeCode;
+	}
+
+	public String getGrantTheme() {
+		return grantTheme;
+	}
+
+	public void setGrantTheme(String grantTheme) {
+		this.grantTheme = grantTheme;
 	}
 
 	public GrantCallType getGrantCallType() {

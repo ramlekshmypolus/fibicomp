@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -18,8 +19,11 @@ import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.pojo.Protocol;
+import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
+import com.polus.fibicomp.proposal.pojo.ProposalBudgetCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCategory;
+import com.polus.fibicomp.proposal.pojo.ProposalCostElement;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalStatus;
 
@@ -91,7 +95,6 @@ public class ProposalDaoImpl implements ProposalDao {
 		projList.add(Projections.property("grantCallName"), "grantCallName");
 		projList.add(Projections.property("sponsor"), "sponsor");
 		projList.add(Projections.property("fundingSourceType"), "fundingSourceType");
-		//projList.add(Projections.property("grantCallName"), "grantCallName");
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(GrantCall.class));
 		criteria.addOrder(Order.asc("grantCallName"));
 		@SuppressWarnings("unchecked")
@@ -125,6 +128,47 @@ public class ProposalDaoImpl implements ProposalDao {
 		@SuppressWarnings("unchecked")
 		List<ProposalResearchType> proposalResearchTypes = criteria.list();
 		return proposalResearchTypes;
+	}
+
+	@Override
+	public Proposal saveOrUpdateProposal(Proposal proposal) {
+		hibernateTemplate.saveOrUpdate(proposal);
+		return proposal;
+	}
+
+	@Override
+	public Proposal fetchProposalById(Integer proposalId) {
+		return hibernateTemplate.get(Proposal.class, proposalId);
+	}
+
+	@Override
+	public List<ProposalBudgetCategory> fetchAllBudgetCategories() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProposalBudgetCategory.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("budgetCategoryCode"), "budgetCategoryCode");
+		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ProposalBudgetCategory.class));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
+		@SuppressWarnings("unchecked")
+		List<ProposalBudgetCategory> budgetCategories = criteria.list();
+		return budgetCategories;
+	}
+
+	@Override
+	public List<ProposalCostElement> fetchCostElementByBudgetCategory(String budgetCategoryCode) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProposalCostElement.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("costElement"), "costElement");
+		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ProposalCostElement.class));
+		criteria.add(Restrictions.eq("budgetCategoryCode", budgetCategoryCode));
+		// criteria.add(Restrictions.eq("active", true));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
+		@SuppressWarnings("unchecked")
+		List<ProposalCostElement> costElements = criteria.list();
+		return costElements;
 	}
 
 }

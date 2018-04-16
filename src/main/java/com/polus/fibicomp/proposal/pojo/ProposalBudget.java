@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "FIBI_SMU_PROPOSAL_BUDGET")
 public class ProposalBudget implements Serializable {
@@ -28,9 +30,7 @@ public class ProposalBudget implements Serializable {
 	@Column(name = "BUDGET_ID")
 	private Integer budgetId;
 
-	@Column(name = "PROPOSAL_ID")
-	private Integer proposalId;
-
+	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROP_BUDGET"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID", insertable = false, updatable = false)
 	private Proposal proposal;
@@ -44,6 +44,10 @@ public class ProposalBudget implements Serializable {
 
 	@Column(name = "COST_ELEMENT")
 	private String costElement;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_SMU_PROP_BUDGET"), name = "COST_ELEMENT", referencedColumnName = "COST_ELEMENT", insertable = false, updatable = false)
+	private ProposalCostElement proposalCostElement;
 
 	@Column(name = "COST")
 	private Integer cost;
@@ -60,14 +64,6 @@ public class ProposalBudget implements Serializable {
 
 	public void setBudgetId(Integer budgetId) {
 		this.budgetId = budgetId;
-	}
-
-	public Integer getProposalId() {
-		return proposalId;
-	}
-
-	public void setProposalId(Integer proposalId) {
-		this.proposalId = proposalId;
 	}
 
 	public Proposal getProposal() {
@@ -130,4 +126,11 @@ public class ProposalBudget implements Serializable {
 		return serialVersionUID;
 	}
 
+	public ProposalCostElement getProposalCostElement() {
+		return proposalCostElement;
+	}
+
+	public void setProposalCostElement(ProposalCostElement proposalCostElement) {
+		this.proposalCostElement = proposalCostElement;
+	}
 }
