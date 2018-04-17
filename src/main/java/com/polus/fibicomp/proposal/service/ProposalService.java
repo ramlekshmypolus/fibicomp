@@ -46,4 +46,11 @@ public interface ProposalService {
 	 */
 	public String fetchCostElementByBudgetCategory(ProposalVO vo);
 
+	/**
+	 * This method is used fetch all area of excellence.
+	 * @param vo - Object of ProposalVO class.
+	 * @return A string of details of proposal which include list of area of excellence.
+	 */
+	public String fetchAllAreaOfExcellence(ProposalVO vo);
+
 }

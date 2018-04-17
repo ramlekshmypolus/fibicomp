@@ -24,6 +24,8 @@ import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
 import com.polus.fibicomp.proposal.pojo.ProposalBudgetCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCostElement;
+import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
+import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalStatus;
 
@@ -169,6 +171,34 @@ public class ProposalDaoImpl implements ProposalDao {
 		@SuppressWarnings("unchecked")
 		List<ProposalCostElement> costElements = criteria.list();
 		return costElements;
+	}
+
+	@Override
+	public List<ProposalInstituteCentreLab> fetchAllInstituteCentrelabs() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProposalInstituteCentreLab.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("iclCode"), "iclCode");
+		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ProposalInstituteCentreLab.class));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
+		@SuppressWarnings("unchecked")
+		List<ProposalInstituteCentreLab> proposalInstituteCentreLabs = criteria.list();
+		return proposalInstituteCentreLabs;
+	}
+
+	@Override
+	public List<ProposalExcellenceArea> fetchAllAreaOfExcellence() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProposalExcellenceArea.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("excellenceAreaCode"), "excellenceAreaCode");
+		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ProposalExcellenceArea.class));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
+		@SuppressWarnings("unchecked")
+		List<ProposalExcellenceArea> proposalExcellenceAreas = criteria.list();
+		return proposalExcellenceAreas;
 	}
 
 }

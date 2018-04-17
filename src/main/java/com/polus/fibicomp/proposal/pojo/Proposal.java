@@ -66,6 +66,13 @@ public class Proposal implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_SMU_PROPOSAL"), name = "CATEGORY_CODE", referencedColumnName = "CATEGORY_CODE", insertable = false, updatable = false)
 	private ProposalCategory proposalCategory;
 
+	@Column(name = "ICL_CODE")
+	private Integer iclCode;
+
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK5_FIBI_SMU_PROPOSAL"), name = "ICL_CODE", referencedColumnName = "ICL_CODE", insertable = false, updatable = false)
+	private ProposalInstituteCentreLab proposalInstituteCentreLab;
+
 	@Column(name = "TITLE")
 	private String title;
 
@@ -211,6 +218,22 @@ public class Proposal implements Serializable {
 
 	public void setProposalCategory(ProposalCategory proposalCategory) {
 		this.proposalCategory = proposalCategory;
+	}
+
+	public Integer getIclCode() {
+		return iclCode;
+	}
+
+	public void setIclCode(Integer iclCode) {
+		this.iclCode = iclCode;
+	}
+
+	public ProposalInstituteCentreLab getProposalInstituteCentreLab() {
+		return proposalInstituteCentreLab;
+	}
+
+	public void setProposalInstituteCentreLab(ProposalInstituteCentreLab proposalInstituteCentreLab) {
+		this.proposalInstituteCentreLab = proposalInstituteCentreLab;
 	}
 
 	public String getTitle() {

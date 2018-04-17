@@ -46,8 +46,15 @@ public class ProposalResearchArea implements Serializable {
 	private Integer researchTypeCode;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROP_RESRCH_AREA"), name = "RESRCH_TYPE_CODE", referencedColumnName = "RESRCH_TYPE_CODE", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_SMU_PROP_RESRCH_AREA"), name = "RESRCH_TYPE_CODE", referencedColumnName = "RESRCH_TYPE_CODE", insertable = false, updatable = false)
 	private ProposalResearchType proposalResearchType;
+
+	@Column(name = "EXCELLENCE_AREA_CODE")
+	private Integer excellenceAreaCode;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK4_FIBI_SMU_PROP_RESRCH_AREA"), name = "EXCELLENCE_AREA_CODE", referencedColumnName = "EXCELLENCE_AREA_CODE", insertable = false, updatable = false)
+	private ProposalExcellenceArea proposalExcellenceArea;
 
 	@Column(name = "DESCRIPTION")
 	private String description;

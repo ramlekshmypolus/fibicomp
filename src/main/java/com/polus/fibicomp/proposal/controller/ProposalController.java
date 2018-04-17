@@ -57,4 +57,11 @@ public class ProposalController {
 		logger.info("BudgetCategoryCode : " + vo.getBudgetCategoryCode());
 		return proposalService.fetchCostElementByBudgetCategory(vo);
 	}
+
+	@RequestMapping(value = "/fetchAllAreaOfExcellence", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String fetchAllAreaOfExcellence(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for fetchAllAreaOfExcellence");
+		return proposalService.fetchAllAreaOfExcellence(vo);
+	}
+
 }
