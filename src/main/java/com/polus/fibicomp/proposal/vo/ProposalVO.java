@@ -15,6 +15,8 @@ import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
 import com.polus.fibicomp.proposal.pojo.ProposalBudgetCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCostElement;
+import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
+import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 
 public class ProposalVO {
@@ -56,6 +58,18 @@ public class ProposalVO {
 	private List<ProposalCostElement> proposalCostElements;
 
 	private List<ProposalBudgetCategory> proposalBudgetCategories;
+
+	private List<ProposalInstituteCentreLab> proposalInstituteCentreLabs;
+
+	private List<ProposalExcellenceArea> proposalExcellenceAreas;
+
+	public List<ProposalExcellenceArea> getProposalExcellenceAreas() {
+		return proposalExcellenceAreas;
+	}
+
+	public void setProposalExcellenceAreas(List<ProposalExcellenceArea> proposalExcellenceAreas) {
+		this.proposalExcellenceAreas = proposalExcellenceAreas;
+	}
 
 	private String budgetCategoryCode;
 
@@ -221,5 +235,13 @@ public class ProposalVO {
 
 	public void setBudgetCategoryCode(String budgetCategoryCode) {
 		this.budgetCategoryCode = budgetCategoryCode;
+	}
+
+	public List<ProposalInstituteCentreLab> getProposalInstituteCentreLabs() {
+		return proposalInstituteCentreLabs;
+	}
+
+	public void setProposalInstituteCentreLabs(List<ProposalInstituteCentreLab> proposalInstituteCentreLabs) {
+		this.proposalInstituteCentreLabs = proposalInstituteCentreLabs;
 	}
 }

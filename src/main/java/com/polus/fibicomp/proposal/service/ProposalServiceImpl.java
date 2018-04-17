@@ -56,6 +56,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
 		proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
 		proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
+		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
 
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
@@ -122,6 +123,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
 		proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
 		proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
+		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
 
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
@@ -130,6 +132,13 @@ public class ProposalServiceImpl implements ProposalService {
 	@Override
 	public String fetchCostElementByBudgetCategory(ProposalVO vo) {
 		vo.setProposalCostElements(proposalDao.fetchCostElementByBudgetCategory(vo.getBudgetCategoryCode()));
+		String response = committeeDao.convertObjectToJSON(vo);
+		return response;
+	}
+
+	@Override
+	public String fetchAllAreaOfExcellence(ProposalVO vo) {
+		vo.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
 		String response = committeeDao.convertObjectToJSON(vo);
 		return response;
 	}

@@ -12,6 +12,8 @@ import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
 import com.polus.fibicomp.proposal.pojo.ProposalBudgetCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCostElement;
+import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
+import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalStatus;
 
@@ -88,4 +90,7 @@ public interface ProposalDao {
 	 */
 	public List<ProposalCostElement> fetchCostElementByBudgetCategory(String budgetCategoryCode);
 
+	public List<ProposalInstituteCentreLab> fetchAllInstituteCentrelabs();
+
+	public List<ProposalExcellenceArea> fetchAllAreaOfExcellence();
 }
