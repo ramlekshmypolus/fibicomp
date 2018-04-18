@@ -7,7 +7,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,4 +66,67 @@ public class ProposalController {
 		return proposalService.fetchAllAreaOfExcellence(vo);
 	}
 
+	@RequestMapping(value = "/deleteProposalKeyword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteProposalKeyword(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteProposalKeyword");
+		logger.info("proposalId : " + vo.getProposalId());
+		logger.info("KeywordId : " + vo.getKeywordId());
+		return proposalService.deleteProposalKeyword(vo);
+	}
+
+	@RequestMapping(value = "/deleteProposalResearchArea", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteProposalResearchArea(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteProposalResearchArea");
+		logger.info("proposalId : " + vo.getProposalId());
+		logger.info("researchAreaId : " + vo.getResearchAreaId());
+		return proposalService.deleteProposalResearchArea(vo);
+	}
+
+	@RequestMapping(value = "/deleteProposalPerson", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteProposalPerson(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteProposalPerson");
+		logger.info("proposalId : " + vo.getProposalId());
+		logger.info("proposalPersonId : " + vo.getProposalPersonId());
+		return proposalService.deleteProposalPerson(vo);
+	}
+
+	@RequestMapping(value = "/deleteProposalSponsor", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteProposalSponsor(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteProposalSponsor");
+		logger.info("proposalId : " + vo.getProposalId());
+		logger.info("sponsorId : " + vo.getSponsorId());
+		return proposalService.deleteProposalSponsor(vo);
+	}
+
+	@RequestMapping(value = "/deleteIrbProtocol", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteIrbProtocol(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteIrbProtocol");
+		logger.info("proposalId : " + vo.getProposalId());
+		logger.info("irbProtocolId : " + vo.getIrbProtocolId());
+		return proposalService.deleteIrbProtocol(vo);
+	}
+
+	@RequestMapping(value = "/deleteProposalBudget", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteProposalBudget(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteProposalBudget");
+		logger.info("proposalId : " + vo.getProposalId());
+		logger.info("budgetId : " + vo.getBudgetId());
+		return proposalService.deleteProposalBudget(vo);
+	}
+
+	@RequestMapping(value = "/deleteProposalAttachment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteProposalAttachment(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteProposalBudget");
+		logger.info("propodalId : " + vo.getProposalId());
+		logger.info("attachmentId : " + vo.getAttachmentId());
+		return proposalService.deleteProposalAttachment(vo);
+	}
+
+	@RequestMapping(value = "/downloadProposalAttachment", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> downloadProposalAttachment(HttpServletResponse response, @RequestHeader("attachmentId") String attachmentId) {
+		logger.info("Requesting for downloadProposalAttachment");
+		logger.info("attachmentId : " + attachmentId);
+		Integer attachmentid = Integer.parseInt(attachmentId);
+		return proposalService.downloadProposalAttachment(attachmentid);
+	}
 }

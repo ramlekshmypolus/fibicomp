@@ -32,13 +32,13 @@ public class ProposalResearchArea implements Serializable {
 
 	@JsonBackReference
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_SMU_PROP_RESRCH_AREA"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_SMU_PROP_RESRCH_AREA"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID")
 	private Proposal proposal;
 
 	@Column(name = "RESEARCH_AREA_CODE")
 	private String researchAreaCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROP_RESRCH_AREA"), name = "RESEARCH_AREA_CODE", referencedColumnName = "RESEARCH_AREA_CODE", insertable = false, updatable = false)
 	private ResearchArea researchArea;
 
@@ -52,7 +52,7 @@ public class ProposalResearchArea implements Serializable {
 	@Column(name = "EXCELLENCE_AREA_CODE")
 	private Integer excellenceAreaCode;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK4_FIBI_SMU_PROP_RESRCH_AREA"), name = "EXCELLENCE_AREA_CODE", referencedColumnName = "EXCELLENCE_AREA_CODE", insertable = false, updatable = false)
 	private ProposalExcellenceArea proposalExcellenceArea;
 
@@ -113,6 +113,22 @@ public class ProposalResearchArea implements Serializable {
 		this.proposalResearchType = proposalResearchType;
 	}
 
+	public Integer getExcellenceAreaCode() {
+		return excellenceAreaCode;
+	}
+
+	public void setExcellenceAreaCode(Integer excellenceAreaCode) {
+		this.excellenceAreaCode = excellenceAreaCode;
+	}
+
+	public ProposalExcellenceArea getProposalExcellenceArea() {
+		return proposalExcellenceArea;
+	}
+
+	public void setProposalExcellenceArea(ProposalExcellenceArea proposalExcellenceArea) {
+		this.proposalExcellenceArea = proposalExcellenceArea;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -135,10 +151,6 @@ public class ProposalResearchArea implements Serializable {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 }

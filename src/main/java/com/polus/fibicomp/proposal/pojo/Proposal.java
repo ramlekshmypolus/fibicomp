@@ -3,6 +3,7 @@ package com.polus.fibicomp.proposal.pojo;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -139,6 +140,16 @@ public class Proposal implements Serializable {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<ProposalSponsor> proposalSponsors;
+
+	public Proposal() {
+		proposalAttachments = new ArrayList<ProposalAttachment>();
+		proposalBudgets = new ArrayList<ProposalBudget>();
+		proposalKeywords = new ArrayList<ProposalKeyword>();
+		proposalPersons = new ArrayList<ProposalPerson>();
+		proposalIrbProtocols = new ArrayList<ProposalIrbProtocol>();
+		proposalResearchAreas = new ArrayList<ProposalResearchArea>();
+		proposalSponsors = new ArrayList<ProposalSponsor>();
+	}
 
 	public Integer getProposalId() {
 		return proposalId;

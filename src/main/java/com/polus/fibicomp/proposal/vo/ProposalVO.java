@@ -63,6 +63,20 @@ public class ProposalVO {
 
 	private List<ProposalExcellenceArea> proposalExcellenceAreas;
 
+	private Integer keywordId;
+
+	private Integer researchAreaId;
+
+	private Integer attachmentId;
+
+	private Integer budgetId;
+
+	private Integer proposalPersonId;
+
+	private Integer irbProtocolId;
+
+	private Integer sponsorId;
+
 	public List<ProposalExcellenceArea> getProposalExcellenceAreas() {
 		return proposalExcellenceAreas;
 	}
@@ -243,5 +257,61 @@ public class ProposalVO {
 
 	public void setProposalInstituteCentreLabs(List<ProposalInstituteCentreLab> proposalInstituteCentreLabs) {
 		this.proposalInstituteCentreLabs = proposalInstituteCentreLabs;
+	}
+
+	public Integer getKeywordId() {
+		return keywordId;
+	}
+
+	public void setKeywordId(Integer keywordId) {
+		this.keywordId = keywordId;
+	}
+
+	public Integer getResearchAreaId() {
+		return researchAreaId;
+	}
+
+	public Integer getAttachmentId() {
+		return attachmentId;
+	}
+
+	public Integer getBudgetId() {
+		return budgetId;
+	}
+
+	public Integer getProposalPersonId() {
+		return proposalPersonId;
+	}
+
+	public Integer getIrbProtocolId() {
+		return irbProtocolId;
+	}
+
+	public Integer getSponsorId() {
+		return sponsorId;
+	}
+
+	public void setResearchAreaId(Integer researchAreaId) {
+		this.researchAreaId = researchAreaId;
+	}
+
+	public void setAttachmentId(Integer attachmentId) {
+		this.attachmentId = attachmentId;
+	}
+
+	public void setBudgetId(Integer budgetId) {
+		this.budgetId = budgetId;
+	}
+
+	public void setProposalPersonId(Integer proposalPersonId) {
+		this.proposalPersonId = proposalPersonId;
+	}
+
+	public void setIrbProtocolId(Integer irbProtocolId) {
+		this.irbProtocolId = irbProtocolId;
+	}
+
+	public void setSponsorId(Integer sponsorId) {
+		this.sponsorId = sponsorId;
 	}
 }
