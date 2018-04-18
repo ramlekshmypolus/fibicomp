@@ -8,6 +8,7 @@ import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.pojo.Protocol;
 import com.polus.fibicomp.proposal.pojo.Proposal;
+import com.polus.fibicomp.proposal.pojo.ProposalAttachment;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
 import com.polus.fibicomp.proposal.pojo.ProposalBudgetCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCategory;
@@ -93,4 +94,6 @@ public interface ProposalDao {
 	public List<ProposalInstituteCentreLab> fetchAllInstituteCentrelabs();
 
 	public List<ProposalExcellenceArea> fetchAllAreaOfExcellence();
+
+	public ProposalAttachment fetchAttachmentById(Integer attachmentId);
 }

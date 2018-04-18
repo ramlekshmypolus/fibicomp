@@ -32,7 +32,7 @@ public class ProposalBudget implements Serializable {
 
 	@JsonBackReference
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROP_BUDGET"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROP_BUDGET"), name = "PROPOSAL_ID", referencedColumnName = "PROPOSAL_ID")
 	private Proposal proposal;
 
 	@Column(name = "BUDGET_CATEGORY_CODE")

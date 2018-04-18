@@ -62,6 +62,9 @@ public class DashboardServiceImpl implements DashboardService {
 			if (requestType.equals("GRANT")) {
 				dashBoardProfile = dashboardDao.getDashBoardDataForGrantCall(vo);
 			}
+			if (requestType.equals("SMU_PROPOSAL")) {
+				dashBoardProfile = dashboardDao.getDashBoardDataForSmuProposal(vo);
+			}
 			// dashBoardProfile.setPersonDTO(personDTO);
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardData", e);

@@ -1,5 +1,6 @@
 package com.polus.fibicomp.proposal.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,5 +53,21 @@ public interface ProposalService {
 	 * @return A string of details of proposal which include list of area of excellence.
 	 */
 	public String fetchAllAreaOfExcellence(ProposalVO vo);
+
+	public String deleteProposalKeyword(ProposalVO vo);
+
+	public String deleteProposalResearchArea(ProposalVO vo);
+
+	public String deleteProposalPerson(ProposalVO vo);
+
+	public String deleteProposalSponsor(ProposalVO vo);
+
+	public String deleteIrbProtocol(ProposalVO vo);
+
+	public String deleteProposalBudget(ProposalVO vo);
+
+	public String deleteProposalAttachment(ProposalVO vo);
+
+	public ResponseEntity<byte[]> downloadProposalAttachment(Integer attachmentId);
 
 }

@@ -182,4 +182,11 @@ public interface DashboardDao {
 	 */
 	public DashBoardProfile getDashBoardDataForGrantCall(CommonVO vo);
 
+	/**
+	 * This method is used to get list of SMU proposals.
+	 * @param vo - Object of CommonVO class.
+	 * @return A list of proposals.
+	 */
+	public DashBoardProfile getDashBoardDataForSmuProposal(CommonVO vo);
+
 }

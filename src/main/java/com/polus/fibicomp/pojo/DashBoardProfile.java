@@ -7,6 +7,7 @@ import java.util.List;
 import com.polus.fibicomp.committee.pojo.Committee;
 import com.polus.fibicomp.committee.pojo.CommitteeSchedule;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
+import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
 import com.polus.fibicomp.view.ExpenditureVolume;
@@ -59,6 +60,8 @@ public class DashBoardProfile {
 	private List<CommitteeSchedule> committeeSchedules;
 
 	private List<GrantCall> grantCalls;
+
+	private List<Proposal> proposal;
 
 	public ArrayList<HashMap<String, Object>> getDashBoardDetailMap() {
 		return dashBoardDetailMap;
@@ -226,5 +229,13 @@ public class DashBoardProfile {
 
 	public void setGrantCalls(List<GrantCall> grantCalls) {
 		this.grantCalls = grantCalls;
+	}
+
+	public List<Proposal> getProposal() {
+		return proposal;
+	}
+
+	public void setProposal(List<Proposal> proposal) {
+		this.proposal = proposal;
 	}
 }
