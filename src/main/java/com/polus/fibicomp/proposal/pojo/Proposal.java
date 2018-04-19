@@ -36,9 +36,6 @@ public class Proposal implements Serializable {
 	@Column(name = "PROPOSAL_ID")
 	private Integer proposalId;
 
-	@Column(name = "PROPOSAL_NUMBER")
-	private String proposalNumber;
-
 	@Column(name = "GRANT_HEADER_ID")
 	private Integer grantCallId;
 
@@ -160,14 +157,6 @@ public class Proposal implements Serializable {
 
 	public void setProposalId(Integer proposalId) {
 		this.proposalId = proposalId;
-	}
-
-	public String getProposalNumber() {
-		return proposalNumber;
-	}
-
-	public void setProposalNumber(String proposalNumber) {
-		this.proposalNumber = proposalNumber;
 	}
 
 	public Integer getGrantCallId() {

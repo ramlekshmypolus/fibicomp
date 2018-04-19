@@ -62,13 +62,13 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setScienceKeywords(grantCallDao.fetchAllScienceKeywords());
 		proposalVO.setResearchAreas(committeeDao.fetchAllResearchAreas());
 		proposalVO.setProposalResearchTypes(proposalDao.fetchAllProposalResearchTypes());
-		proposalVO.setFundingSourceTypes(grantCallDao.fetchAllFundingSourceTypes());
 		proposalVO.setProtocols(proposalDao.fetchAllProtocols());
 		proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
 		proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
 		proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
 		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
 		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
+		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
 
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
@@ -137,6 +137,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
 		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
 		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
+		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
 
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
