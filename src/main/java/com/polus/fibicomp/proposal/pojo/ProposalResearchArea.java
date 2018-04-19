@@ -56,9 +56,6 @@ public class ProposalResearchArea implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK4_FIBI_SMU_PROP_RESRCH_AREA"), name = "EXCELLENCE_AREA_CODE", referencedColumnName = "EXCELLENCE_AREA_CODE", insertable = false, updatable = false)
 	private ProposalExcellenceArea proposalExcellenceArea;
 
-	@Column(name = "DESCRIPTION")
-	private String description;
-
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimeStamp;
 
@@ -127,14 +124,6 @@ public class ProposalResearchArea implements Serializable {
 
 	public void setProposalExcellenceArea(ProposalExcellenceArea proposalExcellenceArea) {
 		this.proposalExcellenceArea = proposalExcellenceArea;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public Timestamp getUpdateTimeStamp() {
