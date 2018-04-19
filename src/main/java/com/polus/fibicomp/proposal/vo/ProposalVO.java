@@ -9,6 +9,8 @@ import com.polus.fibicomp.pojo.FundingSourceType;
 import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.pojo.Protocol;
 import com.polus.fibicomp.pojo.ScienceKeyword;
+import com.polus.fibicomp.pojo.Sponsor;
+import com.polus.fibicomp.pojo.SponsorType;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachment;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
@@ -47,14 +49,6 @@ public class ProposalVO {
 
 	private ProposalAttachment newAttachment;
 
-	private Boolean status;
-
-	private String message;
-
-	private String updateType;
-
-	private Integer proposalId;
-
 	private List<ProposalCostElement> proposalCostElements;
 
 	private List<ProposalBudgetCategory> proposalBudgetCategories;
@@ -62,6 +56,10 @@ public class ProposalVO {
 	private List<ProposalInstituteCentreLab> proposalInstituteCentreLabs;
 
 	private List<ProposalExcellenceArea> proposalExcellenceAreas;
+
+	private List<SponsorType> sponsorTypes;
+
+	private List<Sponsor> sponsors;
 
 	private Integer keywordId;
 
@@ -77,15 +75,17 @@ public class ProposalVO {
 
 	private Integer sponsorId;
 
-	public List<ProposalExcellenceArea> getProposalExcellenceAreas() {
-		return proposalExcellenceAreas;
-	}
+	private Boolean status;
 
-	public void setProposalExcellenceAreas(List<ProposalExcellenceArea> proposalExcellenceAreas) {
-		this.proposalExcellenceAreas = proposalExcellenceAreas;
-	}
+	private String message;
+
+	private String updateType;
+
+	private Integer proposalId;
 
 	private String budgetCategoryCode;
+
+	private String sponsorTypeCode;
 
 	public ProposalVO() {
 		proposal = new Proposal();
@@ -195,6 +195,110 @@ public class ProposalVO {
 		this.newAttachment = newAttachment;
 	}
 
+	public List<ProposalCostElement> getProposalCostElements() {
+		return proposalCostElements;
+	}
+
+	public void setProposalCostElements(List<ProposalCostElement> proposalCostElements) {
+		this.proposalCostElements = proposalCostElements;
+	}
+
+	public List<ProposalBudgetCategory> getProposalBudgetCategories() {
+		return proposalBudgetCategories;
+	}
+
+	public void setProposalBudgetCategories(List<ProposalBudgetCategory> proposalBudgetCategories) {
+		this.proposalBudgetCategories = proposalBudgetCategories;
+	}
+
+	public List<ProposalInstituteCentreLab> getProposalInstituteCentreLabs() {
+		return proposalInstituteCentreLabs;
+	}
+
+	public void setProposalInstituteCentreLabs(List<ProposalInstituteCentreLab> proposalInstituteCentreLabs) {
+		this.proposalInstituteCentreLabs = proposalInstituteCentreLabs;
+	}
+
+	public List<ProposalExcellenceArea> getProposalExcellenceAreas() {
+		return proposalExcellenceAreas;
+	}
+
+	public void setProposalExcellenceAreas(List<ProposalExcellenceArea> proposalExcellenceAreas) {
+		this.proposalExcellenceAreas = proposalExcellenceAreas;
+	}
+
+	public List<SponsorType> getSponsorTypes() {
+		return sponsorTypes;
+	}
+
+	public void setSponsorTypes(List<SponsorType> sponsorTypes) {
+		this.sponsorTypes = sponsorTypes;
+	}
+
+	public List<Sponsor> getSponsors() {
+		return sponsors;
+	}
+
+	public void setSponsors(List<Sponsor> sponsors) {
+		this.sponsors = sponsors;
+	}
+
+	public Integer getKeywordId() {
+		return keywordId;
+	}
+
+	public void setKeywordId(Integer keywordId) {
+		this.keywordId = keywordId;
+	}
+
+	public Integer getResearchAreaId() {
+		return researchAreaId;
+	}
+
+	public void setResearchAreaId(Integer researchAreaId) {
+		this.researchAreaId = researchAreaId;
+	}
+
+	public Integer getAttachmentId() {
+		return attachmentId;
+	}
+
+	public void setAttachmentId(Integer attachmentId) {
+		this.attachmentId = attachmentId;
+	}
+
+	public Integer getBudgetId() {
+		return budgetId;
+	}
+
+	public void setBudgetId(Integer budgetId) {
+		this.budgetId = budgetId;
+	}
+
+	public Integer getProposalPersonId() {
+		return proposalPersonId;
+	}
+
+	public void setProposalPersonId(Integer proposalPersonId) {
+		this.proposalPersonId = proposalPersonId;
+	}
+
+	public Integer getIrbProtocolId() {
+		return irbProtocolId;
+	}
+
+	public void setIrbProtocolId(Integer irbProtocolId) {
+		this.irbProtocolId = irbProtocolId;
+	}
+
+	public Integer getSponsorId() {
+		return sponsorId;
+	}
+
+	public void setSponsorId(Integer sponsorId) {
+		this.sponsorId = sponsorId;
+	}
+
 	public Boolean getStatus() {
 		return status;
 	}
@@ -227,22 +331,6 @@ public class ProposalVO {
 		this.proposalId = proposalId;
 	}
 
-	public List<ProposalCostElement> getProposalCostElements() {
-		return proposalCostElements;
-	}
-
-	public void setProposalCostElements(List<ProposalCostElement> proposalCostElements) {
-		this.proposalCostElements = proposalCostElements;
-	}
-
-	public List<ProposalBudgetCategory> getProposalBudgetCategories() {
-		return proposalBudgetCategories;
-	}
-
-	public void setProposalBudgetCategories(List<ProposalBudgetCategory> proposalBudgetCategories) {
-		this.proposalBudgetCategories = proposalBudgetCategories;
-	}
-
 	public String getBudgetCategoryCode() {
 		return budgetCategoryCode;
 	}
@@ -251,67 +339,12 @@ public class ProposalVO {
 		this.budgetCategoryCode = budgetCategoryCode;
 	}
 
-	public List<ProposalInstituteCentreLab> getProposalInstituteCentreLabs() {
-		return proposalInstituteCentreLabs;
+	public String getSponsorTypeCode() {
+		return sponsorTypeCode;
 	}
 
-	public void setProposalInstituteCentreLabs(List<ProposalInstituteCentreLab> proposalInstituteCentreLabs) {
-		this.proposalInstituteCentreLabs = proposalInstituteCentreLabs;
+	public void setSponsorTypeCode(String sponsorTypeCode) {
+		this.sponsorTypeCode = sponsorTypeCode;
 	}
 
-	public Integer getKeywordId() {
-		return keywordId;
-	}
-
-	public void setKeywordId(Integer keywordId) {
-		this.keywordId = keywordId;
-	}
-
-	public Integer getResearchAreaId() {
-		return researchAreaId;
-	}
-
-	public Integer getAttachmentId() {
-		return attachmentId;
-	}
-
-	public Integer getBudgetId() {
-		return budgetId;
-	}
-
-	public Integer getProposalPersonId() {
-		return proposalPersonId;
-	}
-
-	public Integer getIrbProtocolId() {
-		return irbProtocolId;
-	}
-
-	public Integer getSponsorId() {
-		return sponsorId;
-	}
-
-	public void setResearchAreaId(Integer researchAreaId) {
-		this.researchAreaId = researchAreaId;
-	}
-
-	public void setAttachmentId(Integer attachmentId) {
-		this.attachmentId = attachmentId;
-	}
-
-	public void setBudgetId(Integer budgetId) {
-		this.budgetId = budgetId;
-	}
-
-	public void setProposalPersonId(Integer proposalPersonId) {
-		this.proposalPersonId = proposalPersonId;
-	}
-
-	public void setIrbProtocolId(Integer irbProtocolId) {
-		this.irbProtocolId = irbProtocolId;
-	}
-
-	public void setSponsorId(Integer sponsorId) {
-		this.sponsorId = sponsorId;
-	}
 }

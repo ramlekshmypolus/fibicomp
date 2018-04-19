@@ -54,20 +54,60 @@ public interface ProposalService {
 	 */
 	public String fetchAllAreaOfExcellence(ProposalVO vo);
 
+	/**
+	 * This method is used to delete keywords from proposal.
+	 * @param vo - Object of ProposalVO class. 
+	 * @return a String of details of proposal with updated list of keywords.
+	 */
 	public String deleteProposalKeyword(ProposalVO vo);
 
+	/**
+	 * This method is used to delete area of research from proposal.
+	 * @param vo - Object of ProposalVO class. 
+	 * @return a String of details of proposal with updated list of area of research.
+	 */
 	public String deleteProposalResearchArea(ProposalVO vo);
 
+	/**
+	 * This method is used to delete proposal person from proposal.
+	 * @param vo - Object of ProposalVO class. 
+	 * @return a String of details of proposal with updated list of persons.
+	 */
 	public String deleteProposalPerson(ProposalVO vo);
 
+	/**
+	 * This method is used to delete declared sponsors from proposal.
+	 * @param vo - Object of ProposalVO class. 
+	 * @return a String of details of proposal with updated list of sponsors.
+	 */
 	public String deleteProposalSponsor(ProposalVO vo);
 
+	/**
+	 * This method is used to delete declared protocols from proposal.
+	 * @param vo - Object of ProposalVO class. 
+	 * @return a String of details of proposal with updated list of protocols.
+	 */
 	public String deleteIrbProtocol(ProposalVO vo);
 
+	/**
+	 * This method is used to delete budgets from proposal.
+	 * @param vo - Object of ProposalVO class. 
+	 * @return a String of details of proposal with updated list of budgets.
+	 */
 	public String deleteProposalBudget(ProposalVO vo);
 
+	/**
+	 * This method is used to delete attachment from proposal.
+	 * @param vo - Object of ProposalVO class. 
+	 * @return a String of details of proposal with updated list of protocols.
+	 */
 	public String deleteProposalAttachment(ProposalVO vo);
 
+	/**
+	 * This method is used to download proposal attachment.
+	 * @param attachmentId - Id of the attachment to download.
+	 * @return attachmentData.
+	 */
 	public ResponseEntity<byte[]> downloadProposalAttachment(Integer attachmentId);
 
 }

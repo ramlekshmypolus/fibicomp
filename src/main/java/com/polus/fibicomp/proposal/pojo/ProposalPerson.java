@@ -16,6 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.polus.fibicomp.pojo.ProposalPersonRole;
 
 @Entity
 @Table(name = "FIBI_SMU_PROPOSAL_PERSONS")
@@ -44,11 +45,18 @@ public class ProposalPerson implements Serializable {
 	@Column(name = "FULL_NAME")
 	private String fullName;
 
-	@Column(name = "CONTACT_ROLE_CODE")
-	private String contactRoleCode;
+	@Column(name = "PROP_PERSON_ROLE_ID")
+	private String personRoleId;
 
-	@Column(name = "KEY_PERSON_PROJECT_ROLE")
-	private String keyPersonProjectRole;
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROPOSAL_PERSONS"), name = "PROP_PERSON_ROLE_ID", referencedColumnName = "PROP_PERSON_ROLE_ID", insertable = false, updatable = false)
+	private ProposalPersonRole proposalPersonRole;
+
+	@Column(name = "UNIT_NUMBER")
+	private String leadUnitNumber;
+
+	@Column(name = "UNIT_NAME")
+	private String leadUnitName;
 
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimeStamp;
@@ -96,22 +104,6 @@ public class ProposalPerson implements Serializable {
 		this.fullName = fullName;
 	}
 
-	public String getContactRoleCode() {
-		return contactRoleCode;
-	}
-
-	public void setContactRoleCode(String contactRoleCode) {
-		this.contactRoleCode = contactRoleCode;
-	}
-
-	public String getKeyPersonProjectRole() {
-		return keyPersonProjectRole;
-	}
-
-	public void setKeyPersonProjectRole(String keyPersonProjectRole) {
-		this.keyPersonProjectRole = keyPersonProjectRole;
-	}
-
 	public Timestamp getUpdateTimeStamp() {
 		return updateTimeStamp;
 	}
@@ -128,8 +120,36 @@ public class ProposalPerson implements Serializable {
 		this.updateUser = updateUser;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getPersonRoleId() {
+		return personRoleId;
+	}
+
+	public void setPersonRoleId(String personRoleId) {
+		this.personRoleId = personRoleId;
+	}
+
+	public ProposalPersonRole getProposalPersonRole() {
+		return proposalPersonRole;
+	}
+
+	public void setProposalPersonRole(ProposalPersonRole proposalPersonRole) {
+		this.proposalPersonRole = proposalPersonRole;
+	}
+
+	public String getLeadUnitNumber() {
+		return leadUnitNumber;
+	}
+
+	public void setLeadUnitNumber(String leadUnitNumber) {
+		this.leadUnitNumber = leadUnitNumber;
+	}
+
+	public String getLeadUnitName() {
+		return leadUnitName;
+	}
+
+	public void setLeadUnitName(String leadUnitName) {
+		this.leadUnitName = leadUnitName;
 	}
 
 }
