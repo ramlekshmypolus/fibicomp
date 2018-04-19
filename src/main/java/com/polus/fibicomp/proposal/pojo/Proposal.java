@@ -101,6 +101,9 @@ public class Proposal implements Serializable {
 	@Column(name = "DELIVERABLES")
 	private String deliverables;
 
+	@Column(name = "RESEARCH_AREA_DESC")
+	private String researchDescription;
+
 	@Column(name = "CREATE_TIMESTAMP")
 	private Timestamp createTimeStamp;
 
@@ -317,6 +320,14 @@ public class Proposal implements Serializable {
 
 	public void setDeliverables(String deliverables) {
 		this.deliverables = deliverables;
+	}
+
+	public String getResearchDescription() {
+		return researchDescription;
+	}
+
+	public void setResearchDescription(String researchDescription) {
+		this.researchDescription = researchDescription;
 	}
 
 	public Timestamp getCreateTimeStamp() {

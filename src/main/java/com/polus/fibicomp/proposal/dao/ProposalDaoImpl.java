@@ -62,13 +62,7 @@ public class ProposalDaoImpl implements ProposalDao {
 	public List<Protocol> fetchAllProtocols() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Protocol.class);
-		ProjectionList projList = Projections.projectionList();
-		projList.add(Projections.property("protocolNumber"), "protocolNumber");
-		projList.add(Projections.property("expirationDate"), "expirationDate");
-		projList.add(Projections.property("protocolStatusCode"), "protocolStatusCode");
-		projList.add(Projections.property("protocolStatus"), "protocolStatus");
-		projList.add(Projections.property("approvalDate"), "approvalDate");
-		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Protocol.class));
+		criteria.add(Restrictions.eq("active", true));
 		criteria.addOrder(Order.asc("updateTimestamp"));
 		@SuppressWarnings("unchecked")
 		List<Protocol> protocols = criteria.list();

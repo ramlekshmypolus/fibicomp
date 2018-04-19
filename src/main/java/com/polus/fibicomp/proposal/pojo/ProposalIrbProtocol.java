@@ -1,7 +1,6 @@
 package com.polus.fibicomp.proposal.pojo;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -44,15 +43,6 @@ public class ProposalIrbProtocol implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROP_PROTOCOL"), name = "PROTOCOL_ID", referencedColumnName = "PROTOCOL_ID", insertable = false, updatable = false)
 	private Protocol protocol;
 
-	@Column(name = "APPROVAL_STATUS")
-	private String aprovalStatus;
-
-	@Column(name = "APPROVAL_DATE")
-	private Date aprovalDate;
-
-	@Column(name = "EXPIRATION_DATE")
-	private Date expirationDate;
-
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimeStamp;
 
@@ -89,30 +79,6 @@ public class ProposalIrbProtocol implements Serializable {
 
 	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
-	}
-
-	public String getAprovalStatus() {
-		return aprovalStatus;
-	}
-
-	public void setAprovalStatus(String aprovalStatus) {
-		this.aprovalStatus = aprovalStatus;
-	}
-
-	public Date getAprovalDate() {
-		return aprovalDate;
-	}
-
-	public void setAprovalDate(Date aprovalDate) {
-		this.aprovalDate = aprovalDate;
-	}
-
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
-
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
 	}
 
 	public Timestamp getUpdateTimeStamp() {
