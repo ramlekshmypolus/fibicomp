@@ -1110,6 +1110,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			projList.add(Projections.property("openingDate"), "openingDate");
 			projList.add(Projections.property("closingDate"), "closingDate");
 			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(GrantCall.class));
+			searchCriteria.addOrder(Order.desc("grantCallId"));
 			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
@@ -1178,6 +1179,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			projList.add(Projections.property("startDate"), "startDate");
 			projList.add(Projections.property("endDate"), "endDate");
 			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
+			searchCriteria.addOrder(Order.desc("proposalId"));
 			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();

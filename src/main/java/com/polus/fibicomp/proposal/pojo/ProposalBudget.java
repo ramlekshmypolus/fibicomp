@@ -49,6 +49,9 @@ public class ProposalBudget implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_SMU_PROP_BUDGET"), name = "COST_ELEMENT", referencedColumnName = "COST_ELEMENT", insertable = false, updatable = false)
 	private ProposalCostElement proposalCostElement;
 
+	@Column(name = "DESCRIPTION")
+	private String description;
+
 	@Column(name = "COST")
 	private Integer cost;
 
@@ -96,6 +99,14 @@ public class ProposalBudget implements Serializable {
 
 	public void setCostElement(String costElement) {
 		this.costElement = costElement;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Integer getCost() {
