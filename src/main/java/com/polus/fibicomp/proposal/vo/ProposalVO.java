@@ -20,6 +20,7 @@ import com.polus.fibicomp.proposal.pojo.ProposalCostElement;
 import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
 import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
+import com.polus.fibicomp.proposal.pojo.ProposalType;
 
 public class ProposalVO {
 
@@ -86,6 +87,8 @@ public class ProposalVO {
 	private String budgetCategoryCode;
 
 	private String sponsorTypeCode;
+
+	private List<ProposalType> proposalTypes;
 
 	public ProposalVO() {
 		proposal = new Proposal();
@@ -345,6 +348,14 @@ public class ProposalVO {
 
 	public void setSponsorTypeCode(String sponsorTypeCode) {
 		this.sponsorTypeCode = sponsorTypeCode;
+	}
+
+	public List<ProposalType> getProposalTypes() {
+		return proposalTypes;
+	}
+
+	public void setProposalTypes(List<ProposalType> proposalTypes) {
+		this.proposalTypes = proposalTypes;
 	}
 
 }
