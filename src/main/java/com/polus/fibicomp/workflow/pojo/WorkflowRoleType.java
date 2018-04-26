@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "MITKC_WORKFLOW_ROLE_TYPE")
+@Table(name = "FIBI_WORKFLOW_ROLE_TYPE")
 public class WorkflowRoleType implements Serializable {
 
 	private static final long serialVersionUID = 1L;

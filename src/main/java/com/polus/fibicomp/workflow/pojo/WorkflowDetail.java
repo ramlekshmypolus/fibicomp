@@ -17,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "MITKC_WORKFLOW_DETAIL")
+@Table(name = "FIBI_WORKFLOW_DETAIL")
 public class WorkflowDetail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -33,14 +33,14 @@ public class WorkflowDetail implements Serializable {
 	private Integer workflowId;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_MITKC_WORKFLOW_DETAIL"), name = "WORKFLOW_ID", referencedColumnName = "WORKFLOW_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_DETAIL"), name = "WORKFLOW_ID", referencedColumnName = "WORKFLOW_ID", insertable = false, updatable = false)
 	private Workflow workflow;
 
 	@Column(name = "MAP_ID")
 	private Integer mapId;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_MITKC_WORKFLOW_DETAIL"), name = "MAP_ID", referencedColumnName = "MAP_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_WORKFLOW_DETAIL"), name = "MAP_ID", referencedColumnName = "MAP_ID", insertable = false, updatable = false)
 	private WorkflowMap workflowMap;
 
 	@Column(name = "MAP_NUMBER")
@@ -62,7 +62,7 @@ public class WorkflowDetail implements Serializable {
 	private char approvalStatus;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_MITKC_WORKFLOW_DETAIL"), name = "APPROVAL_STATUS", referencedColumnName = "APPROVAL_STATUS", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_WORKFLOW_DETAIL"), name = "APPROVAL_STATUS", referencedColumnName = "APPROVAL_STATUS", insertable = false, updatable = false)
 	private WorkflowStatus workflowStatus;
 
 	@Column(name = "APPROVAL_COMMENT")

@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "MITKC_WORKFLOW_STATUS")
+@Table(name = "FIBI_WORKFLOW_STATUS")
 public class WorkflowStatus implements Serializable {
 
 	private static final long serialVersionUID = 1L;
