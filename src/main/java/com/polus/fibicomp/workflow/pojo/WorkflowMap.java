@@ -16,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "MITKC_WORKFLOW_MAP")
+@Table(name = "FIBI_WORKFLOW_MAP")
 public class WorkflowMap implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -32,7 +32,7 @@ public class WorkflowMap implements Serializable {
 	private char mapType;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_MITKC_WORKFLOW_MAP"), name = "MAP_TYPE", referencedColumnName = "MAP_TYPE", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_MAP"), name = "MAP_TYPE", referencedColumnName = "MAP_TYPE", insertable = false, updatable = false)
 	private WorkflowMapType workflowMapType;
 
 	@Column(name = "DESCRIPTION")

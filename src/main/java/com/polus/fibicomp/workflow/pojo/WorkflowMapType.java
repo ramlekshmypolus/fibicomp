@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "MITKC_WORKFLOW_MAP_TYPE")
+@Table(name = "FIBI_WORKFLOW_MAP_TYPE")
 public class WorkflowMapType implements Serializable {
 
 	private static final long serialVersionUID = 1L;

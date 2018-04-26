@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "MITKC_WORKFLOW")
+@Table(name = "FIBI_WORKFLOW")
 public class Workflow implements Serializable {
 
 	private static final long serialVersionUID = 1L;
