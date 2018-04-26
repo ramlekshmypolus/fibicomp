@@ -17,6 +17,7 @@ import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
 import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalStatus;
+import com.polus.fibicomp.proposal.pojo.ProposalType;
 
 @Service
 public interface ProposalDao {
@@ -91,9 +92,29 @@ public interface ProposalDao {
 	 */
 	public List<ProposalCostElement> fetchCostElementByBudgetCategory(String budgetCategoryCode);
 
+	/**
+	 * This method is used to fetch all institutes, Centres and Labs.
+	 * @return A list of institutes, Centres and Labs.
+	 */
 	public List<ProposalInstituteCentreLab> fetchAllInstituteCentrelabs();
 
+	/**
+	 * This method is used to fetch all area of excellence.
+	 * @return A list of area of excellence.
+	 */
 	public List<ProposalExcellenceArea> fetchAllAreaOfExcellence();
 
+	/**
+	 * This method is used to fetch attachment based on Id.
+	 * @param attachmentId - Id of the attachment.
+	 * @return An attachment object.
+	 */
 	public ProposalAttachment fetchAttachmentById(Integer attachmentId);
+
+	/**
+	 * This method is used to fetch all proposal types.
+	 * @return A list of proposal types.
+	 */
+	public List<ProposalType> fetchAllProposalTypes();
+
 }

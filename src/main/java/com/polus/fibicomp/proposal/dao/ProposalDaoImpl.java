@@ -29,6 +29,7 @@ import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
 import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalStatus;
+import com.polus.fibicomp.proposal.pojo.ProposalType;
 
 @Transactional
 @Service(value = "proposalDao")
@@ -199,5 +200,19 @@ public class ProposalDaoImpl implements ProposalDao {
 	@Override
 	public ProposalAttachment fetchAttachmentById(Integer attachmentId) {
 		return hibernateTemplate.get(ProposalAttachment.class, attachmentId);
+	}
+
+	@Override
+	public List<ProposalType> fetchAllProposalTypes() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProposalType.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("typeCode"), "typeCode");
+		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ProposalType.class));
+		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
+		@SuppressWarnings("unchecked")
+		List<ProposalType> proposalTypes = criteria.list();
+		return proposalTypes;
 	}
 }

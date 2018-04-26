@@ -69,6 +69,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
 		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
 		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
+		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
 
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
@@ -138,6 +139,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
 		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
 		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
+		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
 
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
