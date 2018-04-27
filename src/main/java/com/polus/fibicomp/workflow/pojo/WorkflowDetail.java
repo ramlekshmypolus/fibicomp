@@ -3,18 +3,25 @@ package com.polus.fibicomp.workflow.pojo;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_WORKFLOW_DETAIL")
@@ -53,16 +60,17 @@ public class WorkflowDetail implements Serializable {
 	private Integer approverNumber;
 
 	@Column(name = "PRIMARY_APPROVER_FLAG")
+	@Convert(converter = JpaCharBooleanConversion.class)
 	private Boolean primaryApproverFlag;
 
 	@Column(name = "APPROVER_PERSON_ID")
 	private String approverPersonId;
 
-	@Column(name = "APPROVAL_STATUS")
-	private char approvalStatus;
+	@Column(name = "APPROVAL_STATUS_CODE")
+	private String approvalStatus;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_WORKFLOW_DETAIL"), name = "APPROVAL_STATUS", referencedColumnName = "APPROVAL_STATUS", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_WORKFLOW_DETAIL"), name = "APPROVAL_STATUS_CODE", referencedColumnName = "APPROVAL_STATUS_CODE", insertable = false, updatable = false)
 	private WorkflowStatus workflowStatus;
 
 	@Column(name = "APPROVAL_COMMENT")
@@ -76,6 +84,10 @@ public class WorkflowDetail implements Serializable {
 
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimeStamp;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "workflowDetail", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<WorkflowAttachment> workflowAttachments;
 
 	public Integer getWorkflowDetailId() {
 		return workflowDetailId;
@@ -157,14 +169,6 @@ public class WorkflowDetail implements Serializable {
 		this.approverPersonId = approverPersonId;
 	}
 
-	public char getApprovalStatus() {
-		return approvalStatus;
-	}
-
-	public void setApprovalStatus(char approvalStatus) {
-		this.approvalStatus = approvalStatus;
-	}
-
 	public WorkflowStatus getWorkflowStatus() {
 		return workflowStatus;
 	}
@@ -203,5 +207,25 @@ public class WorkflowDetail implements Serializable {
 
 	public void setUpdateTimeStamp(Timestamp updateTimeStamp) {
 		this.updateTimeStamp = updateTimeStamp;
+	}
+
+	public String getApprovalStatus() {
+		return approvalStatus;
+	}
+
+	public void setApprovalStatus(String approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<WorkflowAttachment> getWorkflowAttachments() {
+		return workflowAttachments;
+	}
+
+	public void setWorkflowAttachments(List<WorkflowAttachment> workflowAttachments) {
+		this.workflowAttachments = workflowAttachments;
 	}
 }

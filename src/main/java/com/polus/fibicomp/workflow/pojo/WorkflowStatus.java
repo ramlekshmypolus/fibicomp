@@ -15,33 +15,17 @@ public class WorkflowStatus implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "APPROVAL_STATUS")
-	private char APPROVAL_STATUS;
+	@Column(name = "APPROVAL_STATUS_CODE")
+	private String approveStatusCode;
 
-	@Column(name = "DESCRIPTION")
-	private String description;
+	@Column(name = "APPROVAL_STATUS")
+	private String approveStatus;
 
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimeStamp;
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
-
-	public char getAPPROVAL_STATUS() {
-		return APPROVAL_STATUS;
-	}
-
-	public void setAPPROVAL_STATUS(char aPPROVAL_STATUS) {
-		APPROVAL_STATUS = aPPROVAL_STATUS;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	public Timestamp getUpdateTimeStamp() {
 		return updateTimeStamp;
@@ -57,5 +41,25 @@ public class WorkflowStatus implements Serializable {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
+	}
+
+	public String getApproveStatusCode() {
+		return approveStatusCode;
+	}
+
+	public void setApproveStatusCode(String approveStatusCode) {
+		this.approveStatusCode = approveStatusCode;
+	}
+
+	public String getApproveStatus() {
+		return approveStatus;
+	}
+
+	public void setApproveStatus(String approveStatus) {
+		this.approveStatus = approveStatus;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

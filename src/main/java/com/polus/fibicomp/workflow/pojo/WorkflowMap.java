@@ -5,11 +5,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -28,13 +25,6 @@ public class WorkflowMap implements Serializable {
 	@Column(name = "MAP_ID")
 	private Integer mapId;
 
-	@Column(name = "MAP_TYPE")
-	private char mapType;
-
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_MAP"), name = "MAP_TYPE", referencedColumnName = "MAP_TYPE", insertable = false, updatable = false)
-	private WorkflowMapType workflowMapType;
-
 	@Column(name = "DESCRIPTION")
 	private String description;
 
@@ -50,22 +40,6 @@ public class WorkflowMap implements Serializable {
 
 	public void setMapId(Integer mapId) {
 		this.mapId = mapId;
-	}
-
-	public char getMapType() {
-		return mapType;
-	}
-
-	public void setMapType(char mapType) {
-		this.mapType = mapType;
-	}
-
-	public WorkflowMapType getWorkflowMapType() {
-		return workflowMapType;
-	}
-
-	public void setWorkflowMapType(WorkflowMapType workflowMapType) {
-		this.workflowMapType = workflowMapType;
 	}
 
 	public String getDescription() {
