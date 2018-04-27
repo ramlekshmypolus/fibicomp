@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_WORKFLOW_MAP_DETAIL")
@@ -45,9 +48,11 @@ public class WorkflowMapDetail implements Serializable {
 	private String approverPersonId;
 
 	@Column(name = "PRIMARY_APPROVER_FLAG")
+	@Convert(converter = JpaCharBooleanConversion.class)
 	private Boolean primaryApproverFlag;
 
 	@Column(name = "IS_ROLE")
+	@Convert(converter = JpaCharBooleanConversion.class)
 	private Boolean isRole;
 
 	@Column(name = "ROLE_TYPE_CODE")

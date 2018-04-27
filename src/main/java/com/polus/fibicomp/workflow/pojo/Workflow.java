@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +12,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_WORKFLOW")
@@ -35,6 +38,7 @@ public class Workflow implements Serializable {
 	private Integer workflowSequence;
 
 	@Column(name = "IS_WORKFLOW_ACTIVE")
+	@Convert(converter = JpaCharBooleanConversion.class)
 	private Boolean isWorkflowActive;
 
 	@Column(name = "WORKFLOW_START_DATE")
