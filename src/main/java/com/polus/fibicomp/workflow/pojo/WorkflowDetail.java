@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
@@ -36,11 +37,9 @@ public class WorkflowDetail implements Serializable {
 	@Column(name = "WORKFLOW_DETAIL_ID")
 	private Integer workflowDetailId;
 
-	@Column(name = "WORKFLOW_ID")
-	private Integer workflowId;
-
+	@JsonBackReference
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_DETAIL"), name = "WORKFLOW_ID", referencedColumnName = "WORKFLOW_ID", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_DETAIL"), name = "WORKFLOW_ID", referencedColumnName = "WORKFLOW_ID")
 	private Workflow workflow;
 
 	@Column(name = "MAP_ID")
@@ -67,7 +66,7 @@ public class WorkflowDetail implements Serializable {
 	private String approverPersonId;
 
 	@Column(name = "APPROVAL_STATUS_CODE")
-	private String approvalStatus;
+	private String approvalStatusCode;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK3_FIBI_WORKFLOW_DETAIL"), name = "APPROVAL_STATUS_CODE", referencedColumnName = "APPROVAL_STATUS_CODE", insertable = false, updatable = false)
@@ -95,14 +94,6 @@ public class WorkflowDetail implements Serializable {
 
 	public void setWorkflowDetailId(Integer workflowDetailId) {
 		this.workflowDetailId = workflowDetailId;
-	}
-
-	public Integer getWorkflowId() {
-		return workflowId;
-	}
-
-	public void setWorkflowId(Integer workflowId) {
-		this.workflowId = workflowId;
 	}
 
 	public Workflow getWorkflow() {
@@ -209,12 +200,12 @@ public class WorkflowDetail implements Serializable {
 		this.updateTimeStamp = updateTimeStamp;
 	}
 
-	public String getApprovalStatus() {
-		return approvalStatus;
+	public String getApprovalStatusCode() {
+		return approvalStatusCode;
 	}
 
-	public void setApprovalStatus(String approvalStatus) {
-		this.approvalStatus = approvalStatus;
+	public void setApprovalStatusCode(String approvalStatusCode) {
+		this.approvalStatusCode = approvalStatusCode;
 	}
 
 	public static long getSerialversionuid() {
