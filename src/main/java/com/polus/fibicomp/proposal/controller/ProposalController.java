@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.polus.fibicomp.proposal.service.ProposalService;
 import com.polus.fibicomp.proposal.vo.ProposalVO;
+import com.polus.fibicomp.workflow.service.WorkflowService;
 
 @RestController
 public class ProposalController {
@@ -27,6 +28,10 @@ public class ProposalController {
 	@Autowired
 	@Qualifier(value = "proposalService")
 	private ProposalService proposalService;
+
+	@Autowired
+	@Qualifier(value = "workflowService")
+	private WorkflowService workflowService;
 
 	@RequestMapping(value = "/createProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String createProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
@@ -128,5 +133,23 @@ public class ProposalController {
 		logger.info("attachmentId : " + attachmentId);
 		Integer attachmentid = Integer.parseInt(attachmentId);
 		return proposalService.downloadProposalAttachment(attachmentid);
+	}
+
+	@RequestMapping(value = "/submitProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String submitProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for submitProposal");
+		return workflowService.submitProposal(vo);
+	}
+
+	@RequestMapping(value = "/approveProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String approveProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for approveProposal");
+		return workflowService.approveProposal(vo);
+	}
+
+	@RequestMapping(value = "/disapproveProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String disapproveProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for disapproveProposal");
+		return workflowService.disapproveProposal(vo);
 	}
 }

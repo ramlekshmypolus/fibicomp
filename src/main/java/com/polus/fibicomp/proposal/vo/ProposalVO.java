@@ -21,6 +21,7 @@ import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
 import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalType;
+import com.polus.fibicomp.workflow.pojo.Workflow;
 
 public class ProposalVO {
 
@@ -89,6 +90,8 @@ public class ProposalVO {
 	private String sponsorTypeCode;
 
 	private List<ProposalType> proposalTypes;
+
+	private Workflow workflow;
 
 	public ProposalVO() {
 		proposal = new Proposal();
@@ -356,6 +359,14 @@ public class ProposalVO {
 
 	public void setProposalTypes(List<ProposalType> proposalTypes) {
 		this.proposalTypes = proposalTypes;
+	}
+
+	public Workflow getWorkflow() {
+		return workflow;
+	}
+
+	public void setWorkflow(Workflow workflow) {
+		this.workflow = workflow;
 	}
 
 }

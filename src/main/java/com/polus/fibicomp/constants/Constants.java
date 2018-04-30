@@ -48,5 +48,6 @@ public interface Constants {
 
     // Proposal
     Integer PROPOSAL_STATUS_CODE_IN_PROGRESS = 1;
-
+    Integer PROPOSAL_STATUS_CODE_SUBMITTED = 5;
+    String WORKFLOW_STATUS_CODE_WAITING = "W";
 }
