@@ -93,6 +93,16 @@ public class ProposalVO {
 
 	private Workflow workflow;
 
+	private String actionType;
+
+	private String userName;
+
+	private String personId;
+
+	private boolean isApprover;
+
+	private boolean isApproved;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -367,6 +377,46 @@ public class ProposalVO {
 
 	public void setWorkflow(Workflow workflow) {
 		this.workflow = workflow;
+	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	public boolean isApprover() {
+		return isApprover;
+	}
+
+	public void setApprover(boolean isApprover) {
+		this.isApprover = isApprover;
+	}
+
+	public boolean isApproved() {
+		return isApproved;
+	}
+
+	public void setApproved(boolean isApproved) {
+		this.isApproved = isApproved;
 	}
 
 }

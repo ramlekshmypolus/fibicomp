@@ -26,7 +26,7 @@ import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_WORKFLOW_DETAIL")
-public class WorkflowDetail implements Serializable {
+public class WorkflowDetail implements Serializable, Comparable<WorkflowDetail> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -218,5 +218,12 @@ public class WorkflowDetail implements Serializable {
 
 	public void setWorkflowAttachments(List<WorkflowAttachment> workflowAttachments) {
 		this.workflowAttachments = workflowAttachments;
+	}
+
+	//ascending order
+	@Override
+	public int compareTo(WorkflowDetail workflowDetail) {
+		int approvalStopNumber = workflowDetail.getApprovalStopNumber();
+		return this.approvalStopNumber - approvalStopNumber;
 	}
 }
