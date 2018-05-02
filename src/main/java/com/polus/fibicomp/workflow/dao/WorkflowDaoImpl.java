@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.proposal.pojo.Proposal;
+import com.polus.fibicomp.proposal.vo.ProposalVO;
 import com.polus.fibicomp.workflow.pojo.Workflow;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
@@ -40,13 +41,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
 	public List<WorkflowMapDetail> fetchWorkflowMapDetail() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(WorkflowMapDetail.class);
-		ProjectionList projList = Projections.projectionList();
-		projList.add(Projections.property("mapDetailId"), "mapDetailId");
-		projList.add(Projections.property("approvalStopNumber"), "approvalStopNumber");
-		projList.add(Projections.property("approverNumber"), "approverNumber");
-		projList.add(Projections.property("approverPersonId"), "approverPersonId");
-		projList.add(Projections.property("primaryApproverFlag"), "primaryApproverFlag");
-		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(WorkflowMapDetail.class));
 		criteria.add(Restrictions.eq("mapId", 1));
 		@SuppressWarnings("unchecked")
 		List<WorkflowMapDetail> workflowMapDetails = criteria.list();
@@ -93,8 +87,31 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			}			
 		}
 		Criteria criteria = session.createCriteria(WorkflowDetail.class).setProjection(Projections.max("approvalStopNumber"));
+		criteria.add(Restrictions.eq("moduleCode", moduleItemId));
 			Integer maxAge = (Integer)criteria.uniqueResult();
 		return count;
+	}
+
+	@Override
+	public Proposal approveProposal(ProposalVO proposalVO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Proposal rejectProposal(ProposalVO proposalVO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Workflow fetchActiveWorkflowByModuleItemId(Integer moduleItemId) {
+		Workflow workflow = null;
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(Workflow.class);
+		criteria.add(Restrictions.eq("moduleItemId", moduleItemId));
+		criteria.add(Restrictions.eq("isWorkflowActive", true));
+		workflow = (Workflow) criteria.uniqueResult();
+		return workflow;
 	}
 
 }

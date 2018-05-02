@@ -9,6 +9,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -48,6 +49,7 @@ public class ProposalAttachment implements Serializable {
 	@Column(name = "FILE_NAME")
 	private String fileName;
 
+	@Lob
 	@Column(name = "ATTACHMENT")
 	private byte[] attachment;
 

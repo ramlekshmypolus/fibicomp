@@ -154,4 +154,12 @@ public class WorkflowMapDetail implements Serializable {
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
 	}
+
+	public WorkflowMap getWorkflowMap() {
+		return workflowMap;
+	}
+
+	public void setWorkflowMap(WorkflowMap workflowMap) {
+		this.workflowMap = workflowMap;
+	}
 }

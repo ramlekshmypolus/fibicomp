@@ -34,27 +34,23 @@ public class WorkflowServiceImpl implements WorkflowService {
 	private CommitteeDao committeeDao;
 
 	@Override
-	public String submitProposal(ProposalVO proposalVO) {
-		Proposal proposal = proposalVO.getProposal();
-		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_SUBMITTED);
-		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_SUBMITTED));
-		proposal = proposalDao.saveOrUpdateProposal(proposal);		
-		Workflow workflow = createWorkflow(proposal);		
-		proposalVO.setWorkflow(workflow);
-		proposalVO.setProposal(proposal);
-		String response = committeeDao.convertObjectToJSON(proposalVO);
-		return response;
-	}
-	
-	public Workflow createWorkflow(Proposal proposal) {
+	public Workflow createWorkflow(Integer moduleItemId, String userName) {
+		// for re submission case
+		Workflow activeWorkflow = null;
+		activeWorkflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
+		if (activeWorkflow != null) {
+			activeWorkflow.setIsWorkflowActive(false);
+			workflowDao.saveWorkflow(activeWorkflow);
+		}
+		
 		Workflow workflow = new Workflow();
 		workflow.setIsWorkflowActive(true);
 		workflow.setModuleCode(1);
-		workflow.setModuleItemId(proposal.getProposalId());
-		workflow.setCreateTimeStamp(proposal.getCreateTimeStamp());
-		workflow.setCreateUser(proposal.getCreateUser());
-		workflow.setUpdateTimeStamp(proposal.getUpdateTimeStamp());
-		workflow.setUpdateUser(proposal.getUpdateUser());
+		workflow.setModuleItemId(moduleItemId);
+		workflow.setCreateTimeStamp(committeeDao.getCurrentTimestamp());
+		workflow.setCreateUser(userName);
+		workflow.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+		workflow.setUpdateUser(userName);
 
 		List<WorkflowMapDetail> workflowMapDetails = workflowDao.fetchWorkflowMapDetail();
 		List<WorkflowDetail> workflowDetails = new ArrayList<WorkflowDetail>();
@@ -67,8 +63,8 @@ public class WorkflowServiceImpl implements WorkflowService {
 			workflowDetail.setApproverPersonId(workflowMapDetail.getApproverPersonId());
 			workflowDetail.setMapId(workflowMapDetail.getMapId());
 			workflowDetail.setPrimaryApproverFlag(workflowMapDetail.getPrimaryApproverFlag());
-			workflowDetail.setUpdateTimeStamp(workflow.getUpdateTimeStamp());
-			workflowDetail.setUpdateUser(workflow.getUpdateUser());
+			workflowDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+			workflowDetail.setUpdateUser(userName);
 			workflowDetails.add(workflowDetail);
 		}
 		workflow.setWorkflowDetails(workflowDetails);
@@ -76,20 +72,18 @@ public class WorkflowServiceImpl implements WorkflowService {
 		return workflow;		
 	}
 
-	@Override
-	public String approveProposal(ProposalVO proposalVO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String disapproveProposal(ProposalVO proposalVO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public Integer canTakeRoutingAction(Integer moduleItemId, String personId) {
 		return workflowDao.canTakeRoutingAction(moduleItemId, personId);
-		
+	}
+
+	@Override
+	public String approveOrRejectProposal(ProposalVO proposalVO) {
+		String actionType = proposalVO.getActionType();
+		if (actionType.equals("A")) {
+			workflowDao.approveProposal(proposalVO);
+		} else {
+			workflowDao.rejectProposal(proposalVO);
+		}
+		return null;
 	}
 }

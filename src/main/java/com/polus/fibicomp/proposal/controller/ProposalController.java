@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.polus.fibicomp.proposal.service.ProposalService;
 import com.polus.fibicomp.proposal.vo.ProposalVO;
-import com.polus.fibicomp.workflow.service.WorkflowService;
 
 @RestController
 public class ProposalController {
@@ -28,10 +27,6 @@ public class ProposalController {
 	@Autowired
 	@Qualifier(value = "proposalService")
 	private ProposalService proposalService;
-
-	@Autowired
-	@Qualifier(value = "workflowService")
-	private WorkflowService workflowService;
 
 	@RequestMapping(value = "/createProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String createProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
@@ -55,6 +50,7 @@ public class ProposalController {
 	public String loadProposalById(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for loadProposalById");
 		logger.info("proposalId : " + vo.getProposalId());
+		logger.info("personId : " + vo.getPersonId());
 		return proposalService.loadProposalById(vo.getProposalId());
 	}
 
@@ -138,18 +134,13 @@ public class ProposalController {
 	@RequestMapping(value = "/submitProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String submitProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for submitProposal");
-		return workflowService.submitProposal(vo);
+		return proposalService.submitProposal(vo);
 	}
 
-	@RequestMapping(value = "/approveProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	/*@RequestMapping(value = "/approveOrRejectProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String approveProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for approveProposal");
-		return workflowService.approveProposal(vo);
-	}
+		logger.info("Requesting for approveOrRejectProposal");
+		return workflowService.approveOrRejectProposal(vo);
+	}*/
 
-	@RequestMapping(value = "/disapproveProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String disapproveProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for disapproveProposal");
-		return workflowService.disapproveProposal(vo);
-	}
 }

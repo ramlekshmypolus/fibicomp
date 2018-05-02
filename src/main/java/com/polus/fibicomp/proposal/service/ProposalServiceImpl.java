@@ -29,6 +29,10 @@ import com.polus.fibicomp.proposal.pojo.ProposalPerson;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchArea;
 import com.polus.fibicomp.proposal.pojo.ProposalSponsor;
 import com.polus.fibicomp.proposal.vo.ProposalVO;
+import com.polus.fibicomp.workflow.dao.WorkflowDao;
+import com.polus.fibicomp.workflow.pojo.Workflow;
+import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
+import com.polus.fibicomp.workflow.service.WorkflowService;
 
 @Transactional
 @Service(value = "proposalService")
@@ -45,6 +49,12 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Autowired
 	private GrantCallDao grantCallDao;
+
+	@Autowired
+	private WorkflowService workflowService;
+
+	@Autowired
+	private WorkflowDao workflowDao;
 
 	@Override
 	public String createProposal(ProposalVO proposalVO) {
@@ -140,6 +150,12 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
 		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
 		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
+
+		if (proposal.getStatusCode() == 5) {
+			checkApprover(proposalVO);
+			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());		
+			proposalVO.setWorkflow(workflow);
+		}
 
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
@@ -359,6 +375,40 @@ public class ProposalServiceImpl implements ProposalService {
 			e.printStackTrace();
 		}
 		return attachmentData;
+	}
+
+	@Override
+	public String submitProposal(ProposalVO proposalVO) {
+		Proposal proposal = proposalVO.getProposal();
+		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_SUBMITTED);
+		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_SUBMITTED));
+		proposal = proposalDao.saveOrUpdateProposal(proposal);		
+		Workflow workflow = workflowService.createWorkflow(proposal.getProposalId(), proposalVO.getUserName());		
+		proposalVO.setWorkflow(workflow);
+		proposalVO.setProposal(proposal);
+		String response = committeeDao.convertObjectToJSON(proposalVO);
+		return response;
+	}
+
+	public void checkApprover(ProposalVO proposalVO) {
+		Proposal proposal = proposalVO.getProposal();
+		if (proposal.getStatusCode() == 5) {
+			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
+			// WorkflowDetail detail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), proposalVO.getPersonId());
+			boolean currentPerson = true;
+			List<WorkflowDetail> workflowDetails = workflow.getWorkflowDetails();
+			for (WorkflowDetail workflowDetail : workflowDetails) {
+				if (currentPerson == true) {
+					if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && workflowDetail.getApprovalStatusCode().equals("W")) {
+						proposalVO.setApproved(false);
+						proposalVO.setApprover(true);
+						currentPerson = false;
+					} else if (workflowDetail.getApprovalStatusCode().equals("W")) {
+						currentPerson = false;
+					}
+				}
+			}
+		}
 	}
 
 }

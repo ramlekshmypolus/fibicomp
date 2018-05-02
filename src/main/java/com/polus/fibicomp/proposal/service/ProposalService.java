@@ -99,7 +99,7 @@ public interface ProposalService {
 	/**
 	 * This method is used to delete attachment from proposal.
 	 * @param vo - Object of ProposalVO class. 
-	 * @return a String of details of proposal with updated list of protocols.
+	 * @return a String of details of proposal with updated list of attachments.
 	 */
 	public String deleteProposalAttachment(ProposalVO vo);
 
@@ -109,5 +109,12 @@ public interface ProposalService {
 	 * @return attachmentData.
 	 */
 	public ResponseEntity<byte[]> downloadProposalAttachment(Integer attachmentId);
+
+	/**
+	 * This method is used to submit proposal.
+	 * @param vo - Object of ProposalVO class.
+	 * @return a String of details of proposal.
+	 */
+	public String submitProposal(ProposalVO proposalVO);
 
 }
