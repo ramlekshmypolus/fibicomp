@@ -152,7 +152,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
 		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
 
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_SUBMITTED)) {
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_SUBMITTED) || proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)) {
 			canTakeRoutingAction(proposalVO);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());		
 			proposalVO.setWorkflow(workflow);
