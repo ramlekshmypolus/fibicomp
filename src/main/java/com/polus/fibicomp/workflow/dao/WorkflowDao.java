@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.polus.fibicomp.workflow.pojo.Workflow;
+import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowStatus;
@@ -25,5 +26,7 @@ public interface WorkflowDao {
 	public WorkflowDetail saveWorkflowDetail(WorkflowDetail workflowDetail);
 
 	public WorkflowDetail fetchFinalApprover(Integer workflowId);
+
+	public WorkflowAttachment fetchWorkflowAttachmentById(Integer attachmentId);
 
 }

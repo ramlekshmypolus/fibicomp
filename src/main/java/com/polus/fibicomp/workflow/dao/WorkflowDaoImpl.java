@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.workflow.pojo.Workflow;
+import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowStatus;
@@ -63,7 +64,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
 		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
 		criteria.add(Restrictions.eq("approverPersonId", personId));
-		criteria.add(Restrictions.eq("approvalStatusCode", "W"));
+		//criteria.add(Restrictions.eq("approvalStatusCode", "W"));
 		workflowDetail = (WorkflowDetail) criteria.uniqueResult();
 		return workflowDetail;
 	}
@@ -81,6 +82,11 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		//criteria.add(Restrictions.eq("approvalStatusCode", "W"));
 		WorkflowDetail workflowDetail = (WorkflowDetail) criteria.addOrder(Order.desc("approvalStopNumber")).setMaxResults(1).uniqueResult();
 		return workflowDetail;
+	}
+
+	@Override
+	public WorkflowAttachment fetchWorkflowAttachmentById(Integer attachmentId) {
+		return hibernateTemplate.get(WorkflowAttachment.class, attachmentId);
 	}
 
 }

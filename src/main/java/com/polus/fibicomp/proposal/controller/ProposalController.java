@@ -51,7 +51,7 @@ public class ProposalController {
 		logger.info("Requesting for loadProposalById");
 		logger.info("proposalId : " + vo.getProposalId());
 		logger.info("personId : " + vo.getPersonId());
-		return proposalService.loadProposalById(vo.getProposalId());
+		return proposalService.loadProposalById(vo.getProposalId(), vo.getPersonId());
 	}
 
 	@RequestMapping(value = "/fetchCostElementByBudgetCategory", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -138,11 +138,9 @@ public class ProposalController {
 	}
 
 	@RequestMapping(value = "/approveOrRejectProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String approveProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+	public String approveProposal(@RequestParam(value = "files", required = false) MultipartFile[] files, @RequestParam("formDataJson") String formDataJson) {
 		logger.info("Requesting for approveOrRejectProposal");
-		logger.info("actionType : " + vo.getActionType());
-		logger.info("personId : " + vo.getPersonId());
-		return proposalService.approveOrRejectProposal(vo);
+		return proposalService.approveOrRejectProposal(files, formDataJson);
 	}
 
 }

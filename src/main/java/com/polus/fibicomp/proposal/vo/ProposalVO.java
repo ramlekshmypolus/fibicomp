@@ -103,6 +103,8 @@ public class ProposalVO {
 
 	private boolean isApproved;
 
+	private String approveComment;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -417,6 +419,14 @@ public class ProposalVO {
 
 	public void setApproved(boolean isApproved) {
 		this.isApproved = isApproved;
+	}
+
+	public String getApproveComment() {
+		return approveComment;
+	}
+
+	public void setApproveComment(String approveComment) {
+		this.approveComment = approveComment;
 	}
 
 }

@@ -18,7 +18,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
 
 @Entity
 @Table(name = "FIBI_WORKFLOW_ATTACHMENT")
@@ -38,13 +37,6 @@ public class WorkflowAttachment implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_ATTACHMENT"), name = "WORKFLOW_DETAIL_ID", referencedColumnName = "WORKFLOW_DETAIL_ID")
 	private WorkflowDetail workflowDetail;
 
-	@Column(name = "ATTACHMNT_TYPE_CODE")
-	private Integer attachmentTypeCode;
-
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_WORKFLOW_ATTACHMENT"), name = "ATTACHMNT_TYPE_CODE", referencedColumnName = "ATTACHMNT_TYPE_CODE", insertable = false, updatable = false)
-	private ProposalAttachmentType proposalAttachmentType;
-
 	@Column(name = "DESCRIPTION")
 	private String description;
 
@@ -59,7 +51,7 @@ public class WorkflowAttachment implements Serializable {
 	private String mimeType;
 
 	@Column(name = "UPDATE_TIMESTAMP")
-	private Date updateTimestamp;
+	private Date updateTimeStamp;
 
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
@@ -104,12 +96,12 @@ public class WorkflowAttachment implements Serializable {
 		this.mimeType = mimeType;
 	}
 
-	public Date getUpdateTimestamp() {
-		return updateTimestamp;
+	public Date getUpdateTimeStamp() {
+		return updateTimeStamp;
 	}
 
-	public void setUpdateTimestamp(Date updateTimestamp) {
-		this.updateTimestamp = updateTimestamp;
+	public void setUpdateTimeStamp(Date updateTimeStamp) {
+		this.updateTimeStamp = updateTimeStamp;
 	}
 
 	public String getUpdateUser() {
@@ -130,21 +122,5 @@ public class WorkflowAttachment implements Serializable {
 
 	public void setWorkflowDetail(WorkflowDetail workflowDetail) {
 		this.workflowDetail = workflowDetail;
-	}
-
-	public Integer getAttachmentTypeCode() {
-		return attachmentTypeCode;
-	}
-
-	public void setAttachmentTypeCode(Integer attachmentTypeCode) {
-		this.attachmentTypeCode = attachmentTypeCode;
-	}
-
-	public ProposalAttachmentType getProposalAttachmentType() {
-		return proposalAttachmentType;
-	}
-
-	public void setProposalAttachmentType(ProposalAttachmentType proposalAttachmentType) {
-		this.proposalAttachmentType = proposalAttachmentType;
 	}
 }

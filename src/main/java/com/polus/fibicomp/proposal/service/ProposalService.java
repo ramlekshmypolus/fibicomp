@@ -36,9 +36,10 @@ public interface ProposalService {
 	/**
 	 * This method is used to load proposal based on id.
 	 * @param proposalId - Id of the proposal.
+	 * @param personId - currentUser.
 	 * @return A string of details of a proposal.
 	 */
-	public String loadProposalById(Integer proposalId);
+	public String loadProposalById(Integer proposalId, String personId);
 
 	/**
 	 * This method is used fetch cost elements based on budget category.
@@ -118,10 +119,10 @@ public interface ProposalService {
 	public String submitProposal(ProposalVO proposalVO);
 
 	/**
-	 * This method is used to approve/reject proposal.
-	 * @param vo - Object of ProposalVO class.
-	 * @return a String of details of proposal.
+	 * @param files
+	 * @param formDataJSON
+	 * @return
 	 */
-	public String approveOrRejectProposal(ProposalVO proposalVO);
+	public String approveOrRejectProposal(MultipartFile[] files, String formDataJSON);
 
 }
