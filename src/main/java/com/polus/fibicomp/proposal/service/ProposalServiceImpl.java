@@ -152,7 +152,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
 
 		if (proposal.getStatusCode() == 5) {
-			checkApprover(proposalVO);
+			canTakeRoutingAction(proposalVO);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());		
 			proposalVO.setWorkflow(workflow);
 		}
@@ -390,11 +390,10 @@ public class ProposalServiceImpl implements ProposalService {
 		return response;
 	}
 
-	public void checkApprover(ProposalVO proposalVO) {
+	public void canTakeRoutingAction(ProposalVO proposalVO) {
 		Proposal proposal = proposalVO.getProposal();
-		if (proposal.getStatusCode() == 5) {
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_SUBMITTED)) {
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
-			// WorkflowDetail detail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), proposalVO.getPersonId());
 			boolean currentPerson = true;
 			List<WorkflowDetail> workflowDetails = workflow.getWorkflowDetails();
 			for (WorkflowDetail workflowDetail : workflowDetails) {
@@ -409,6 +408,28 @@ public class ProposalServiceImpl implements ProposalService {
 				}
 			}
 		}
+	}
+
+	@Override
+	public String approveOrRejectProposal(ProposalVO proposalVO) {
+		Proposal proposal = proposalVO.getProposal();
+		String actionType = proposalVO.getActionType();
+		workflowService.approveOrRejectWorkflowDetail(actionType, proposal.getProposalId(), proposalVO.getPersonId());
+		boolean isFinalApprover = workflowService.isFinalApprover(proposal.getProposalId(), proposalVO.getPersonId());
+		if (isFinalApprover && actionType.equals("A")) {
+			proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED);
+			proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED));
+			proposal = proposalDao.saveOrUpdateProposal(proposal);
+		} else if (actionType.equals("R")) {
+			proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_REJECTED);
+			proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REJECTED));
+			proposal = proposalDao.saveOrUpdateProposal(proposal);
+		}
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
+		proposalVO.setWorkflow(workflow);
+		proposalVO.setProposal(proposal);
+		String response = committeeDao.convertObjectToJSON(proposalVO);
+		return response;
 	}
 
 }
