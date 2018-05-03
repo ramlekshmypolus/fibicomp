@@ -10,9 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.constants.Constants;
-import com.polus.fibicomp.proposal.dao.ProposalDao;
-import com.polus.fibicomp.proposal.pojo.Proposal;
-import com.polus.fibicomp.proposal.vo.ProposalVO;
 import com.polus.fibicomp.workflow.dao.WorkflowDao;
 import com.polus.fibicomp.workflow.pojo.Workflow;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
@@ -28,9 +25,6 @@ public class WorkflowServiceImpl implements WorkflowService {
 	private WorkflowDao workflowDao;
 
 	@Autowired
-	private ProposalDao proposalDao;
-
-	@Autowired
 	private CommitteeDao committeeDao;
 
 	@Override
@@ -42,7 +36,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 			activeWorkflow.setIsWorkflowActive(false);
 			workflowDao.saveWorkflow(activeWorkflow);
 		}
-		
+
 		Workflow workflow = new Workflow();
 		workflow.setIsWorkflowActive(true);
 		workflow.setModuleCode(1);
@@ -65,6 +59,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 			workflowDetail.setPrimaryApproverFlag(workflowMapDetail.getPrimaryApproverFlag());
 			workflowDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
 			workflowDetail.setUpdateUser(userName);
+			workflowDetail.setApproverPersonName(workflowMapDetail.getApproverPersonName());
 			workflowDetails.add(workflowDetail);
 		}
 		workflow.setWorkflowDetails(workflowDetails);
@@ -72,18 +67,31 @@ public class WorkflowServiceImpl implements WorkflowService {
 		return workflow;		
 	}
 
-	public Integer canTakeRoutingAction(Integer moduleItemId, String personId) {
-		return workflowDao.canTakeRoutingAction(moduleItemId, personId);
+	@Override
+	public void approveOrRejectWorkflowDetail(String actionType, Integer moduleItemId, String personId) {
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
+		WorkflowDetail workflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId);
+		if (actionType.equals("A")) {
+			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
+			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
+			workflowDetail = workflowDao.saveWorkflowDetail(workflowDetail);
+		} else {
+			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED);
+			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED));
+			workflowDetail = workflowDao.saveWorkflowDetail(workflowDetail);
+		}
 	}
 
 	@Override
-	public String approveOrRejectProposal(ProposalVO proposalVO) {
-		String actionType = proposalVO.getActionType();
-		if (actionType.equals("A")) {
-			workflowDao.approveProposal(proposalVO);
-		} else {
-			workflowDao.rejectProposal(proposalVO);
+	public boolean isFinalApprover(Integer moduleItemId, String personId) {
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
+		WorkflowDetail currentWorkflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId);
+		WorkflowDetail finalWorkflowDetail = workflowDao.fetchFinalApprover(workflow.getWorkflowId());
+		if (currentWorkflowDetail.getApprovalStopNumber() == finalWorkflowDetail.getApprovalStopNumber()
+				&& currentWorkflowDetail.getApproverNumber() == finalWorkflowDetail.getApproverNumber()) {
+			return true;
 		}
-		return null;
+		return false;
 	}
+
 }

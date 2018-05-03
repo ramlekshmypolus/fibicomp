@@ -47,6 +47,9 @@ public class WorkflowMapDetail implements Serializable {
 	@Column(name = "APPROVER_PERSON_ID")
 	private String approverPersonId;
 
+	@Column(name = "APPROVER_PERSON_NAME")
+	private String approverPersonName;
+
 	@Column(name = "PRIMARY_APPROVER_FLAG")
 	@Convert(converter = JpaCharBooleanConversion.class)
 	private Boolean primaryApproverFlag;
@@ -161,5 +164,17 @@ public class WorkflowMapDetail implements Serializable {
 
 	public void setWorkflowMap(WorkflowMap workflowMap) {
 		this.workflowMap = workflowMap;
+	}
+
+	public String getApproverPersonName() {
+		return approverPersonName;
+	}
+
+	public void setApproverPersonName(String approverPersonName) {
+		this.approverPersonName = approverPersonName;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

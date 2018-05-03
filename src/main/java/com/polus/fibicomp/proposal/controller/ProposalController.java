@@ -137,10 +137,12 @@ public class ProposalController {
 		return proposalService.submitProposal(vo);
 	}
 
-	/*@RequestMapping(value = "/approveOrRejectProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/approveOrRejectProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String approveProposal(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for approveOrRejectProposal");
-		return workflowService.approveOrRejectProposal(vo);
-	}*/
+		logger.info("actionType : " + vo.getActionType());
+		logger.info("personId : " + vo.getPersonId());
+		return proposalService.approveOrRejectProposal(vo);
+	}
 
 }

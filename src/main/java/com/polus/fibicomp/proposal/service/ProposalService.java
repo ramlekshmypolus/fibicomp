@@ -117,4 +117,11 @@ public interface ProposalService {
 	 */
 	public String submitProposal(ProposalVO proposalVO);
 
+	/**
+	 * This method is used to approve/reject proposal.
+	 * @param vo - Object of ProposalVO class.
+	 * @return a String of details of proposal.
+	 */
+	public String approveOrRejectProposal(ProposalVO proposalVO);
+
 }

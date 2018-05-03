@@ -107,6 +107,7 @@ public class ProposalDaoImpl implements ProposalDao {
 		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.property("id"), "id");
 		projList.add(Projections.property(Constants.DESCRIPTION), Constants.DESCRIPTION);
+		criteria.add(Restrictions.like("sponsorHierarchyName", "DEFAULT"));
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(ProposalPersonRole.class));
 		criteria.addOrder(Order.asc(Constants.DESCRIPTION));
 		@SuppressWarnings("unchecked")

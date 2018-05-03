@@ -65,6 +65,9 @@ public class WorkflowDetail implements Serializable, Comparable<WorkflowDetail> 
 	@Column(name = "APPROVER_PERSON_ID")
 	private String approverPersonId;
 
+	@Column(name = "APPROVER_PERSON_NAME")
+	private String approverPersonName;
+
 	@Column(name = "APPROVAL_STATUS_CODE")
 	private String approvalStatusCode;
 
@@ -225,5 +228,13 @@ public class WorkflowDetail implements Serializable, Comparable<WorkflowDetail> 
 	public int compareTo(WorkflowDetail workflowDetail) {
 		int approvalStopNumber = workflowDetail.getApprovalStopNumber();
 		return this.approvalStopNumber - approvalStopNumber;
+	}
+
+	public String getApproverPersonName() {
+		return approverPersonName;
+	}
+
+	public void setApproverPersonName(String approverPersonName) {
+		this.approverPersonName = approverPersonName;
 	}
 }
