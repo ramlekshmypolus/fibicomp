@@ -29,6 +29,7 @@ import com.polus.fibicomp.proposal.pojo.ProposalPerson;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchArea;
 import com.polus.fibicomp.proposal.pojo.ProposalSponsor;
 import com.polus.fibicomp.proposal.vo.ProposalVO;
+import com.polus.fibicomp.workflow.comparator.WorkflowDetailComparator;
 import com.polus.fibicomp.workflow.dao.WorkflowDao;
 import com.polus.fibicomp.workflow.pojo.Workflow;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
@@ -152,7 +153,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
 		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
 
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_SUBMITTED) || proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)) {
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED) || proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)) {
 			canTakeRoutingAction(proposalVO);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());		
 			proposalVO.setWorkflow(workflow);
@@ -381,8 +382,8 @@ public class ProposalServiceImpl implements ProposalService {
 	@Override
 	public String submitProposal(ProposalVO proposalVO) {
 		Proposal proposal = proposalVO.getProposal();
-		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_SUBMITTED);
-		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_SUBMITTED));
+		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
+		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 		proposal = proposalDao.saveOrUpdateProposal(proposal);
 		Workflow workflow = workflowService.createWorkflow(proposal.getProposalId(), proposalVO.getUserName());
 		canTakeRoutingAction(proposalVO);
@@ -394,11 +395,11 @@ public class ProposalServiceImpl implements ProposalService {
 
 	public void canTakeRoutingAction(ProposalVO proposalVO) {
 		Proposal proposal = proposalVO.getProposal();
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_SUBMITTED)) {
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)) {
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
 			boolean currentPerson = true;
 			List<WorkflowDetail> workflowDetails = workflow.getWorkflowDetails();
-			Collections.sort(workflowDetails);
+			Collections.sort(workflowDetails, new WorkflowDetailComparator());
 			for (WorkflowDetail workflowDetail : workflowDetails) {
 				if (currentPerson == true) {
 					if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && workflowDetail.getApprovalStatusCode().equals("W")) {
@@ -426,6 +427,12 @@ public class ProposalServiceImpl implements ProposalService {
 			logger.info("personId : " + proposalVO.getPersonId());
 			logger.info("approverComment : " + approverComment);
 			workflowService.approveOrRejectWorkflowDetail(actionType, proposal.getProposalId(), proposalVO.getPersonId(), approverComment, files);
+			boolean isFirstApprover = workflowService.isFirstApprover(proposal.getProposalId(), proposalVO.getPersonId());
+			if (isFirstApprover && actionType.equals("A")) {
+				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
+				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
+				proposal = proposalDao.saveOrUpdateProposal(proposal);
+			}
 			boolean isFinalApprover = workflowService.isFinalApprover(proposal.getProposalId(), proposalVO.getPersonId());
 			if (isFinalApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED);

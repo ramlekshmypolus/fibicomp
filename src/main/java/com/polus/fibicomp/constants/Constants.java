@@ -51,10 +51,12 @@ public interface Constants {
     Integer PROPOSAL_STATUS_CODE_SUBMITTED = 5;
     Integer PROPOSAL_STATUS_CODE_APPROVED = 4;
     Integer PROPOSAL_STATUS_CODE_REJECTED = 3;
+    Integer PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS = 2;
 
-    // ROute Log Status Code
+    // Route Log Status Code
     String WORKFLOW_STATUS_CODE_WAITING = "W";
     String WORKFLOW_STATUS_CODE_APPROVED = "A";
     String WORKFLOW_STATUS_CODE_REJECTED = "R";
+    String WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED = "T";
 
 }

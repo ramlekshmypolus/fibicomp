@@ -19,8 +19,8 @@ public interface WorkflowService {
 
 	public boolean isFinalApprover(Integer moduleItemId, String personId);
 
-	public String addWorkflowAttachment(MultipartFile[] files, String formDataJSON);
-
 	public ResponseEntity<byte[]> downloadWorkflowAttachment(Integer attachmentId);
+
+	public boolean isFirstApprover(Integer moduleItemId, String personId);
 
 }
