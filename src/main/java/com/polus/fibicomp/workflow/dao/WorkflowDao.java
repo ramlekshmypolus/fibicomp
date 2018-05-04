@@ -29,4 +29,6 @@ public interface WorkflowDao {
 
 	public WorkflowAttachment fetchWorkflowAttachmentById(Integer attachmentId);
 
+	public WorkflowDetail fetchFirstApprover(Integer workflowId);
+
 }
