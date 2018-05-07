@@ -36,6 +36,7 @@ import com.polus.fibicomp.pojo.FundingSourceType;
 import com.polus.fibicomp.pojo.ScienceKeyword;
 import com.polus.fibicomp.pojo.Sponsor;
 import com.polus.fibicomp.pojo.SponsorType;
+import com.polus.fibicomp.pojo.Unit;
 
 @Transactional
 @Service(value = "grantCallService")
@@ -87,6 +88,9 @@ public class GrantCallServiceImpl implements GrantCallService {
 
 		List<GrantCallAttachType> grantCallAttachTypes = grantCallDao.fetchAllGrantCallAttachTypes();
 		grantCallVO.setGrantCallAttachTypes(grantCallAttachTypes);
+
+		List<Unit> units = committeeDao.fetchAllHomeUnits();
+		grantCallVO.setHomeUnits(units);
 
 		String response = committeeDao.convertObjectToJSON(grantCallVO);
 		return response;

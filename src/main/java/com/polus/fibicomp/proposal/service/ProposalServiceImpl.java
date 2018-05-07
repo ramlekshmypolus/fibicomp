@@ -427,16 +427,20 @@ public class ProposalServiceImpl implements ProposalService {
 			logger.info("personId : " + proposalVO.getPersonId());
 			logger.info("approverComment : " + approverComment);
 			workflowService.approveOrRejectWorkflowDetail(actionType, proposal.getProposalId(), proposalVO.getPersonId(), approverComment, files);
-			boolean isFirstApprover = workflowService.isFirstApprover(proposal.getProposalId(), proposalVO.getPersonId());
+			/*boolean isFirstApprover = workflowService.isFirstApprover(proposal.getProposalId(), proposalVO.getPersonId());
 			if (isFirstApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 				proposal = proposalDao.saveOrUpdateProposal(proposal);
-			}
+			}*/
 			boolean isFinalApprover = workflowService.isFinalApprover(proposal.getProposalId(), proposalVO.getPersonId());
 			if (isFinalApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED);
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED));
+				proposal = proposalDao.saveOrUpdateProposal(proposal);
+			} else if (!isFinalApprover && actionType.equals("A")) {
+				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
+				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 				proposal = proposalDao.saveOrUpdateProposal(proposal);
 			} else if (actionType.equals("R")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
@@ -453,6 +457,12 @@ public class ProposalServiceImpl implements ProposalService {
 		}
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
+	}
+
+	@Override
+	public String assignReviewer(ProposalVO proposalVO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

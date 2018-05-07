@@ -142,6 +142,12 @@ public class GrantCall implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
+	@Column(name = "HOME_UNIT_NUMBER")
+	private String homeUnitNumber;
+
+	@Column(name = "HOME_UNIT_NAME")
+	private String homeUnitName;
+
 	public GrantCall() {
 		grantCallKeywords = new ArrayList<GrantCallKeyword>();
 		grantCallAttachments = new ArrayList<GrantCallAttachment>();
@@ -408,6 +414,22 @@ public class GrantCall implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getHomeUnitNumber() {
+		return homeUnitNumber;
+	}
+
+	public void setHomeUnitNumber(String homeUnitNumber) {
+		this.homeUnitNumber = homeUnitNumber;
+	}
+
+	public String getHomeUnitName() {
+		return homeUnitName;
+	}
+
+	public void setHomeUnitName(String homeUnitName) {
+		this.homeUnitName = homeUnitName;
 	}
 
 }
