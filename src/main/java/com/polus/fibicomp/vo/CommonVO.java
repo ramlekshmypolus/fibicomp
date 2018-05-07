@@ -70,6 +70,10 @@ public class CommonVO {
 
 	private Date filterEndDate;
 
+	private String unitNumber;
+
+	private Boolean isUnitAdmin;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -308,5 +312,21 @@ public class CommonVO {
 
 	public void setFilterStartDate(Date filterStartDate) {
 		this.filterStartDate = filterStartDate;
+	}
+
+	public String getUnitNumber() {
+		return unitNumber;
+	}
+
+	public void setUnitNumber(String unitNumber) {
+		this.unitNumber = unitNumber;
+	}
+
+	public Boolean getIsUnitAdmin() {
+		return isUnitAdmin;
+	}
+
+	public void setIsUnitAdmin(Boolean isUnitAdmin) {
+		this.isUnitAdmin = isUnitAdmin;
 	}
 }

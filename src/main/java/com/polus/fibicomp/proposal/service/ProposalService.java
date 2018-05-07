@@ -125,4 +125,6 @@ public interface ProposalService {
 	 */
 	public String approveOrRejectProposal(MultipartFile[] files, String formDataJSON);
 
+	public String assignReviewer(ProposalVO proposalVO);
+
 }

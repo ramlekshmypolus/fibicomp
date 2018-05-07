@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -96,6 +97,25 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		//criteria.add(Restrictions.eq("approvalStatusCode", "W"));
 		WorkflowDetail workflowDetail = (WorkflowDetail) criteria.addOrder(Order.asc("approvalStopNumber")).setMaxResults(1).uniqueResult();
 		return workflowDetail;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<WorkflowDetail> fetchWorkflowDetailListByApprovalStopNumber(Integer approvalStopNumber, String approvalStatusCode) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
+		criteria.add(Restrictions.eq("approvalStopNumber", approvalStopNumber));
+		criteria.add(Restrictions.eq("approvalStatusCode", approvalStatusCode));
+		List<WorkflowDetail> workflowDetailList = criteria.list();
+		return workflowDetailList;
+	}
+
+	@Override
+	public Integer getMaxStopNumber(Integer workflowId) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
+		criteria.setProjection(Projections.max("approvalStopNumber"));
+		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
+		Integer maxApprovalStopNumber = (Integer)criteria.uniqueResult();
+		return maxApprovalStopNumber;
 	}
 
 }

@@ -15,6 +15,7 @@ import com.polus.fibicomp.pojo.FundingSourceType;
 import com.polus.fibicomp.pojo.ScienceKeyword;
 import com.polus.fibicomp.pojo.Sponsor;
 import com.polus.fibicomp.pojo.SponsorType;
+import com.polus.fibicomp.pojo.Unit;
 
 public class GrantCallVO {
 
@@ -67,6 +68,8 @@ public class GrantCallVO {
 	private GrantCallStatus grantStatus;
 
 	private GrantCallAttachment newAttachment;
+
+	private List<Unit> homeUnits;
 
 	public GrantCallVO() {
 		grantCall = new GrantCall();
@@ -270,6 +273,14 @@ public class GrantCallVO {
 
 	public void setNewAttachment(GrantCallAttachment newAttachment) {
 		this.newAttachment = newAttachment;
+	}
+
+	public List<Unit> getHomeUnits() {
+		return homeUnits;
+	}
+
+	public void setHomeUnits(List<Unit> homeUnits) {
+		this.homeUnits = homeUnits;
 	}
 
 }

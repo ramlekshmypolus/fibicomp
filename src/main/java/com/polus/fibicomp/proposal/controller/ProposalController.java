@@ -143,4 +143,9 @@ public class ProposalController {
 		return proposalService.approveOrRejectProposal(files, formDataJson);
 	}
 
+	@RequestMapping(value = "/assignReviewer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String assignReviewer(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for assignReviewer");
+		return proposalService.assignReviewer(vo);
+	}
 }

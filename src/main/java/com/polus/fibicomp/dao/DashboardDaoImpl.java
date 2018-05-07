@@ -1072,6 +1072,8 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		String unitNumber = vo.getUnitNumber();
+		boolean isUnitAdmin = vo.getIsUnitAdmin();
 
 		Conjunction and = Restrictions.conjunction();
 		try {
@@ -1101,6 +1103,9 @@ public class DashboardDaoImpl implements DashboardDao {
 				and.add(Restrictions.like("sponsorType.description", "%" + property4 + "%").ignoreCase());
 			}
 
+			if (!isUnitAdmin) {
+				searchCriteria.add(Restrictions.like("homeUnitNumber", unitNumber));
+			}
 			searchCriteria.add(and);
 			ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("grantCallId"), "grantCallId");
@@ -1109,6 +1114,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			projList.add(Projections.property("description"), "description");
 			projList.add(Projections.property("openingDate"), "openingDate");
 			projList.add(Projections.property("closingDate"), "closingDate");
+			projList.add(Projections.property("homeUnitName"), "homeUnitName");
 			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(GrantCall.class));
 			countCriteria.add(and);
 
