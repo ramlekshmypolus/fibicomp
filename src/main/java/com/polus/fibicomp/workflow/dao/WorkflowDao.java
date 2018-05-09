@@ -31,7 +31,7 @@ public interface WorkflowDao {
 
 	public WorkflowDetail fetchFirstApprover(Integer workflowId);
 
-	public List<WorkflowDetail> fetchWorkflowDetailListByApprovalStopNumber(Integer approvalStopNumber, String approvalStatusCode);
+	public List<WorkflowDetail> fetchWorkflowDetailListByApprovalStopNumber(Integer workflowId, Integer approvalStopNumber, String approvalStatusCode);
 
 	public Integer getMaxStopNumber(Integer workflowId);
 

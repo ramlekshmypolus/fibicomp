@@ -1,5 +1,7 @@
 package com.polus.fibicomp.proposal.service;
 
+import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +34,7 @@ import com.polus.fibicomp.proposal.vo.ProposalVO;
 import com.polus.fibicomp.workflow.comparator.WorkflowDetailComparator;
 import com.polus.fibicomp.workflow.dao.WorkflowDao;
 import com.polus.fibicomp.workflow.pojo.Workflow;
+import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.service.WorkflowService;
 
@@ -162,6 +165,12 @@ public class ProposalServiceImpl implements ProposalService {
 				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)) {
 			canTakeRoutingAction(proposalVO);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
+			//WorkflowDetail finalWorkflowDetail = workflowDao.fetchFinalApprover(workflow.getWorkflowId());
+			/*if (finalWorkflowDetail.getApproverPersonId().equals(personId) && finalWorkflowDetail.getApprovalStopNumber().equals(4)) {
+				proposalVO.setFinalApprover(true);
+			} else {
+				proposalVO.setFinalApprover(false);
+			}*/
 			proposalVO.setWorkflow(workflow);
 		}
 
@@ -409,7 +418,7 @@ public class ProposalServiceImpl implements ProposalService {
 			for (WorkflowDetail workflowDetail : workflowDetails) {
 				if (currentPerson == true) {
 					if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && (workflowDetail.getApprovalStatusCode().equals("W") || workflowDetail.getApprovalStatusCode().equals("WR"))) {
-						if (!workflowDetail.getApprovalStatusCode().equals("WR")) {
+						if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && !workflowDetail.getApprovalStatusCode().equals("WR")) {
 							proposalVO.setIsApproved(false);
 							proposalVO.setIsApprover(true);
 						}
@@ -476,8 +485,6 @@ public class ProposalServiceImpl implements ProposalService {
 					proposal = proposalDao.saveOrUpdateProposal(proposal);
 				}				
 			}
-			/*proposalVO.setApproved(true);
-			proposalVO.setApprover(true);*/
 			proposalVO.setIsApproved(true);
 			proposalVO.setIsApprover(true);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
@@ -499,29 +506,62 @@ public class ProposalServiceImpl implements ProposalService {
 		Workflow workflow = workflowService.assignWorkflowReviewers(proposalVO.getProposalId(), proposalVO.getUserName());
 		proposalVO.setWorkflow(workflow);
 		proposalVO.setProposal(proposal);
-		proposalVO.setIsReviewer(true);
+		//proposalVO.setIsReviewer(true);
+		proposalVO.setIsGrantAdmin(true);
 		proposalVO.setIsReviewed(false);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
 	}
 
 	@Override
-	public String reviewCompleted(ProposalVO proposalVO) {
-		Proposal proposal = proposalVO.getProposal();
-		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
-		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
-		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
-		proposal = proposalDao.saveOrUpdateProposal(proposal);
-		List<WorkflowDetail> workflowDetails = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(3, Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
-		for(WorkflowDetail workflowDetail : workflowDetails) {
-			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED);
-			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED));
-			workflowDao.saveWorkflowDetail(workflowDetail);
+	public String reviewCompleted(MultipartFile[] files, String formDataJSON) {
+		boolean reviewComplete = true;
+		ProposalVO proposalVO = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			proposalVO = mapper.readValue(formDataJSON, ProposalVO.class);		
+			Proposal proposal = proposalVO.getProposal();
+			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
+			List<WorkflowDetail> workflowDetails = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflow.getWorkflowId(), 3, Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
+			for(WorkflowDetail workflowDetail : workflowDetails) {
+				if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId())) {
+					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED);
+					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED));
+					workflowDetail.setApprovalComment(proposalVO.getApproveComment());
+					workflowDetail.setApprovalDate(new Date(committeeDao.getCurrentDate().getTime()));
+					if (files != null) {
+						List<WorkflowAttachment> workflowAttachments = new ArrayList<WorkflowAttachment>();
+						for (int i = 0; i < files.length; i++) {
+							WorkflowAttachment workflowAttachment = new WorkflowAttachment();
+							workflowAttachment.setDescription(proposalVO.getApproveComment());
+							workflowAttachment.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+							workflowAttachment.setUpdateUser(proposalVO.getPersonId());			
+							workflowAttachment.setAttachment(files[i].getBytes());
+							workflowAttachment.setFileName(files[i].getOriginalFilename());
+							workflowAttachment.setMimeType(files[i].getContentType());
+							workflowAttachment.setWorkflowDetail(workflowDetail);
+							workflowAttachments.add(workflowAttachment);
+						}
+						workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
+					}
+					workflowDao.saveWorkflowDetail(workflowDetail);
+				}
+				if (workflowDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
+					reviewComplete = false;
+				}
+			}
+			if (reviewComplete) {
+				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
+				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
+				proposal = proposalDao.saveOrUpdateProposal(proposal);
+			}
+			proposalVO.setIsReviewed(true);
+			proposalVO.setIsReviewer(true);
+			proposalVO.setWorkflow(workflow);
+			proposalVO.setProposal(proposal);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		proposalVO.setIsReviewed(true);
-		proposalVO.setIsReviewer(true);
-		proposalVO.setWorkflow(workflow);
-		proposalVO.setProposal(proposal);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
 	}

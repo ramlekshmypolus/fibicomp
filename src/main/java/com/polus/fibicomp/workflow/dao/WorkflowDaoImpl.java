@@ -101,8 +101,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<WorkflowDetail> fetchWorkflowDetailListByApprovalStopNumber(Integer approvalStopNumber, String approvalStatusCode) {
+	public List<WorkflowDetail> fetchWorkflowDetailListByApprovalStopNumber(Integer workflowId, Integer approvalStopNumber, String approvalStatusCode) {
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
+		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
 		criteria.add(Restrictions.eq("approvalStopNumber", approvalStopNumber));
 		criteria.add(Restrictions.eq("approvalStatusCode", approvalStatusCode));
 		List<WorkflowDetail> workflowDetailList = criteria.list();

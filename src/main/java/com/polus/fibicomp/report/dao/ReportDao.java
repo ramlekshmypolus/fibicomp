@@ -9,7 +9,7 @@ import com.polus.fibicomp.grantcall.pojo.GrantCall;
 @Service
 public interface ReportDao {
 
-	public Integer fetchApplicationCountByGrantCallId(Integer grantCallId);
+	public Long fetchApplicationCountByGrantCallId(Integer grantCallId);
 
 	public List<GrantCall> fetchOpenGrantIds();
 }

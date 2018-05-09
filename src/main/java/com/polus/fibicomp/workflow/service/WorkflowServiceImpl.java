@@ -117,7 +117,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 			}
 			workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
 		}
-		List<WorkflowDetail> workflowDetailLists = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflowDetail.getApprovalStopNumber(), Constants.WORKFLOW_STATUS_CODE_WAITING);
+		List<WorkflowDetail> workflowDetailLists = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflow.getWorkflowId(), workflowDetail.getApprovalStopNumber(), Constants.WORKFLOW_STATUS_CODE_WAITING);
 		if (actionType.equals("A")) {
 			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
 			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));		
@@ -140,8 +140,8 @@ public class WorkflowServiceImpl implements WorkflowService {
 		if (nextApproveStopNumber==3) {
 			nextApproveStopNumber = nextApproveStopNumber + 1;
 		}
-		if(nextApproveStopNumber <= maxApprovalStopNumber && nextApproveStopNumber!=3) {
-			List<WorkflowDetail> workflowDetailList = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(nextApproveStopNumber, Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
+		if(!workflowDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_REJECTED) && nextApproveStopNumber <= maxApprovalStopNumber && nextApproveStopNumber!=3) {
+			List<WorkflowDetail> workflowDetailList = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflow.getWorkflowId(), nextApproveStopNumber, Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
 			for(WorkflowDetail newWorkflowDetail : workflowDetailList) {
 				newWorkflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
 				newWorkflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
