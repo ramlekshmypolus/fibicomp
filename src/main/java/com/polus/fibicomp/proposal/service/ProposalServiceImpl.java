@@ -418,7 +418,7 @@ public class ProposalServiceImpl implements ProposalService {
 			for (WorkflowDetail workflowDetail : workflowDetails) {
 				if (currentPerson == true) {
 					if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && (workflowDetail.getApprovalStatusCode().equals("W") || workflowDetail.getApprovalStatusCode().equals("WR"))) {
-						if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && !workflowDetail.getApprovalStatusCode().equals("WR")) {
+						if (!proposal.getStatusCode().equals(8) && !workflowDetail.getApprovalStatusCode().equals("WR")) {
 							proposalVO.setIsApproved(false);
 							proposalVO.setIsApprover(true);
 						}
