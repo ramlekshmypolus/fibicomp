@@ -99,11 +99,21 @@ public class ProposalVO {
 
 	private String personId;
 
-	private boolean isApprover;
-
-	private boolean isApproved;
-
 	private String approveComment;
+
+	private Boolean isApprover = false;
+
+	private Boolean isApproved = false;
+
+	private Boolean isReviewer = false;
+
+	private Boolean isReviewed = false;
+
+	private Boolean isGrantAdmin = false;
+
+	private Integer approverStopNumber;
+
+	private Integer proposalStatusCode;
 
 	public ProposalVO() {
 		proposal = new Proposal();
@@ -405,28 +415,68 @@ public class ProposalVO {
 		this.personId = personId;
 	}
 
-	public boolean isApprover() {
-		return isApprover;
-	}
-
-	public void setApprover(boolean isApprover) {
-		this.isApprover = isApprover;
-	}
-
-	public boolean isApproved() {
-		return isApproved;
-	}
-
-	public void setApproved(boolean isApproved) {
-		this.isApproved = isApproved;
-	}
-
 	public String getApproveComment() {
 		return approveComment;
 	}
 
 	public void setApproveComment(String approveComment) {
 		this.approveComment = approveComment;
+	}
+
+	public Boolean getIsApprover() {
+		return isApprover;
+	}
+
+	public void setIsApprover(Boolean isApprover) {
+		this.isApprover = isApprover;
+	}
+
+	public Boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(Boolean isApproved) {
+		this.isApproved = isApproved;
+	}
+
+	public Boolean getIsReviewer() {
+		return isReviewer;
+	}
+
+	public void setIsReviewer(Boolean isReviewer) {
+		this.isReviewer = isReviewer;
+	}
+
+	public Boolean getIsReviewed() {
+		return isReviewed;
+	}
+
+	public void setIsReviewed(Boolean isReviewed) {
+		this.isReviewed = isReviewed;
+	}
+
+	public Boolean getIsGrantAdmin() {
+		return isGrantAdmin;
+	}
+
+	public void setIsGrantAdmin(Boolean isGrantAdmin) {
+		this.isGrantAdmin = isGrantAdmin;
+	}
+
+	public Integer getApproverStopNumber() {
+		return approverStopNumber;
+	}
+
+	public void setApproverStopNumber(Integer approverStopNumber) {
+		this.approverStopNumber = approverStopNumber;
+	}
+
+	public Integer getProposalStatusCode() {
+		return proposalStatusCode;
+	}
+
+	public void setProposalStatusCode(Integer proposalStatusCode) {
+		this.proposalStatusCode = proposalStatusCode;
 	}
 
 }

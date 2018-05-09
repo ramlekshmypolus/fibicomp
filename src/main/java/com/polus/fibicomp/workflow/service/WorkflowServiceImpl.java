@@ -38,7 +38,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 	private CommitteeDao committeeDao;
 
 	@Override
-	public Workflow createWorkflow(Integer moduleItemId, String userName) {
+	public Workflow createWorkflow(Integer moduleItemId, String userName, Integer statusCode) {
 		// for re submission case
 		Workflow activeWorkflow = null;
 		activeWorkflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
@@ -60,94 +60,101 @@ public class WorkflowServiceImpl implements WorkflowService {
 		Collections.sort(workflowMapDetails, new WorkflowMapDetailComparator());
 		List<WorkflowDetail> workflowDetails = new ArrayList<WorkflowDetail>();
 		for(WorkflowMapDetail workflowMapDetail : workflowMapDetails) {
-			WorkflowDetail workflowDetail = new WorkflowDetail();
-			if (workflowMapDetail.getApprovalStopNumber() == 1 && workflowMapDetail.getApproverNumber() == 1) {
-				workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
-				workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
-			} else {
-				workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
-				workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED));
+			if (!workflowMapDetail.getRoleTypeCode().equals(3)) {
+				WorkflowDetail workflowDetail = new WorkflowDetail();
+				if (statusCode.equals(9) && workflowMapDetail.getApprovalStopNumber() == 1 && workflowMapDetail.getApproverNumber() == 1) {
+					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
+					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
+				} else if (statusCode.equals(2) && workflowMapDetail.getApprovalStopNumber() == 1 && workflowMapDetail.getApproverNumber() == 1) {
+					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+				} else if (statusCode.equals(9) && workflowMapDetail.getApprovalStopNumber() == 2 && workflowMapDetail.getApproverNumber() == 1) { 
+					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+				} else {
+					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
+					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED));
+				}
+				workflowDetail.setApprovalStopNumber(workflowMapDetail.getApprovalStopNumber());
+				workflowDetail.setApproverNumber(workflowMapDetail.getApproverNumber());
+				workflowDetail.setApproverPersonId(workflowMapDetail.getApproverPersonId());
+				workflowDetail.setMapId(workflowMapDetail.getMapId());
+				workflowDetail.setWorkflowMap(workflowMapDetail.getWorkflowMap());
+				workflowDetail.setPrimaryApproverFlag(workflowMapDetail.getPrimaryApproverFlag());
+				workflowDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+				workflowDetail.setUpdateUser(userName);
+				workflowDetail.setApproverPersonName(workflowMapDetail.getApproverPersonName());
+				workflowDetail.setRoleTypeCode(workflowMapDetail.getRoleTypeCode());
+				workflowDetail.setWorkflow(workflow);
+				/*if(workflowDetail.getRoleTypeCode() == 1 && statusCode.equals(9)) {
+					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
+					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
+				}*/
+				workflowDetails.add(workflowDetail);
 			}
-			workflowDetail.setApprovalStopNumber(workflowMapDetail.getApprovalStopNumber());
-			workflowDetail.setApproverNumber(workflowMapDetail.getApproverNumber());
-			workflowDetail.setApproverPersonId(workflowMapDetail.getApproverPersonId());
-			workflowDetail.setMapId(workflowMapDetail.getMapId());
-			workflowDetail.setWorkflowMap(workflowMapDetail.getWorkflowMap());
-			workflowDetail.setPrimaryApproverFlag(workflowMapDetail.getPrimaryApproverFlag());
-			workflowDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
-			workflowDetail.setUpdateUser(userName);
-			workflowDetail.setApproverPersonName(workflowMapDetail.getApproverPersonName());
-			workflowDetail.setWorkflow(workflow);
-			workflowDetails.add(workflowDetail);
 		}
 		workflow.setWorkflowDetails(workflowDetails);
 		workflow = workflowDao.saveWorkflow(workflow);
-		return workflow;		
+		return workflow;
 	}
 
 	@Override
-	public void approveOrRejectWorkflowDetail(String actionType, Integer moduleItemId, String personId, String approverComment, MultipartFile[] files) {
-		try {
-			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
-			WorkflowDetail workflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId);
-			List<WorkflowAttachment> workflowAttachments = new ArrayList<WorkflowAttachment>();
-			if (files != null) {
-				for (int i = 0; i < files.length; i++) {
-					WorkflowAttachment workflowAttachment = new WorkflowAttachment();
-					workflowAttachment.setDescription(approverComment);
-					workflowAttachment.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
-					workflowAttachment.setUpdateUser(personId);			
-					workflowAttachment.setAttachment(files[i].getBytes());
-					workflowAttachment.setFileName(files[i].getOriginalFilename());
-					workflowAttachment.setMimeType(files[i].getContentType());
-					workflowAttachment.setWorkflowDetail(workflowDetail);
-					workflowAttachments.add(workflowAttachment);
-				}
-				workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
-			}
-			List<WorkflowDetail> workflowDetailLists = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflowDetail.getApprovalStopNumber(), Constants.WORKFLOW_STATUS_CODE_WAITING);
-			if (actionType.equals("A")) {
-				/*workflowDetail.setApprovalComment(approverComment);
-				workflowDetail.setApprovalDate(new Date(committeeDao.getCurrentDate().getTime()));*/
-				workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
-				workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
-				//workflowDetail = workflowDao.saveWorkflowDetail(workflowDetail);
-				for(WorkflowDetail workflowDetailList : workflowDetailLists) {
-					workflowDetailList.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
-					workflowDetailList.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
-				}
-			} else {
-				/*workflowDetail.setApprovalComment(approverComment);
-				workflowDetail.setApprovalDate(new Date(committeeDao.getCurrentDate().getTime()));*/
-				workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED);
-				workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED));
-				//workflowDetail = workflowDao.saveWorkflowDetail(workflowDetail);
-				for(WorkflowDetail workflowDetailList : workflowDetailLists) {
-					workflowDetailList.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED);
-					workflowDetailList.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED));
-				}
-			}
-			workflowDetail.setApprovalComment(approverComment);
-			workflowDetail.setApprovalDate(new Date(committeeDao.getCurrentDate().getTime()));
-			Integer maxApprovalStopNumber = workflowDao.getMaxStopNumber(workflow.getWorkflowId());
-			Integer approveStopNumber = workflowDetail.getApprovalStopNumber() + 1;
-			if(approveStopNumber <= maxApprovalStopNumber) {
-				List<WorkflowDetail> workflowDetailList = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(approveStopNumber, Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
-				for(WorkflowDetail newWorkflowDetail : workflowDetailList) {
-					newWorkflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
-					newWorkflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
-				}
-			}
-			workflowDetail = workflowDao.saveWorkflowDetail(workflowDetail);			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public boolean isFinalApprover(Integer moduleItemId, String personId) {
+	public WorkflowDetail approveOrRejectWorkflowDetail(String actionType, Integer moduleItemId, String personId, String approverComment, MultipartFile[] files, Integer approverStopNumber) throws IOException {
 		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
-		WorkflowDetail currentWorkflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId);
+		WorkflowDetail workflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId, approverStopNumber);
+		if (files != null) {
+			List<WorkflowAttachment> workflowAttachments = new ArrayList<WorkflowAttachment>();
+			for (int i = 0; i < files.length; i++) {
+				WorkflowAttachment workflowAttachment = new WorkflowAttachment();
+				workflowAttachment.setDescription(approverComment);
+				workflowAttachment.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+				workflowAttachment.setUpdateUser(personId);			
+				workflowAttachment.setAttachment(files[i].getBytes());
+				workflowAttachment.setFileName(files[i].getOriginalFilename());
+				workflowAttachment.setMimeType(files[i].getContentType());
+				workflowAttachment.setWorkflowDetail(workflowDetail);
+				workflowAttachments.add(workflowAttachment);
+			}
+			workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
+		}
+		List<WorkflowDetail> workflowDetailLists = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflowDetail.getApprovalStopNumber(), Constants.WORKFLOW_STATUS_CODE_WAITING);
+		if (actionType.equals("A")) {
+			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
+			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));		
+			for(WorkflowDetail workflowDetailList : workflowDetailLists) {
+				workflowDetailList.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
+				workflowDetailList.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
+			}
+		} else {
+			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED);
+			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED));				
+			for(WorkflowDetail workflowDetailList : workflowDetailLists) {
+				workflowDetailList.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED);
+				workflowDetailList.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REJECTED));
+			}
+		}
+		workflowDetail.setApprovalComment(approverComment);
+		workflowDetail.setApprovalDate(new Date(committeeDao.getCurrentDate().getTime()));
+		Integer maxApprovalStopNumber = workflowDao.getMaxStopNumber(workflow.getWorkflowId());
+		Integer nextApproveStopNumber = workflowDetail.getApprovalStopNumber() + 1;
+		if (nextApproveStopNumber==3) {
+			nextApproveStopNumber = nextApproveStopNumber + 1;
+		}
+		if(nextApproveStopNumber <= maxApprovalStopNumber && nextApproveStopNumber!=3) {
+			List<WorkflowDetail> workflowDetailList = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(nextApproveStopNumber, Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
+			for(WorkflowDetail newWorkflowDetail : workflowDetailList) {
+				newWorkflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+				newWorkflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+			}
+		}
+		workflowDetail = workflowDao.saveWorkflowDetail(workflowDetail);			
+		return workflowDetail;
+	}
+
+	@Override
+	public boolean isFinalApprover(Integer moduleItemId, String personId, Integer approverStopNumber) {
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
+		WorkflowDetail currentWorkflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId, approverStopNumber);
 		WorkflowDetail finalWorkflowDetail = workflowDao.fetchFinalApprover(workflow.getWorkflowId());
 		if (currentWorkflowDetail.getApprovalStopNumber() == finalWorkflowDetail.getApprovalStopNumber()
 				&& currentWorkflowDetail.getApproverNumber() == finalWorkflowDetail.getApproverNumber()) {
@@ -177,15 +184,43 @@ public class WorkflowServiceImpl implements WorkflowService {
 	}
 
 	@Override
-	public boolean isFirstApprover(Integer moduleItemId, String personId) {
+	public boolean isFirstApprover(Integer moduleItemId, String personId, Integer approverStopNumber) {
 		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
-		WorkflowDetail currentWorkflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId);
+		WorkflowDetail currentWorkflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId, approverStopNumber);
 		WorkflowDetail finalWorkflowDetail = workflowDao.fetchFirstApprover(workflow.getWorkflowId());
 		if (currentWorkflowDetail.getApprovalStopNumber() == finalWorkflowDetail.getApprovalStopNumber()
 				&& currentWorkflowDetail.getApproverNumber() == finalWorkflowDetail.getApproverNumber()) {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public Workflow assignWorkflowReviewers(Integer moduleItemId, String userName) {
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
+		List<WorkflowMapDetail> reviewers = workflowDao.fetchWorkflowMapDetailReviewers();
+		Collections.sort(reviewers, new WorkflowMapDetailComparator());
+		List<WorkflowDetail> workflowDetails = new ArrayList<WorkflowDetail>();
+		for (WorkflowMapDetail workflowMapDetail : reviewers) {
+			WorkflowDetail workflowDetail = new WorkflowDetail();
+			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
+			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW));
+			workflowDetail.setApprovalStopNumber(workflowMapDetail.getApprovalStopNumber());
+			workflowDetail.setApproverNumber(workflowMapDetail.getApproverNumber());
+			workflowDetail.setApproverPersonId(workflowMapDetail.getApproverPersonId());
+			workflowDetail.setMapId(workflowMapDetail.getMapId());
+			workflowDetail.setWorkflowMap(workflowMapDetail.getWorkflowMap());
+			workflowDetail.setPrimaryApproverFlag(workflowMapDetail.getPrimaryApproverFlag());
+			workflowDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+			workflowDetail.setUpdateUser(userName);
+			workflowDetail.setApproverPersonName(workflowMapDetail.getApproverPersonName());
+			workflowDetail.setRoleTypeCode(workflowMapDetail.getRoleTypeCode());
+			workflowDetail.setWorkflow(workflow);
+			workflowDetails.add(workflowDetail);
+		}
+		workflow.getWorkflowDetails().addAll(workflowDetails);
+		workflow = workflowDao.saveWorkflow(workflow);
+		return workflow;
 	}
 
 }

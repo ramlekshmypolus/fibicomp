@@ -91,6 +91,9 @@ public class WorkflowDetail implements Serializable {
 	@OneToMany(mappedBy = "workflowDetail", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<WorkflowAttachment> workflowAttachments;
 
+	@Column(name = "ROLE_TYPE_CODE")
+	private Integer roleTypeCode;
+
 	public Integer getWorkflowDetailId() {
 		return workflowDetailId;
 	}
@@ -229,6 +232,14 @@ public class WorkflowDetail implements Serializable {
 
 	public void setApproverPersonName(String approverPersonName) {
 		this.approverPersonName = approverPersonName;
+	}
+
+	public Integer getRoleTypeCode() {
+		return roleTypeCode;
+	}
+
+	public void setRoleTypeCode(Integer roleTypeCode) {
+		this.roleTypeCode = roleTypeCode;
 	}
 
 }

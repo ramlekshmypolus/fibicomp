@@ -127,4 +127,5 @@ public interface ProposalService {
 
 	public String assignReviewer(ProposalVO proposalVO);
 
+	public String reviewCompleted(ProposalVO proposalVO);
 }

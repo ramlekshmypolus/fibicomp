@@ -1105,6 +1105,7 @@ public class DashboardDaoImpl implements DashboardDao {
 
 			if (!isUnitAdmin) {
 				searchCriteria.add(Restrictions.like("homeUnitNumber", unitNumber));
+				searchCriteria.add(Restrictions.like("grantStatusCode", 2));
 			}
 			searchCriteria.add(and);
 			ProjectionList projList = Projections.projectionList();

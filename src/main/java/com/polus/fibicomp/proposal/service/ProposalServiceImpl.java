@@ -137,25 +137,31 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setPersonId(personId);
 		Proposal proposal = proposalDao.fetchProposalById(proposalId);
 		proposalVO.setProposal(proposal);
-		proposalVO.setGrantCalls(proposalDao.fetchAllGrantCalls());
-		proposalVO.setGrantCallTypes(grantCallDao.fetchAllGrantCallTypes());
-		proposalVO.setProposalCategories(proposalDao.fetchAllCategories());
-		proposalVO.setScienceKeywords(grantCallDao.fetchAllScienceKeywords());
-		proposalVO.setResearchAreas(committeeDao.fetchAllResearchAreas());
-		proposalVO.setProposalResearchTypes(proposalDao.fetchAllProposalResearchTypes());
-		proposalVO.setFundingSourceTypes(grantCallDao.fetchAllFundingSourceTypes());
-		proposalVO.setProtocols(proposalDao.fetchAllProtocols());
-		proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
-		proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
-		proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
-		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
-		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
-		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
-		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
+		int statusCode = proposal.getStatusCode();
+		if (statusCode == 1 || statusCode == 9) {
+			proposalVO.setGrantCalls(proposalDao.fetchAllGrantCalls());
+			proposalVO.setGrantCallTypes(grantCallDao.fetchAllGrantCallTypes());
+			proposalVO.setProposalCategories(proposalDao.fetchAllCategories());
+			proposalVO.setScienceKeywords(grantCallDao.fetchAllScienceKeywords());
+			proposalVO.setResearchAreas(committeeDao.fetchAllResearchAreas());
+			proposalVO.setProposalResearchTypes(proposalDao.fetchAllProposalResearchTypes());
+			proposalVO.setFundingSourceTypes(grantCallDao.fetchAllFundingSourceTypes());
+			proposalVO.setProtocols(proposalDao.fetchAllProtocols());
+			proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
+			proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
+			proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
+			proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
+			proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
+			proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
+			proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
+		}
 
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED) || proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)) {
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)
+				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)
+				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)
+				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)) {
 			canTakeRoutingAction(proposalVO);
-			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());		
+			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
 			proposalVO.setWorkflow(workflow);
 		}
 
@@ -385,7 +391,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
 		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 		proposal = proposalDao.saveOrUpdateProposal(proposal);
-		Workflow workflow = workflowService.createWorkflow(proposal.getProposalId(), proposalVO.getUserName());
+		Workflow workflow = workflowService.createWorkflow(proposal.getProposalId(), proposalVO.getUserName(), proposalVO.getProposalStatusCode());
 		canTakeRoutingAction(proposalVO);
 		proposalVO.setWorkflow(workflow);
 		proposalVO.setProposal(proposal);
@@ -395,20 +401,33 @@ public class ProposalServiceImpl implements ProposalService {
 
 	public void canTakeRoutingAction(ProposalVO proposalVO) {
 		Proposal proposal = proposalVO.getProposal();
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)) {
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS) || proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)) {
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
 			boolean currentPerson = true;
 			List<WorkflowDetail> workflowDetails = workflow.getWorkflowDetails();
 			Collections.sort(workflowDetails, new WorkflowDetailComparator());
 			for (WorkflowDetail workflowDetail : workflowDetails) {
 				if (currentPerson == true) {
-					if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && workflowDetail.getApprovalStatusCode().equals("W")) {
-						proposalVO.setApproved(false);
-						proposalVO.setApprover(true);
+					if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId()) && (workflowDetail.getApprovalStatusCode().equals("W") || workflowDetail.getApprovalStatusCode().equals("WR"))) {
+						if (!workflowDetail.getApprovalStatusCode().equals("WR")) {
+							proposalVO.setIsApproved(false);
+							proposalVO.setIsApprover(true);
+						}
+						proposalVO.setApproverStopNumber(workflowDetail.getApprovalStopNumber());
 						currentPerson = false;
-					} else if (workflowDetail.getApprovalStatusCode().equals("W")) {
+						if (workflowDetail.getRoleTypeCode() == 3) {
+							proposalVO.setIsReviewer(true);
+							proposalVO.setIsReviewed(false);
+						}
+						if (workflowDetail.getRoleTypeCode() == 2) {
+							proposalVO.setIsGrantAdmin(true);
+						}
+					} else if (workflowDetail.getApprovalStatusCode().equals("W") && !proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)) {
 						currentPerson = false;
 					}
+				}
+				if (workflowDetail.getApprovalStatusCode().equals("RC")) {
+					proposalVO.setIsReviewed(true);
 				}
 			}
 		}
@@ -423,17 +442,21 @@ public class ProposalServiceImpl implements ProposalService {
 			Proposal proposal = proposalVO.getProposal();
 			String actionType = proposalVO.getActionType();
 			String approverComment = proposalVO.getApproveComment();
+			Integer approvalStopNumber = proposalVO.getApproverStopNumber();
+
 			logger.info("actionType : " + actionType);
 			logger.info("personId : " + proposalVO.getPersonId());
 			logger.info("approverComment : " + approverComment);
-			workflowService.approveOrRejectWorkflowDetail(actionType, proposal.getProposalId(), proposalVO.getPersonId(), approverComment, files);
+			logger.info("approvalStopNumber : " + approvalStopNumber);
+
+			WorkflowDetail workflowDetail = workflowService.approveOrRejectWorkflowDetail(actionType, proposal.getProposalId(), proposalVO.getPersonId(), approverComment, files, approvalStopNumber);
 			/*boolean isFirstApprover = workflowService.isFirstApprover(proposal.getProposalId(), proposalVO.getPersonId());
 			if (isFirstApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 				proposal = proposalDao.saveOrUpdateProposal(proposal);
 			}*/
-			boolean isFinalApprover = workflowService.isFinalApprover(proposal.getProposalId(), proposalVO.getPersonId());
+			boolean isFinalApprover = workflowService.isFinalApprover(proposal.getProposalId(), proposalVO.getPersonId(), approvalStopNumber);
 			if (isFinalApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED);
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED));
@@ -443,12 +466,20 @@ public class ProposalServiceImpl implements ProposalService {
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 				proposal = proposalDao.saveOrUpdateProposal(proposal);
 			} else if (actionType.equals("R")) {
-				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
-				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS));
-				proposal = proposalDao.saveOrUpdateProposal(proposal);
+				if(workflowDetail.getRoleTypeCode() == 2) {
+					proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED);
+					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED));
+					proposal = proposalDao.saveOrUpdateProposal(proposal);
+				} else {
+					proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
+					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS));
+					proposal = proposalDao.saveOrUpdateProposal(proposal);
+				}				
 			}
-			proposalVO.setApproved(true);
-			proposalVO.setApprover(true);
+			/*proposalVO.setApproved(true);
+			proposalVO.setApprover(true);*/
+			proposalVO.setIsApproved(true);
+			proposalVO.setIsApprover(true);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
 			proposalVO.setWorkflow(workflow);
 			proposalVO.setProposal(proposal);
@@ -461,8 +492,37 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Override
 	public String assignReviewer(ProposalVO proposalVO) {
-		// TODO Auto-generated method stub
-		return null;
+		Proposal proposal = proposalVO.getProposal();
+		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS);
+		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS));
+		proposal = proposalDao.saveOrUpdateProposal(proposal);
+		Workflow workflow = workflowService.assignWorkflowReviewers(proposalVO.getProposalId(), proposalVO.getUserName());
+		proposalVO.setWorkflow(workflow);
+		proposalVO.setProposal(proposal);
+		proposalVO.setIsReviewer(true);
+		proposalVO.setIsReviewed(false);
+		String response = committeeDao.convertObjectToJSON(proposalVO);
+		return response;
 	}
 
+	@Override
+	public String reviewCompleted(ProposalVO proposalVO) {
+		Proposal proposal = proposalVO.getProposal();
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
+		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
+		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
+		proposal = proposalDao.saveOrUpdateProposal(proposal);
+		List<WorkflowDetail> workflowDetails = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(3, Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
+		for(WorkflowDetail workflowDetail : workflowDetails) {
+			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED);
+			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED));
+			workflowDao.saveWorkflowDetail(workflowDetail);
+		}
+		proposalVO.setIsReviewed(true);
+		proposalVO.setIsReviewer(true);
+		proposalVO.setWorkflow(workflow);
+		proposalVO.setProposal(proposal);
+		String response = committeeDao.convertObjectToJSON(proposalVO);
+		return response;
+	}
 }
