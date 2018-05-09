@@ -148,4 +148,10 @@ public class ProposalController {
 		logger.info("Requesting for assignReviewer");
 		return proposalService.assignReviewer(vo);
 	}
+
+	@RequestMapping(value = "/reviewCompleted", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String reviewCompleted(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for reviewCompleted");
+		return proposalService.reviewCompleted(vo);
+	}
 }

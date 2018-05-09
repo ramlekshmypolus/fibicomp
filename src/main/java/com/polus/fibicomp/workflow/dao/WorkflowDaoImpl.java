@@ -60,12 +60,12 @@ public class WorkflowDaoImpl implements WorkflowDao {
 	}
 
 	@Override
-	public WorkflowDetail findUniqueWorkflowDetailByCriteria(Integer workflowId, String personId) {
+	public WorkflowDetail findUniqueWorkflowDetailByCriteria(Integer workflowId, String personId, Integer approverStopNumber) {
 		WorkflowDetail workflowDetail;
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
 		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
 		criteria.add(Restrictions.eq("approverPersonId", personId));
-		//criteria.add(Restrictions.eq("approvalStatusCode", "W"));
+		criteria.add(Restrictions.eq("approvalStopNumber", approverStopNumber));
 		workflowDetail = (WorkflowDetail) criteria.uniqueResult();
 		return workflowDetail;
 	}
@@ -116,6 +116,17 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
 		Integer maxApprovalStopNumber = (Integer)criteria.uniqueResult();
 		return maxApprovalStopNumber;
+	}
+
+	@Override
+	public List<WorkflowMapDetail> fetchWorkflowMapDetailReviewers() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(WorkflowMapDetail.class);
+		criteria.add(Restrictions.eq("mapId", 1));
+		criteria.add(Restrictions.eq("roleTypeCode", 3));
+		@SuppressWarnings("unchecked")
+		List<WorkflowMapDetail> workflowMapDetails = criteria.list();
+		return workflowMapDetails;
 	}
 
 }

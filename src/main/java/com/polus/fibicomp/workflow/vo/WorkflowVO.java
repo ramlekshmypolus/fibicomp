@@ -1,4 +1,4 @@
-package comp.polus.fibicomp.workflow.vo;
+package com.polus.fibicomp.workflow.vo;
 
 import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 

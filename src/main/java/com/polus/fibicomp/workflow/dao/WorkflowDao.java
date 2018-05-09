@@ -21,7 +21,7 @@ public interface WorkflowDao {
 
 	public Workflow fetchActiveWorkflowByModuleItemId(Integer moduleItemId);
 
-	public WorkflowDetail findUniqueWorkflowDetailByCriteria(Integer workflowId, String personId);
+	public WorkflowDetail findUniqueWorkflowDetailByCriteria(Integer workflowId, String personId, Integer approverStopNumber);
 
 	public WorkflowDetail saveWorkflowDetail(WorkflowDetail workflowDetail);
 
@@ -34,5 +34,7 @@ public interface WorkflowDao {
 	public List<WorkflowDetail> fetchWorkflowDetailListByApprovalStopNumber(Integer approvalStopNumber, String approvalStatusCode);
 
 	public Integer getMaxStopNumber(Integer workflowId);
+
+	public List<WorkflowMapDetail> fetchWorkflowMapDetailReviewers();
 
 }
