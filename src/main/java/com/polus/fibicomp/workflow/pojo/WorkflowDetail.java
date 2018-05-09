@@ -3,6 +3,7 @@ package com.polus.fibicomp.workflow.pojo;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -93,6 +94,10 @@ public class WorkflowDetail implements Serializable {
 
 	@Column(name = "ROLE_TYPE_CODE")
 	private Integer roleTypeCode;
+
+	public WorkflowDetail() {
+		workflowAttachments = new ArrayList<WorkflowAttachment>();
+	}
 
 	public Integer getWorkflowDetailId() {
 		return workflowDetailId;

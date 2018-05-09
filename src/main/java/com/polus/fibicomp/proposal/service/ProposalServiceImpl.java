@@ -64,27 +64,13 @@ public class ProposalServiceImpl implements ProposalService {
 	public String createProposal(ProposalVO proposalVO) {
 		Integer grantCallId = proposalVO.getGrantCallId();
 		Proposal proposal = proposalVO.getProposal();
+		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
+		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS));
 		if (grantCallId != null) {
 			proposal.setGrantCall(grantCallDao.fetchGrantCallById(grantCallId));
 			proposal.setGrantCallId(grantCallId);
 		}
-		proposalVO.setGrantCalls(proposalDao.fetchAllGrantCalls());
-		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
-		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS));
-		proposalVO.setGrantCallTypes(grantCallDao.fetchAllGrantCallTypes());
-		proposalVO.setProposalCategories(proposalDao.fetchAllCategories());
-		proposalVO.setScienceKeywords(grantCallDao.fetchAllScienceKeywords());
-		proposalVO.setResearchAreas(committeeDao.fetchAllResearchAreas());
-		proposalVO.setProposalResearchTypes(proposalDao.fetchAllProposalResearchTypes());
-		proposalVO.setProtocols(proposalDao.fetchAllProtocols());
-		proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
-		proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
-		proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
-		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
-		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
-		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
-		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
-
+		loadInitialData(proposalVO);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
 	}
@@ -142,21 +128,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposal(proposal);
 		int statusCode = proposal.getStatusCode();
 		if (statusCode == 1 || statusCode == 9) {
-			proposalVO.setGrantCalls(proposalDao.fetchAllGrantCalls());
-			proposalVO.setGrantCallTypes(grantCallDao.fetchAllGrantCallTypes());
-			proposalVO.setProposalCategories(proposalDao.fetchAllCategories());
-			proposalVO.setScienceKeywords(grantCallDao.fetchAllScienceKeywords());
-			proposalVO.setResearchAreas(committeeDao.fetchAllResearchAreas());
-			proposalVO.setProposalResearchTypes(proposalDao.fetchAllProposalResearchTypes());
-			proposalVO.setFundingSourceTypes(grantCallDao.fetchAllFundingSourceTypes());
-			proposalVO.setProtocols(proposalDao.fetchAllProtocols());
-			proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
-			proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
-			proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
-			proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
-			proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
-			proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
-			proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
+			loadInitialData(proposalVO);
 		}
 
 		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)
@@ -165,12 +137,12 @@ public class ProposalServiceImpl implements ProposalService {
 				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)) {
 			canTakeRoutingAction(proposalVO);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
-			//WorkflowDetail finalWorkflowDetail = workflowDao.fetchFinalApprover(workflow.getWorkflowId());
-			/*if (finalWorkflowDetail.getApproverPersonId().equals(personId) && finalWorkflowDetail.getApprovalStopNumber().equals(4)) {
+			WorkflowDetail finalWorkflowDetail = workflowDao.fetchFinalApprover(workflow.getWorkflowId());
+			if (finalWorkflowDetail.getApproverPersonId().equals(personId)) {
 				proposalVO.setFinalApprover(true);
 			} else {
 				proposalVO.setFinalApprover(false);
-			}*/
+			}
 			proposalVO.setWorkflow(workflow);
 		}
 
@@ -485,6 +457,9 @@ public class ProposalServiceImpl implements ProposalService {
 					proposal = proposalDao.saveOrUpdateProposal(proposal);
 				}				
 			}
+			if (proposal.getStatusCode() == Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS || proposal.getStatusCode() == Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED) {
+				loadInitialData(proposalVO);
+			}
 			proposalVO.setIsApproved(true);
 			proposalVO.setIsApprover(true);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
@@ -522,7 +497,7 @@ public class ProposalServiceImpl implements ProposalService {
 			proposalVO = mapper.readValue(formDataJSON, ProposalVO.class);		
 			Proposal proposal = proposalVO.getProposal();
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
-			List<WorkflowDetail> workflowDetails = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflow.getWorkflowId(), 3, Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
+			List<WorkflowDetail> workflowDetails = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflow.getWorkflowId(), null, Constants.WORKFLOW_STATUS_CODE_WAITING);
 			for(WorkflowDetail workflowDetail : workflowDetails) {
 				if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId())) {
 					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED);
@@ -555,6 +530,19 @@ public class ProposalServiceImpl implements ProposalService {
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 				proposal = proposalDao.saveOrUpdateProposal(proposal);
 			}
+			List<WorkflowDetail> details = workflow.getWorkflowDetails();
+			Integer workflowDetailId = null;
+			for (WorkflowDetail detail : details) {
+				if (detail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
+					workflowDetailId = detail.getWorkflowDetailId();
+				}
+			}
+			WorkflowDetail adminWorkflow = workflowDao.fetchWorkflowdetailById(workflowDetailId);
+			if (adminWorkflow != null) {
+				adminWorkflow.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+				adminWorkflow.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+				workflowDao.saveWorkflowDetail(adminWorkflow);
+			}
 			proposalVO.setIsReviewed(true);
 			proposalVO.setIsReviewer(true);
 			proposalVO.setWorkflow(workflow);
@@ -565,4 +553,23 @@ public class ProposalServiceImpl implements ProposalService {
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
 	}
+
+	public void loadInitialData(ProposalVO proposalVO) {
+		proposalVO.setGrantCalls(proposalDao.fetchAllGrantCalls());
+		proposalVO.setGrantCallTypes(grantCallDao.fetchAllGrantCallTypes());
+		proposalVO.setProposalCategories(proposalDao.fetchAllCategories());
+		proposalVO.setScienceKeywords(grantCallDao.fetchAllScienceKeywords());
+		proposalVO.setResearchAreas(committeeDao.fetchAllResearchAreas());
+		proposalVO.setProposalResearchTypes(proposalDao.fetchAllProposalResearchTypes());
+		proposalVO.setFundingSourceTypes(grantCallDao.fetchAllFundingSourceTypes());
+		proposalVO.setProtocols(proposalDao.fetchAllProtocols());
+		proposalVO.setProposalPersonRoles(proposalDao.fetchAllProposalPersonRoles());
+		proposalVO.setProposalAttachmentTypes(proposalDao.fetchAllProposalAttachmentTypes());
+		proposalVO.setProposalBudgetCategories(proposalDao.fetchAllBudgetCategories());
+		proposalVO.setProposalInstituteCentreLabs(proposalDao.fetchAllInstituteCentrelabs());
+		proposalVO.setProposalExcellenceAreas(proposalDao.fetchAllAreaOfExcellence());
+		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
+		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
+	}
+
 }
