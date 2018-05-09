@@ -150,8 +150,8 @@ public class ProposalController {
 	}
 
 	@RequestMapping(value = "/reviewCompleted", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String reviewCompleted(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+	public String reviewCompleted(@RequestParam(value = "files", required = false) MultipartFile[] files, @RequestParam("formDataJson") String formDataJson) {
 		logger.info("Requesting for reviewCompleted");
-		return proposalService.reviewCompleted(vo);
+		return proposalService.reviewCompleted(files, formDataJson);
 	}
 }

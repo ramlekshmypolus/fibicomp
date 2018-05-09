@@ -8,7 +8,7 @@ public class ReportVO {
 
 	private Integer grantCallId;
 
-	private Integer proposalCount;
+	private Long proposalCount;
 
 	private String reportName;
 
@@ -20,14 +20,6 @@ public class ReportVO {
 
 	public void setGrantCallId(Integer grantCallId) {
 		this.grantCallId = grantCallId;
-	}
-
-	public Integer getProposalCount() {
-		return proposalCount;
-	}
-
-	public void setProposalCount(Integer proposalCount) {
-		this.proposalCount = proposalCount;
 	}
 
 	public String getReportName() {
@@ -44,5 +36,13 @@ public class ReportVO {
 
 	public void setGrantIds(List<GrantCall> grantIds) {
 		this.grantIds = grantIds;
+	}
+
+	public Long getProposalCount() {
+		return proposalCount;
+	}
+
+	public void setProposalCount(Long proposalCount) {
+		this.proposalCount = proposalCount;
 	}
 }

@@ -30,7 +30,7 @@ public class ReportServiceImpl implements ReportService {
 	public String applicationReport(ReportVO reportVO) {
 		Integer grantCallId = reportVO.getGrantCallId();
 		String reportName = reportVO.getReportName();
-		Integer proposalCount = 0;
+		Long proposalCount = 0L;
 		if (reportName.equals("Submitted Application by Grant")) {
 			proposalCount = reportDao.fetchApplicationCountByGrantCallId(grantCallId);
 		} else if (reportName.equals("Awards by Grant")) {

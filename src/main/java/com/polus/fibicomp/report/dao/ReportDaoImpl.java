@@ -30,7 +30,7 @@ public class ReportDaoImpl implements ReportDao {
 	private HibernateTemplate hibernateTemplate;
 
 	@Override
-	public Integer fetchApplicationCountByGrantCallId(Integer grantCallId) {
+	public Long fetchApplicationCountByGrantCallId(Integer grantCallId) {
 		List<Integer> proposalStatus = new ArrayList<Integer>();
 		proposalStatus.add(2);
 		proposalStatus.add(4);
@@ -39,9 +39,9 @@ public class ReportDaoImpl implements ReportDao {
 		proposalStatus.add(9);
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Proposal.class);
-		criteria.add(Restrictions.like("grantCallId", grantCallId));
+		criteria.add(Restrictions.eq("grantCallId", grantCallId));
 		criteria.add(Restrictions.in("statusCode", proposalStatus));
-		Integer proposalCount = (Integer) criteria.setProjection(Projections.rowCount()).uniqueResult();
+		Long proposalCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
 		return proposalCount;
 	}
 
@@ -52,6 +52,7 @@ public class ReportDaoImpl implements ReportDao {
 		criteria.add(Restrictions.like("grantStatusCode",Constants.GRANT_CALL_STATUS_CODE_OPEN));
 		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.property("grantCallId"), "grantCallId");
+		projList.add(Projections.property("grantCallName"), "grantCallName");
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(GrantCall.class));
 		criteria.addOrder(Order.asc("grantCallId"));
 		@SuppressWarnings("unchecked")

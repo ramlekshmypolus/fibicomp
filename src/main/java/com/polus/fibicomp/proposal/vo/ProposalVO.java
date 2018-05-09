@@ -115,6 +115,8 @@ public class ProposalVO {
 
 	private Integer proposalStatusCode;
 
+	private Boolean finalApprover;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -477,6 +479,14 @@ public class ProposalVO {
 
 	public void setProposalStatusCode(Integer proposalStatusCode) {
 		this.proposalStatusCode = proposalStatusCode;
+	}
+
+	public Boolean getFinalApprover() {
+		return finalApprover;
+	}
+
+	public void setFinalApprover(Boolean finalApprover) {
+		this.finalApprover = finalApprover;
 	}
 
 }
