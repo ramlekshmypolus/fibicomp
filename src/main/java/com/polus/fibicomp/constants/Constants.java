@@ -63,4 +63,7 @@ public interface Constants {
     String WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW = "WR";
     String WORKFLOW_STATUS_CODE_REVIEW_COMPLETED = "RC";
 
+    // Workflow first stop number
+    Integer WORKFLOW_FIRST_STOP_NUMBER = 1;
+
 }

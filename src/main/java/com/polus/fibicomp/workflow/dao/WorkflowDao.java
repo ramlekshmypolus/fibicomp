@@ -37,4 +37,8 @@ public interface WorkflowDao {
 
 	public List<WorkflowMapDetail> fetchWorkflowMapDetailReviewers();
 
+	public WorkflowDetail fetchWorkflowByParams(Integer workflowId, String personId, Integer stopNumber);
+
+	public WorkflowDetail fetchWorkflowdetailById(Integer workflowId);
+
 }

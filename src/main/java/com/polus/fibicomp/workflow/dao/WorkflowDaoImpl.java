@@ -65,7 +65,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
 		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
 		criteria.add(Restrictions.eq("approverPersonId", personId));
-		criteria.add(Restrictions.eq("approvalStopNumber", approverStopNumber));
+		if (approverStopNumber != null) {
+			criteria.add(Restrictions.eq("approvalStopNumber", approverStopNumber));
+		}
 		workflowDetail = (WorkflowDetail) criteria.uniqueResult();
 		return workflowDetail;
 	}
@@ -81,7 +83,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
 		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
 		//criteria.add(Restrictions.eq("approvalStatusCode", "W"));
-		WorkflowDetail workflowDetail = (WorkflowDetail) criteria.addOrder(Order.desc("approvalStopNumber")).setMaxResults(1).uniqueResult();
+		criteria.add(Restrictions.eq("roleTypeCode", 2));
+		//WorkflowDetail workflowDetail = (WorkflowDetail) criteria.addOrder(Order.desc("approvalStopNumber")).setMaxResults(1).uniqueResult();
+		WorkflowDetail workflowDetail = (WorkflowDetail) criteria.list().get(0);
 		return workflowDetail;
 	}
 
@@ -104,7 +108,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
 	public List<WorkflowDetail> fetchWorkflowDetailListByApprovalStopNumber(Integer workflowId, Integer approvalStopNumber, String approvalStatusCode) {
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
 		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
-		criteria.add(Restrictions.eq("approvalStopNumber", approvalStopNumber));
+		if (approvalStopNumber != null) {
+			criteria.add(Restrictions.eq("approvalStopNumber", approvalStopNumber));
+		}
 		criteria.add(Restrictions.eq("approvalStatusCode", approvalStatusCode));
 		List<WorkflowDetail> workflowDetailList = criteria.list();
 		return workflowDetailList;
@@ -128,6 +134,22 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		@SuppressWarnings("unchecked")
 		List<WorkflowMapDetail> workflowMapDetails = criteria.list();
 		return workflowMapDetails;
+	}
+
+	@Override
+	public WorkflowDetail fetchWorkflowByParams(Integer workflowId, String personId, Integer stopNumber) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
+		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
+		criteria.add(Restrictions.eq("approvalStopNumber", stopNumber));
+		criteria.add(Restrictions.eq("approverPersonId", personId));
+		criteria.add(Restrictions.eq("approvalStatusCode", "A"));
+		WorkflowDetail workflowDetail = (WorkflowDetail) criteria.list().get(0);
+		return workflowDetail;
+	}
+
+	@Override
+	public WorkflowDetail fetchWorkflowdetailById(Integer workflowId) {
+		return hibernateTemplate.get(WorkflowDetail.class, workflowId);
 	}
 
 }

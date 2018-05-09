@@ -93,6 +93,8 @@ public class ProposalDaoImpl implements ProposalDao {
 		projList.add(Projections.property("grantCallName"), "grantCallName");
 		projList.add(Projections.property("sponsor"), "sponsor");
 		projList.add(Projections.property("fundingSourceType"), "fundingSourceType");
+		projList.add(Projections.property("activityType"), "activityType");
+		projList.add(Projections.property("grantTheme"), "grantTheme");
 		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(GrantCall.class));
 		criteria.addOrder(Order.asc("grantCallName"));
 		@SuppressWarnings("unchecked")
