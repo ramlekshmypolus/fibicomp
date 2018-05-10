@@ -28,17 +28,14 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public String applicationReport(ReportVO reportVO) {
-		Integer grantCallId = reportVO.getGrantCallId();
 		String reportName = reportVO.getReportName();
-		Long proposalCount = 0L;
 		if (reportName.equals("Submitted Applications by Grant")) {
-			proposalCount = reportDao.fetchApplicationCountByGrantCallId(grantCallId);
+			reportVO = reportDao.fetchApplicationByGrantCallId(reportVO);
 		} else if (reportName.equals("Awards by Grant")) {
 			
 		} else if (reportName.equals("Expenditure by Award")) {
 			
 		}
-		reportVO.setProposalCount(proposalCount);
 		String response = committeeDao.convertObjectToJSON(reportVO);
 		return response;
 	}

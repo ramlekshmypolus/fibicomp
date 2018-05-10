@@ -1,6 +1,7 @@
 package com.polus.fibicomp.workflow.pojo;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -60,6 +61,21 @@ public class Workflow implements Serializable {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "workflow", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<WorkflowDetail> workflowDetails;
+
+	@Column(name = "WORKFLOW_SEQUENCE")
+	private Integer workflowSequence;
+
+	@Column(name = "WORKFLOW_START_DATE")
+	private Date workflowStartDate;
+
+	@Column(name = "WORKFLOW_END_DATE")
+	private Date workflowEndDate;
+
+	@Column(name = "WORKFLOW_START_PERSON")
+	private String workflowStartPerson;
+
+	@Column(name = "WORKFLOW_END_PERSON")
+	private String workflowEndPerson;
 
 	public Integer getWorkflowId() {
 		return workflowId;
@@ -139,5 +155,45 @@ public class Workflow implements Serializable {
 
 	public void setWorkflowDetails(List<WorkflowDetail> workflowDetails) {
 		this.workflowDetails = workflowDetails;
+	}
+
+	public Integer getWorkflowSequence() {
+		return workflowSequence;
+	}
+
+	public void setWorkflowSequence(Integer workflowSequence) {
+		this.workflowSequence = workflowSequence;
+	}
+
+	public Date getWorkflowStartDate() {
+		return workflowStartDate;
+	}
+
+	public void setWorkflowStartDate(Date workflowStartDate) {
+		this.workflowStartDate = workflowStartDate;
+	}
+
+	public Date getWorkflowEndDate() {
+		return workflowEndDate;
+	}
+
+	public void setWorkflowEndDate(Date workflowEndDate) {
+		this.workflowEndDate = workflowEndDate;
+	}
+
+	public String getWorkflowStartPerson() {
+		return workflowStartPerson;
+	}
+
+	public void setWorkflowStartPerson(String workflowStartPerson) {
+		this.workflowStartPerson = workflowStartPerson;
+	}
+
+	public String getWorkflowEndPerson() {
+		return workflowEndPerson;
+	}
+
+	public void setWorkflowEndPerson(String workflowEndPerson) {
+		this.workflowEndPerson = workflowEndPerson;
 	}
 }

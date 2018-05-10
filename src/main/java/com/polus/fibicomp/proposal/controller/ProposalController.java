@@ -154,4 +154,10 @@ public class ProposalController {
 		logger.info("Requesting for reviewCompleted");
 		return proposalService.reviewCompleted(files, formDataJson);
 	}
+
+	@RequestMapping(value = "/fetchReviewers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String fetchReviewers(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for fetchReviewers");
+		return proposalService.fetchReviewers(vo);
+	}
 }

@@ -6,17 +6,21 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.workflow.pojo.Workflow;
 import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
+import com.polus.fibicomp.workflow.pojo.WorkflowReviewerDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowStatus;
 
 @Transactional
@@ -148,8 +152,47 @@ public class WorkflowDaoImpl implements WorkflowDao {
 	}
 
 	@Override
-	public WorkflowDetail fetchWorkflowdetailById(Integer workflowId) {
+	public WorkflowDetail fetchWorkflowDetailById(Integer workflowId) {
 		return hibernateTemplate.get(WorkflowDetail.class, workflowId);
+	}
+
+	@Override
+	public List<WorkflowReviewerDetail> fetchPersonIdByCriteria(Integer workflowDetailId, String approvalStatusCode) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowReviewerDetail.class);
+		criteria.add(Restrictions.eq("workflowDetail.workflowDetailId", workflowDetailId));
+		criteria.add(Restrictions.eq("approvalStatusCode", approvalStatusCode));
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("reviewerPersonId"), "reviewerPersonId");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(WorkflowReviewerDetail.class));
+		@SuppressWarnings("unchecked")
+		List<WorkflowReviewerDetail> reviewerDetails = criteria.list();
+		return reviewerDetails;
+	}
+
+	@Override
+	public List<WorkflowMapDetail> fetchWorkflowMapDetailByPersonId(List<String> personIds) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowMapDetail.class);
+		if (!personIds.isEmpty()) {
+			criteria.add(Restrictions.not(Restrictions.in("approverPersonId", personIds)));
+		}
+		criteria.add(Restrictions.eq("roleTypeCode", Constants.REVIEWER_ROLE_TYPE_CODE));
+		@SuppressWarnings("unchecked")
+		List<WorkflowMapDetail> workflowMapDetails = criteria.list();
+		return workflowMapDetails;
+	}
+
+	@Override
+	public Long activeWorkflowCountByModuleItemId(Integer moduleItemId) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
+		criteria.add(Restrictions.eq("workflow.workflowId", moduleItemId));
+		Long workflowCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+		return workflowCount;
+	}
+
+	@Override
+	public WorkflowReviewerDetail saveWorkflowReviewDetail(WorkflowReviewerDetail workflowReviewerDetail) {
+		hibernateTemplate.saveOrUpdate(workflowReviewerDetail);
+		return workflowReviewerDetail;
 	}
 
 }

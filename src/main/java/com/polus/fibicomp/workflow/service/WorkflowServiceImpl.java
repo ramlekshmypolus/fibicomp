@@ -24,6 +24,7 @@ import com.polus.fibicomp.workflow.pojo.Workflow;
 import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
+import com.polus.fibicomp.workflow.pojo.WorkflowReviewerDetail;
 
 @Transactional
 @Service(value = "workflowService")
@@ -41,6 +42,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 	public Workflow createWorkflow(Integer moduleItemId, String userName, Integer statusCode) {
 		// for re submission case
 		Workflow activeWorkflow = null;
+		Long workflowCount = 0L;
 		boolean isResubmission = false;
 		activeWorkflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
 		if (activeWorkflow != null) {
@@ -49,6 +51,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 			isResubmission = true;
 		}
 
+		workflowCount = workflowDao.activeWorkflowCountByModuleItemId(moduleItemId);
 		Workflow workflow = new Workflow();
 		workflow.setIsWorkflowActive(true);
 		workflow.setModuleCode(1);
@@ -57,6 +60,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 		workflow.setCreateUser(userName);
 		workflow.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
 		workflow.setUpdateUser(userName);
+		workflow.setWorkflowSequence((int) (workflowCount + 1));
 
 		List<WorkflowMapDetail> workflowMapDetails = workflowDao.fetchWorkflowMapDetail();
 		Collections.sort(workflowMapDetails, new WorkflowMapDetailComparator());
@@ -120,6 +124,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 				workflowDetail.setUpdateUser(userName);
 				workflowDetail.setApproverPersonName(workflowMapDetail.getApproverPersonName());
 				workflowDetail.setRoleTypeCode(workflowMapDetail.getRoleTypeCode());
+				workflowDetail.setWorkflowRoleType(workflowMapDetail.getWorkflowRoleType());
 				workflowDetail.setWorkflow(workflow);
 				workflowDetails.add(workflowDetail);
 			}
@@ -133,6 +138,10 @@ public class WorkflowServiceImpl implements WorkflowService {
 	public WorkflowDetail approveOrRejectWorkflowDetail(String actionType, Integer moduleItemId, String personId, String approverComment, MultipartFile[] files, Integer approverStopNumber) throws IOException {
 		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
 		WorkflowDetail workflowDetail = workflowDao.findUniqueWorkflowDetailByCriteria(workflow.getWorkflowId(), personId, null);
+		if (workflowDetail.getApprovalStopNumber() == Constants.WORKFLOW_FIRST_STOP_NUMBER) {
+			workflow.setWorkflowStartDate(new Date(committeeDao.getCurrentDate().getTime()));
+			workflow.setWorkflowStartPerson(personId);
+		}
 		if (files != null) {
 			List<WorkflowAttachment> workflowAttachments = new ArrayList<WorkflowAttachment>();
 			for (int i = 0; i < files.length; i++) {
@@ -168,9 +177,9 @@ public class WorkflowServiceImpl implements WorkflowService {
 		workflowDetail.setApprovalDate(new Date(committeeDao.getCurrentDate().getTime()));
 		Integer maxApprovalStopNumber = workflowDao.getMaxStopNumber(workflow.getWorkflowId());
 		Integer nextApproveStopNumber = workflowDetail.getApprovalStopNumber() + 1;
-		if (nextApproveStopNumber==3) {
+		/*if (nextApproveStopNumber==3) {
 			nextApproveStopNumber = nextApproveStopNumber + 1;
-		}
+		}*/
 		if(!workflowDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_REJECTED) && nextApproveStopNumber <= maxApprovalStopNumber && nextApproveStopNumber!=3) {
 			List<WorkflowDetail> workflowDetailList = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflow.getWorkflowId(), nextApproveStopNumber, Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
 			for(WorkflowDetail newWorkflowDetail : workflowDetailList) {
@@ -227,28 +236,8 @@ public class WorkflowServiceImpl implements WorkflowService {
 	}
 
 	@Override
-	public Workflow assignWorkflowReviewers(Integer moduleItemId, String userName) {
+	public Workflow assignWorkflowReviewers(Integer moduleItemId, String userName, List<WorkflowMapDetail> reviewers) {
 		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
-		List<WorkflowMapDetail> reviewers = workflowDao.fetchWorkflowMapDetailReviewers();
-		Collections.sort(reviewers, new WorkflowMapDetailComparator());
-		List<WorkflowDetail> workflowDetails = new ArrayList<WorkflowDetail>();
-		for (WorkflowMapDetail workflowMapDetail : reviewers) {
-			WorkflowDetail workflowDetail = new WorkflowDetail();
-			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
-			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
-			workflowDetail.setApprovalStopNumber(workflowMapDetail.getApprovalStopNumber());
-			workflowDetail.setApproverNumber(workflowMapDetail.getApproverNumber());
-			workflowDetail.setApproverPersonId(workflowMapDetail.getApproverPersonId());
-			workflowDetail.setMapId(workflowMapDetail.getMapId());
-			workflowDetail.setWorkflowMap(workflowMapDetail.getWorkflowMap());
-			workflowDetail.setPrimaryApproverFlag(workflowMapDetail.getPrimaryApproverFlag());
-			workflowDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
-			workflowDetail.setUpdateUser(userName);
-			workflowDetail.setApproverPersonName(workflowMapDetail.getApproverPersonName());
-			workflowDetail.setRoleTypeCode(workflowMapDetail.getRoleTypeCode());
-			workflowDetail.setWorkflow(workflow);
-			workflowDetails.add(workflowDetail);
-		}
 		List<WorkflowDetail> details = workflow.getWorkflowDetails();
 		Integer workflowDetailId = null;
 		for (WorkflowDetail detail : details) {
@@ -256,15 +245,49 @@ public class WorkflowServiceImpl implements WorkflowService {
 				workflowDetailId = detail.getWorkflowDetailId();
 			}
 		}
-		WorkflowDetail adminWorkflow = workflowDao.fetchWorkflowdetailById(workflowDetailId);
+		WorkflowDetail adminWorkflow = workflowDao.fetchWorkflowDetailById(workflowDetailId);
+		Collections.sort(reviewers, new WorkflowMapDetailComparator());
+		List<WorkflowReviewerDetail> workflowReviewerDetails = new ArrayList<WorkflowReviewerDetail>();
+		for (WorkflowMapDetail workflowMapDetail : reviewers) {
+			WorkflowReviewerDetail workflowReviewerDetail = new WorkflowReviewerDetail();
+			workflowReviewerDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+			workflowReviewerDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+			workflowReviewerDetail.setReviewerPersonId(workflowMapDetail.getApproverPersonId());
+			workflowReviewerDetail.setReviewerPersonName(workflowMapDetail.getApproverPersonName());
+			workflowReviewerDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+			workflowReviewerDetail.setUpdateUser(userName);
+			workflowReviewerDetail.setWorkflowDetail(adminWorkflow);
+			workflowReviewerDetails.add(workflowReviewerDetail);
+		}
 		if (adminWorkflow != null) {
+			adminWorkflow.getWorkflowReviewerDetails().addAll(workflowReviewerDetails);
 			adminWorkflow.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
 			adminWorkflow.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW));
 			workflowDao.saveWorkflowDetail(adminWorkflow);
 		}
-		workflow.getWorkflowDetails().addAll(workflowDetails);
 		workflow = workflowDao.saveWorkflow(workflow);
 		return workflow;
+	}
+
+	@Override
+	public List<WorkflowMapDetail> fetchReviewers(Integer moduleItemId) {
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
+		List<WorkflowDetail> details = workflow.getWorkflowDetails();
+		Integer workflowDetailId = null;
+		for (WorkflowDetail detail : details) {
+			if (detail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
+				workflowDetailId = detail.getWorkflowDetailId();
+			}
+		}
+		List<WorkflowReviewerDetail> reviewerDetails = workflowDao.fetchPersonIdByCriteria(workflowDetailId, Constants.WORKFLOW_STATUS_CODE_WAITING);
+		List<String> personIds = new ArrayList<String>();
+		if (reviewerDetails != null && !reviewerDetails.isEmpty()) {
+			for (WorkflowReviewerDetail detail : reviewerDetails) {
+				personIds.add(detail.getReviewerPersonId());
+			}
+		}
+		List<WorkflowMapDetail> workflowMapDetails = workflowDao.fetchWorkflowMapDetailByPersonId(personIds);
+		return workflowMapDetails;
 	}
 
 }

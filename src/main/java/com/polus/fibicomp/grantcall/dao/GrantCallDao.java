@@ -109,4 +109,11 @@ public interface GrantCallDao {
 	 */
 	public GrantCallAttachment fetchAttachmentById(Integer attachmentId);
 
+	/**
+	 * This method is used to fetch grantCallType by grantcallTypeCode.
+	 * @param grantTypeCode - Id of the grantCallType.
+	 * @return an object of GrantCallType.
+	 */
+	public GrantCallType fetchGrantCallTypeByGrantTypeCode(Integer grantTypeCode);
+
 }
