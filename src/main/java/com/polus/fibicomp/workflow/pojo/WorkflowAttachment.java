@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "FIBI_WORKFLOW_ATTACHMENT")
@@ -32,10 +32,15 @@ public class WorkflowAttachment implements Serializable {
 	@Column(name = "ATTACHMENT_ID", updatable = false, nullable = false)
 	private Integer attachmentId;
 
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_ATTACHMENT"), name = "WORKFLOW_DETAIL_ID", referencedColumnName = "WORKFLOW_DETAIL_ID")
 	private WorkflowDetail workflowDetail;
+
+	@JsonIgnore
+	@ManyToOne(cascade = { CascadeType.REFRESH })
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_WORKFLOW_ATTACHMENT"), name = "REVIEWER_DETAILS_ID", referencedColumnName = "REVIEWER_DETAILS_ID")
+	private WorkflowReviewerDetail workflowReviewerDetail;
 
 	@Column(name = "DESCRIPTION")
 	private String description;
@@ -122,5 +127,13 @@ public class WorkflowAttachment implements Serializable {
 
 	public void setWorkflowDetail(WorkflowDetail workflowDetail) {
 		this.workflowDetail = workflowDetail;
+	}
+
+	public WorkflowReviewerDetail getWorkflowReviewerDetail() {
+		return workflowReviewerDetail;
+	}
+
+	public void setWorkflowReviewerDetail(WorkflowReviewerDetail workflowReviewerDetail) {
+		this.workflowReviewerDetail = workflowReviewerDetail;
 	}
 }

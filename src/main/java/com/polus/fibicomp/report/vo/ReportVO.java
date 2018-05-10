@@ -3,16 +3,19 @@ package com.polus.fibicomp.report.vo;
 import java.util.List;
 
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
+import com.polus.fibicomp.proposal.pojo.Proposal;
 
 public class ReportVO {
 
 	private Integer grantCallId;
 
-	private Long proposalCount;
+	private Integer proposalCount;
 
 	private String reportName;
 
 	private List<GrantCall> grantIds;
+
+	private List<Proposal> proposals;
 
 	public Integer getGrantCallId() {
 		return grantCallId;
@@ -38,11 +41,20 @@ public class ReportVO {
 		this.grantIds = grantIds;
 	}
 
-	public Long getProposalCount() {
+	public List<Proposal> getProposals() {
+		return proposals;
+	}
+
+	public void setProposals(List<Proposal> proposals) {
+		this.proposals = proposals;
+	}
+
+	public Integer getProposalCount() {
 		return proposalCount;
 	}
 
-	public void setProposalCount(Long proposalCount) {
+	public void setProposalCount(Integer proposalCount) {
 		this.proposalCount = proposalCount;
 	}
+
 }

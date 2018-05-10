@@ -203,4 +203,9 @@ public class GrantCallDaoImpl implements GrantCallDao {
 		return hibernateTemplate.get(GrantCallAttachment.class, attachmentId);
 	}
 
+	@Override
+	public GrantCallType fetchGrantCallTypeByGrantTypeCode(Integer grantTypeCode) {
+		return hibernateTemplate.get(GrantCallType.class, grantTypeCode);
+	}
+
 }

@@ -61,6 +61,10 @@ public class WorkflowMapDetail implements Serializable {
 	@Column(name = "ROLE_TYPE_CODE")
 	private Integer roleTypeCode;
 
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_WORKFLOW_MAP_DETAIL"), name = "ROLE_TYPE_CODE", referencedColumnName = "ROLE_TYPE_CODE", insertable = false, updatable = false)
+	private WorkflowRoleType workflowRoleType;
+
 	@Column(name = "DESCRIPTION")
 	private String description;
 
@@ -176,6 +180,14 @@ public class WorkflowMapDetail implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public WorkflowRoleType getWorkflowRoleType() {
+		return workflowRoleType;
+	}
+
+	public void setWorkflowRoleType(WorkflowRoleType workflowRoleType) {
+		this.workflowRoleType = workflowRoleType;
 	}
 
 }

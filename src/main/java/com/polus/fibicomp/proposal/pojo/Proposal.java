@@ -22,6 +22,7 @@ import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
+import com.polus.fibicomp.grantcall.pojo.GrantCallType;
 
 @Entity
 @Table(name = "FIBI_SMU_PROPOSAL")
@@ -140,6 +141,10 @@ public class Proposal implements Serializable {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<ProposalSponsor> proposalSponsors;
+
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK6_FIBI_SMU_PROPOSAL"), name = "GRANT_TYPE_CODE", referencedColumnName = "GRANT_TYPE_CODE", insertable = false, updatable = false)
+	private GrantCallType grantCallType;
 
 	public Proposal() {
 		proposalAttachments = new ArrayList<ProposalAttachment>();
@@ -409,6 +414,14 @@ public class Proposal implements Serializable {
 
 	public void setProposalSponsors(List<ProposalSponsor> proposalSponsors) {
 		this.proposalSponsors = proposalSponsors;
+	}
+
+	public GrantCallType getGrantCallType() {
+		return grantCallType;
+	}
+
+	public void setGrantCallType(GrantCallType grantCallType) {
+		this.grantCallType = grantCallType;
 	}
 
 }

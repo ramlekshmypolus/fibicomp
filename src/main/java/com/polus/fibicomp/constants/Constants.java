@@ -45,6 +45,10 @@ public interface Constants {
     // Grant Call
     Integer GRANT_CALL_STATUS_CODE_DRAFT = 1;
     Integer GRANT_CALL_STATUS_CODE_OPEN = 2;
+    Integer GRANT_CALL_TYPE_INTERNAL = 1;
+    Integer GRANT_CALL_TYPE_EXTERNAL = 2;
+    Integer GRANT_CALL_TYPE_OTHERS = 3;
+
 
     // Proposal
     Integer PROPOSAL_STATUS_CODE_IN_PROGRESS = 1;
@@ -65,5 +69,7 @@ public interface Constants {
 
     // Workflow first stop number
     Integer WORKFLOW_FIRST_STOP_NUMBER = 1;
+    Integer REVIEWER_ROLE_TYPE_CODE = 3;
+    Integer ADMIN_ROLE_TYPE_CODE = 2;
 
 }

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.proposal.pojo.Proposal;
+import com.polus.fibicomp.report.vo.ReportVO;
 
 @Transactional
 @Service(value = "reportDao")
@@ -28,22 +29,6 @@ public class ReportDaoImpl implements ReportDao {
 
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
-
-	@Override
-	public Long fetchApplicationCountByGrantCallId(Integer grantCallId) {
-		List<Integer> proposalStatus = new ArrayList<Integer>();
-		proposalStatus.add(2);
-		proposalStatus.add(4);
-		proposalStatus.add(5);
-		proposalStatus.add(8);
-		proposalStatus.add(9);
-		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Proposal.class);
-		criteria.add(Restrictions.eq("grantCallId", grantCallId));
-		criteria.add(Restrictions.in("statusCode", proposalStatus));
-		Long proposalCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
-		return proposalCount;
-	}
 
 	@Override
 	public List<GrantCall> fetchOpenGrantIds() {
@@ -58,5 +43,26 @@ public class ReportDaoImpl implements ReportDao {
 		@SuppressWarnings("unchecked")
 		List<GrantCall> grantIds = criteria.list();
 		return grantIds;
+	}
+
+	@Override
+	public ReportVO fetchApplicationByGrantCallId(ReportVO reportVO) {
+		Integer grantCallId = reportVO.getGrantCallId();
+		List<Integer> proposalStatus = new ArrayList<Integer>();
+		proposalStatus.add(2);
+		proposalStatus.add(4);
+		proposalStatus.add(5);
+		proposalStatus.add(8);
+		proposalStatus.add(9);
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Proposal.class);
+		criteria.add(Restrictions.eq("grantCallId", grantCallId));
+		criteria.add(Restrictions.in("statusCode", proposalStatus));
+		@SuppressWarnings("unchecked")
+		List<Proposal> proposals = criteria.list();	
+		Integer proposalCount = proposals.size();
+		reportVO.setProposalCount(proposalCount);
+		reportVO.setProposals(proposals);
+		return reportVO;
 	}
 }

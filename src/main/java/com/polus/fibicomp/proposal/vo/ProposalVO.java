@@ -22,14 +22,13 @@ import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalType;
 import com.polus.fibicomp.workflow.pojo.Workflow;
+import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
 
 public class ProposalVO {
 
 	private Integer grantCallId;
 
 	private Proposal proposal;
-
-	private List<GrantCallType> grantCallTypes;
 
 	private List<ProposalCategory> proposalCategories;
 
@@ -117,6 +116,10 @@ public class ProposalVO {
 
 	private Boolean finalApprover;
 
+	private GrantCallType defaultGrantCallType;
+
+	private List<WorkflowMapDetail> reviewers;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -135,14 +138,6 @@ public class ProposalVO {
 
 	public void setProposal(Proposal proposal) {
 		this.proposal = proposal;
-	}
-
-	public List<GrantCallType> getGrantCallTypes() {
-		return grantCallTypes;
-	}
-
-	public void setGrantCallTypes(List<GrantCallType> grantCallTypes) {
-		this.grantCallTypes = grantCallTypes;
 	}
 
 	public List<ProposalCategory> getProposalCategories() {
@@ -487,6 +482,22 @@ public class ProposalVO {
 
 	public void setFinalApprover(Boolean finalApprover) {
 		this.finalApprover = finalApprover;
+	}
+
+	public GrantCallType getDefaultGrantCallType() {
+		return defaultGrantCallType;
+	}
+
+	public void setDefaultGrantCallType(GrantCallType defaultGrantCallType) {
+		this.defaultGrantCallType = defaultGrantCallType;
+	}
+
+	public List<WorkflowMapDetail> getReviewers() {
+		return reviewers;
+	}
+
+	public void setReviewers(List<WorkflowMapDetail> reviewers) {
+		this.reviewers = reviewers;
 	}
 
 }

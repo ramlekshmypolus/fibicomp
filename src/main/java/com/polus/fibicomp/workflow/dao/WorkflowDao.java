@@ -8,6 +8,7 @@ import com.polus.fibicomp.workflow.pojo.Workflow;
 import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
+import com.polus.fibicomp.workflow.pojo.WorkflowReviewerDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowStatus;
 
 @Service
@@ -39,6 +40,14 @@ public interface WorkflowDao {
 
 	public WorkflowDetail fetchWorkflowByParams(Integer workflowId, String personId, Integer stopNumber);
 
-	public WorkflowDetail fetchWorkflowdetailById(Integer workflowId);
+	public WorkflowDetail fetchWorkflowDetailById(Integer workflowId);
+
+	public List<WorkflowReviewerDetail> fetchPersonIdByCriteria(Integer workflowDetailId, String approvalStatusCode);
+
+	public List<WorkflowMapDetail> fetchWorkflowMapDetailByPersonId(List<String> personIds);
+
+	public Long activeWorkflowCountByModuleItemId(Integer moduleItemId);
+
+	public WorkflowReviewerDetail saveWorkflowReviewDetail(WorkflowReviewerDetail workflowReviewerDetail);
 
 }

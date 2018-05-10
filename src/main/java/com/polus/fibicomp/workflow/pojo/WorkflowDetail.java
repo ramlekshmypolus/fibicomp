@@ -39,7 +39,7 @@ public class WorkflowDetail implements Serializable {
 	private Integer workflowDetailId;
 
 	@JsonBackReference
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_WORKFLOW_DETAIL"), name = "WORKFLOW_ID", referencedColumnName = "WORKFLOW_ID")
 	private Workflow workflow;
 
@@ -88,15 +88,24 @@ public class WorkflowDetail implements Serializable {
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimeStamp;
 
-	@JsonManagedReference
+	//@JsonManagedReference
 	@OneToMany(mappedBy = "workflowDetail", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<WorkflowAttachment> workflowAttachments;
 
 	@Column(name = "ROLE_TYPE_CODE")
 	private Integer roleTypeCode;
 
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK4_FIBI_WORKFLOW_DETAIL"), name = "ROLE_TYPE_CODE", referencedColumnName = "ROLE_TYPE_CODE", insertable = false, updatable = false)
+	private WorkflowRoleType workflowRoleType;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "workflowDetail", orphanRemoval = true, cascade = { CascadeType.ALL })
+	private List<WorkflowReviewerDetail> workflowReviewerDetails;
+
 	public WorkflowDetail() {
 		workflowAttachments = new ArrayList<WorkflowAttachment>();
+		workflowReviewerDetails = new ArrayList<WorkflowReviewerDetail>();
 	}
 
 	public Integer getWorkflowDetailId() {
@@ -245,6 +254,22 @@ public class WorkflowDetail implements Serializable {
 
 	public void setRoleTypeCode(Integer roleTypeCode) {
 		this.roleTypeCode = roleTypeCode;
+	}
+
+	public WorkflowRoleType getWorkflowRoleType() {
+		return workflowRoleType;
+	}
+
+	public void setWorkflowRoleType(WorkflowRoleType workflowRoleType) {
+		this.workflowRoleType = workflowRoleType;
+	}
+
+	public List<WorkflowReviewerDetail> getWorkflowReviewerDetails() {
+		return workflowReviewerDetails;
+	}
+
+	public void setWorkflowReviewerDetails(List<WorkflowReviewerDetail> workflowReviewerDetails) {
+		this.workflowReviewerDetails = workflowReviewerDetails;
 	}
 
 }
