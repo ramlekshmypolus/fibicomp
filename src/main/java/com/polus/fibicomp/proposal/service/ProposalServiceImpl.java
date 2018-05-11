@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowReviewerDetail;
+import com.polus.fibicomp.workflow.pojo.WorkflowStatus;
 import com.polus.fibicomp.workflow.service.WorkflowService;
 
 @Transactional
@@ -534,10 +537,12 @@ public class ProposalServiceImpl implements ProposalService {
 	@Override
 	public String assignReviewer(ProposalVO proposalVO) {
 		Proposal proposal = proposalVO.getProposal();
-		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS);
-		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS));
-		proposal = proposalDao.saveOrUpdateProposal(proposal);
-		Workflow workflow = workflowService.assignWorkflowReviewers(proposalVO.getProposalId(), proposalVO.getUserName(), proposalVO.getReviewers());
+		if (!proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)) {
+			proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS);
+			proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS));
+			proposal = proposalDao.saveOrUpdateProposal(proposal);
+		}
+		Workflow workflow = workflowService.assignWorkflowReviewers(proposalVO.getProposalId(), proposalVO.getLoggedInWorkflowDetail());
 		proposalVO.setWorkflow(workflow);
 		proposalVO.setProposal(proposal);
 		proposalVO.setIsGrantAdmin(true);
@@ -705,8 +710,44 @@ public class ProposalServiceImpl implements ProposalService {
 	@Override
 	public String fetchReviewers(ProposalVO proposalVO) {
 		Proposal proposal = proposalVO.getProposal();
-		List<WorkflowMapDetail> workflowMapDetails = workflowService.fetchReviewers(proposal.getProposalId());
-		proposalVO.setReviewers(workflowMapDetails);
+		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
+		List<WorkflowDetail> details = workflow.getWorkflowDetails();
+		Integer workflowDetailId = null;
+		for (WorkflowDetail detail : details) {
+			if (detail.getApproverPersonId().equals(proposalVO.getPersonId())) {
+				workflowDetailId = detail.getWorkflowDetailId();
+			}
+		}
+		List<WorkflowMapDetail> availableReviewers = workflowService.fetchAvailableReviewers(workflowDetailId);
+		WorkflowDetail workflowDetail = workflowDao.getCurrentWorkflowDetail(workflow.getWorkflowId(), proposalVO.getPersonId(), Constants.ADMIN_ROLE_TYPE_CODE);
+		proposalVO.setAvailableReviewers(availableReviewers);
+		proposalVO.setLoggedInWorkflowDetail(workflowDetail);
+		Map<String, WorkflowStatus> workflowStatusMap = new HashMap<String, WorkflowStatus>();
+		workflowStatusMap.put(Constants.WORKFLOW_STATUS_CODE_WAITING, workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+		workflowStatusMap.put(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW, workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW));
+		proposalVO.setWorkflowStatusMap(workflowStatusMap);
+		String response = committeeDao.convertObjectToJSON(proposalVO);
+		return response;
+	}
+
+	@Override
+	public String submitForEndoresment(ProposalVO proposalVO) {
+		Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
+		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT);
+		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT));
+		proposal = proposalDao.saveOrUpdateProposal(proposal);
+		proposalVO.setProposal(proposal);
+		String response = committeeDao.convertObjectToJSON(proposalVO);
+		return response;
+	}
+
+	@Override
+	public String approveProvost(ProposalVO proposalVO) {
+		Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
+		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED);
+		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED));
+		proposal = proposalDao.saveOrUpdateProposal(proposal);
+		proposalVO.setProposal(proposal);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
 	}

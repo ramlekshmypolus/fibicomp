@@ -170,18 +170,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
 	}
 
 	@Override
-	public List<WorkflowMapDetail> fetchWorkflowMapDetailByPersonId(List<String> personIds) {
-		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowMapDetail.class);
-		if (!personIds.isEmpty()) {
-			criteria.add(Restrictions.not(Restrictions.in("approverPersonId", personIds)));
-		}
-		criteria.add(Restrictions.eq("roleTypeCode", Constants.REVIEWER_ROLE_TYPE_CODE));
-		@SuppressWarnings("unchecked")
-		List<WorkflowMapDetail> workflowMapDetails = criteria.list();
-		return workflowMapDetails;
-	}
-
-	@Override
 	public Long activeWorkflowCountByModuleItemId(Integer moduleItemId) {
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
 		criteria.add(Restrictions.eq("workflow.workflowId", moduleItemId));
@@ -193,6 +181,28 @@ public class WorkflowDaoImpl implements WorkflowDao {
 	public WorkflowReviewerDetail saveWorkflowReviewDetail(WorkflowReviewerDetail workflowReviewerDetail) {
 		hibernateTemplate.saveOrUpdate(workflowReviewerDetail);
 		return workflowReviewerDetail;
+	}
+
+	@Override
+	public List<WorkflowMapDetail> fetchWorkflowMapDetailByNotInPersonId(List<String> personIds) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowMapDetail.class);
+		if (!personIds.isEmpty()) {
+			criteria.add(Restrictions.not(Restrictions.in("approverPersonId", personIds)));
+		}
+		criteria.add(Restrictions.eq("roleTypeCode", Constants.REVIEWER_ROLE_TYPE_CODE));
+		@SuppressWarnings("unchecked")
+		List<WorkflowMapDetail> workflowMapDetails = criteria.list();
+		return workflowMapDetails;
+	}
+
+	@Override
+	public WorkflowDetail getCurrentWorkflowDetail(Integer workflowId, String personId, Integer roleCode) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
+		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
+		criteria.add(Restrictions.eq("approverPersonId", personId));
+		criteria.add(Restrictions.eq("roleTypeCode", roleCode));
+		WorkflowDetail workflowDetail = (WorkflowDetail) criteria.list().get(0);
+		return workflowDetail;
 	}
 
 }

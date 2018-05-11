@@ -236,58 +236,34 @@ public class WorkflowServiceImpl implements WorkflowService {
 	}
 
 	@Override
-	public Workflow assignWorkflowReviewers(Integer moduleItemId, String userName, List<WorkflowMapDetail> reviewers) {
+	public Workflow assignWorkflowReviewers(Integer moduleItemId, WorkflowDetail workflowDetail) {
+		workflowDao.saveWorkflowDetail(workflowDetail);
 		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
-		List<WorkflowDetail> details = workflow.getWorkflowDetails();
-		Integer workflowDetailId = null;
-		for (WorkflowDetail detail : details) {
-			if (detail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING)) {
-				workflowDetailId = detail.getWorkflowDetailId();
-			}
-		}
-		WorkflowDetail adminWorkflow = workflowDao.fetchWorkflowDetailById(workflowDetailId);
-		Collections.sort(reviewers, new WorkflowMapDetailComparator());
-		List<WorkflowReviewerDetail> workflowReviewerDetails = new ArrayList<WorkflowReviewerDetail>();
-		for (WorkflowMapDetail workflowMapDetail : reviewers) {
-			WorkflowReviewerDetail workflowReviewerDetail = new WorkflowReviewerDetail();
-			workflowReviewerDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
-			workflowReviewerDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
-			workflowReviewerDetail.setReviewerPersonId(workflowMapDetail.getApproverPersonId());
-			workflowReviewerDetail.setReviewerPersonName(workflowMapDetail.getApproverPersonName());
-			workflowReviewerDetail.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
-			workflowReviewerDetail.setUpdateUser(userName);
-			workflowReviewerDetail.setWorkflowDetail(adminWorkflow);
-			workflowReviewerDetails.add(workflowReviewerDetail);
-		}
-		if (adminWorkflow != null) {
-			adminWorkflow.getWorkflowReviewerDetails().addAll(workflowReviewerDetails);
-			adminWorkflow.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
-			adminWorkflow.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW));
-			workflowDao.saveWorkflowDetail(adminWorkflow);
-		}
 		workflow = workflowDao.saveWorkflow(workflow);
 		return workflow;
 	}
 
 	@Override
-	public List<WorkflowMapDetail> fetchReviewers(Integer moduleItemId) {
-		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
-		List<WorkflowDetail> details = workflow.getWorkflowDetails();
-		Integer workflowDetailId = null;
-		for (WorkflowDetail detail : details) {
-			if (detail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
-				workflowDetailId = detail.getWorkflowDetailId();
-			}
-		}
-		List<WorkflowReviewerDetail> reviewerDetails = workflowDao.fetchPersonIdByCriteria(workflowDetailId, Constants.WORKFLOW_STATUS_CODE_WAITING);
+	public List<WorkflowMapDetail> fetchAvailableReviewers(Integer workflowDetailId) {
+		List<String> personIds = fetchReviewersPersonIds(workflowDetailId, Constants.WORKFLOW_STATUS_CODE_WAITING);
+		List<WorkflowMapDetail> workflowMapDetails = workflowDao.fetchWorkflowMapDetailByNotInPersonId(personIds);
+		return workflowMapDetails;
+	}
+
+	public List<String> fetchReviewersPersonIds(Integer workflowDetailId, String workflowStatus) {
+		List<WorkflowReviewerDetail> reviewerDetails = workflowDao.fetchPersonIdByCriteria(workflowDetailId, workflowStatus);
 		List<String> personIds = new ArrayList<String>();
 		if (reviewerDetails != null && !reviewerDetails.isEmpty()) {
 			for (WorkflowReviewerDetail detail : reviewerDetails) {
 				personIds.add(detail.getReviewerPersonId());
 			}
 		}
-		List<WorkflowMapDetail> workflowMapDetails = workflowDao.fetchWorkflowMapDetailByPersonId(personIds);
-		return workflowMapDetails;
+		return personIds;
+	}
+
+	@Override
+	public WorkflowDetail getCurrentWorkflowDetail(Integer workflowId, String personId, Integer roleCode) {
+		return workflowDao.getCurrentWorkflowDetail(workflowId, personId, roleCode);
 	}
 
 }

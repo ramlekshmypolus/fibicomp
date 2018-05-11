@@ -28,8 +28,10 @@ public interface WorkflowService {
 
 	public boolean isFirstApprover(Integer moduleItemId, String personId, Integer approverStopNumber);
 
-	public Workflow assignWorkflowReviewers(Integer moduleItemId, String userName, List<WorkflowMapDetail> reviewers);
+	public Workflow assignWorkflowReviewers(Integer moduleItemId, WorkflowDetail workflowDetail);
 
-	public List<WorkflowMapDetail> fetchReviewers(Integer moduleItemId);
+	public List<WorkflowMapDetail> fetchAvailableReviewers(Integer workflowDetailId);
+
+	public WorkflowDetail getCurrentWorkflowDetail(Integer workflowId, String personId, Integer roleCode);
 
 }

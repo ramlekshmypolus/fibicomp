@@ -1,6 +1,7 @@
 package com.polus.fibicomp.proposal.vo;
 
 import java.util.List;
+import java.util.Map;
 
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
@@ -22,7 +23,9 @@ import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
 import com.polus.fibicomp.proposal.pojo.ProposalResearchType;
 import com.polus.fibicomp.proposal.pojo.ProposalType;
 import com.polus.fibicomp.workflow.pojo.Workflow;
+import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
 import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
+import com.polus.fibicomp.workflow.pojo.WorkflowStatus;
 
 public class ProposalVO {
 
@@ -118,7 +121,11 @@ public class ProposalVO {
 
 	private GrantCallType defaultGrantCallType;
 
-	private List<WorkflowMapDetail> reviewers;
+	private List<WorkflowMapDetail> availableReviewers;
+
+	private WorkflowDetail loggedInWorkflowDetail;
+
+	private Map<String, WorkflowStatus> workflowStatusMap;
 
 	public ProposalVO() {
 		proposal = new Proposal();
@@ -492,12 +499,28 @@ public class ProposalVO {
 		this.defaultGrantCallType = defaultGrantCallType;
 	}
 
-	public List<WorkflowMapDetail> getReviewers() {
-		return reviewers;
+	public WorkflowDetail getLoggedInWorkflowDetail() {
+		return loggedInWorkflowDetail;
 	}
 
-	public void setReviewers(List<WorkflowMapDetail> reviewers) {
-		this.reviewers = reviewers;
+	public void setLoggedInWorkflowDetail(WorkflowDetail loggedInWorkflowDetail) {
+		this.loggedInWorkflowDetail = loggedInWorkflowDetail;
+	}
+
+	public List<WorkflowMapDetail> getAvailableReviewers() {
+		return availableReviewers;
+	}
+
+	public void setAvailableReviewers(List<WorkflowMapDetail> availableReviewers) {
+		this.availableReviewers = availableReviewers;
+	}
+
+	public Map<String, WorkflowStatus> getWorkflowStatusMap() {
+		return workflowStatusMap;
+	}
+
+	public void setWorkflowStatusMap(Map<String, WorkflowStatus> workflowStatusMap) {
+		this.workflowStatusMap = workflowStatusMap;
 	}
 
 }

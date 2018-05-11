@@ -160,4 +160,19 @@ public class ProposalController {
 		logger.info("Requesting for fetchReviewers");
 		return proposalService.fetchReviewers(vo);
 	}
+
+	@RequestMapping(value = "/submitForEndoresment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String submitForEndoresment(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for submitForEndoresment");
+		logger.info("proposalId : " + vo.getProposalId());
+		return proposalService.submitForEndoresment(vo);
+	}
+
+	@RequestMapping(value = "/approveProvost", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String approveProvost(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for approveProvost");
+		logger.info("proposalId : " + vo.getProposalId());
+		return proposalService.approveProvost(vo);
+	}
+
 }

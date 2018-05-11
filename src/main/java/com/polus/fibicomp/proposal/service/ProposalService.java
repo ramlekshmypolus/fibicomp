@@ -130,4 +130,9 @@ public interface ProposalService {
 	public String reviewCompleted(MultipartFile[] files, String formDataJSON);
 
 	public String fetchReviewers(ProposalVO proposalVO);
+
+	public String submitForEndoresment(ProposalVO proposalVO);
+
+	public String approveProvost(ProposalVO proposalVO);
+
 }
