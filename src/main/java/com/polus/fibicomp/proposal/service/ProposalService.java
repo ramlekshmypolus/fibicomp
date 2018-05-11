@@ -131,8 +131,10 @@ public interface ProposalService {
 
 	public String fetchReviewers(ProposalVO proposalVO);
 
-	public String submitForEndoresment(ProposalVO proposalVO);
+	public String submitForEndorsement(ProposalVO proposalVO);
 
 	public String approveProvost(ProposalVO proposalVO);
+
+	public String deleteReviewer(ProposalVO proposalVO);
 
 }
