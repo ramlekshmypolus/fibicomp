@@ -44,10 +44,12 @@ public interface WorkflowDao {
 
 	public List<WorkflowReviewerDetail> fetchPersonIdByCriteria(Integer workflowDetailId, String approvalStatusCode);
 
-	public List<WorkflowMapDetail> fetchWorkflowMapDetailByPersonId(List<String> personIds);
-
 	public Long activeWorkflowCountByModuleItemId(Integer moduleItemId);
 
 	public WorkflowReviewerDetail saveWorkflowReviewDetail(WorkflowReviewerDetail workflowReviewerDetail);
+
+	public List<WorkflowMapDetail> fetchWorkflowMapDetailByNotInPersonId(List<String> personIds);
+
+	public WorkflowDetail getCurrentWorkflowDetail(Integer workflowId, String personId, Integer roleCode);
 
 }
