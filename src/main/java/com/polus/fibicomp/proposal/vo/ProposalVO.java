@@ -127,6 +127,10 @@ public class ProposalVO {
 
 	private Map<String, WorkflowStatus> workflowStatusMap;
 
+	private Integer reviewerId;
+
+	private Boolean isGrantManager = false;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -521,6 +525,22 @@ public class ProposalVO {
 
 	public void setWorkflowStatusMap(Map<String, WorkflowStatus> workflowStatusMap) {
 		this.workflowStatusMap = workflowStatusMap;
+	}
+
+	public Integer getReviewerId() {
+		return reviewerId;
+	}
+
+	public void setReviewerId(Integer reviewerId) {
+		this.reviewerId = reviewerId;
+	}
+
+	public Boolean getIsGrantManager() {
+		return isGrantManager;
+	}
+
+	public void setIsGrantManager(Boolean isGrantManager) {
+		this.isGrantManager = isGrantManager;
 	}
 
 }

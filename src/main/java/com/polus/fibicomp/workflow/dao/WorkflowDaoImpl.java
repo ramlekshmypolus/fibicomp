@@ -205,4 +205,19 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		return workflowDetail;
 	}
 
+	@Override
+	public List<WorkflowDetail> fetchWorkflowDetailByWorkflowId(Integer workflowId) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
+		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
+		@SuppressWarnings("unchecked")
+		List<WorkflowDetail> workflowDetails = criteria.list();
+		return workflowDetails;
+	}
+
+	@Override
+	public List<WorkflowReviewerDetail> fetchWorkflowReviewerByCriteria(Integer workflowDetailId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

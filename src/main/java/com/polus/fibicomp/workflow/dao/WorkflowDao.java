@@ -52,4 +52,8 @@ public interface WorkflowDao {
 
 	public WorkflowDetail getCurrentWorkflowDetail(Integer workflowId, String personId, Integer roleCode);
 
+	public List<WorkflowDetail> fetchWorkflowDetailByWorkflowId(Integer workflowId);
+ 
+	public List<WorkflowReviewerDetail> fetchWorkflowReviewerByCriteria(Integer workflowDetailId);
+
 }

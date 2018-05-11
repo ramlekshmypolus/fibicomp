@@ -142,6 +142,9 @@ public class Proposal implements Serializable {
 	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<ProposalSponsor> proposalSponsors;
 
+	@Column(name = "GRANT_TYPE_CODE")
+	private Integer grantTypeCode;
+
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK6_FIBI_SMU_PROPOSAL"), name = "GRANT_TYPE_CODE", referencedColumnName = "GRANT_TYPE_CODE", insertable = false, updatable = false)
 	private GrantCallType grantCallType;
@@ -422,6 +425,14 @@ public class Proposal implements Serializable {
 
 	public void setGrantCallType(GrantCallType grantCallType) {
 		this.grantCallType = grantCallType;
+	}
+
+	public Integer getGrantTypeCode() {
+		return grantTypeCode;
+	}
+
+	public void setGrantTypeCode(Integer grantTypeCode) {
+		this.grantTypeCode = grantTypeCode;
 	}
 
 }

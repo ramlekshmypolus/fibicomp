@@ -161,11 +161,19 @@ public class ProposalController {
 		return proposalService.fetchReviewers(vo);
 	}
 
-	@RequestMapping(value = "/submitForEndoresment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String submitForEndoresment(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for submitForEndoresment");
+	@RequestMapping(value = "/deleteReviewer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String deleteReviewer(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for deleteReviewer");
 		logger.info("proposalId : " + vo.getProposalId());
-		return proposalService.submitForEndoresment(vo);
+		logger.info("budgetId : " + vo.getReviewerId());
+		return proposalService.deleteReviewer(vo);
+	}
+
+	@RequestMapping(value = "/submitForEndorsement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String submitForEndoresment(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for submitForEndorsement");
+		logger.info("proposalId : " + vo.getProposalId());
+		return proposalService.submitForEndorsement(vo);
 	}
 
 	@RequestMapping(value = "/approveProvost", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

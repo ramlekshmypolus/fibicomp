@@ -77,8 +77,10 @@ public class ProposalServiceImpl implements ProposalService {
 			proposal.setGrantCall(grantCall);
 			proposal.setGrantCallId(grantCallId);
 			proposal.setGrantCallType(grantCallDao.fetchGrantCallTypeByGrantTypeCode(grantCall.getGrantTypeCode()));
+			proposal.setGrantTypeCode(grantCall.getGrantTypeCode());
 		} else {
 			proposal.setGrantCallType(grantCallDao.fetchGrantCallTypeByGrantTypeCode(Constants.GRANT_CALL_TYPE_OTHERS));
+			proposal.setGrantTypeCode(Constants.GRANT_CALL_TYPE_OTHERS);
 		}
 		loadInitialData(proposalVO);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
@@ -440,6 +442,11 @@ public class ProposalServiceImpl implements ProposalService {
 				}
 			}
 		}
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)) {
+			if (proposalVO.getPersonId().equals(Constants.SMU_GRANT_MANAGER_CODE)) {
+				proposalVO.setIsGrantManager(true);
+			}
+		}
 	}
 
 	public void canTakeRoutingAction1(ProposalVO proposalVO) {
@@ -731,7 +738,7 @@ public class ProposalServiceImpl implements ProposalService {
 	}
 
 	@Override
-	public String submitForEndoresment(ProposalVO proposalVO) {
+	public String submitForEndorsement(ProposalVO proposalVO) {
 		Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
 		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT);
 		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT));
@@ -750,6 +757,35 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposal(proposal);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
+	}
+
+	@Override
+	public String deleteReviewer(ProposalVO proposalVO) {
+		try {
+			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposalVO.getProposalId());
+			List<WorkflowDetail> workflowdetailList = workflowDao.fetchWorkflowDetailByWorkflowId(workflow.getWorkflowId());
+			for(WorkflowDetail workflowDetail : workflowdetailList) {
+				List<WorkflowReviewerDetail> list = workflowDao.fetchWorkflowReviewerByCriteria(workflowDetail.getWorkflowDetailId());
+				List<WorkflowReviewerDetail> updatedlist = new ArrayList<WorkflowReviewerDetail>(list);
+				Collections.copy(updatedlist, list);
+				for (WorkflowReviewerDetail workflowReviewerDetail : list) {
+					if (workflowReviewerDetail.getReviewerDetailId().equals(proposalVO.getReviewerId())) {
+						updatedlist.remove(workflowReviewerDetail);
+					}
+				}
+				workflowDetail.getWorkflowReviewerDetails().clear();
+				workflowDetail.getWorkflowReviewerDetails().addAll(updatedlist);
+				workflowDao.saveWorkflowDetail(workflowDetail);
+			}
+			proposalVO.setWorkflow(workflow);
+			proposalVO.setStatus(true);
+			proposalVO.setMessage("Proposal budget deleted successfully");
+		} catch (Exception e) {
+			proposalVO.setStatus(true);
+			proposalVO.setMessage("Problem occurred in deleting proposal budget");
+			e.printStackTrace();
+		}
+		return committeeDao.convertObjectToJSON(proposalVO);
 	}
 
 }
