@@ -392,6 +392,9 @@ public class ProposalServiceImpl implements ProposalService {
 		return response;
 	}
 
+	/**
+	 * @param proposalVO
+	 */
 	public void canTakeRoutingAction(ProposalVO proposalVO) {
 		Proposal proposal = proposalVO.getProposal();
 		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
@@ -423,7 +426,7 @@ public class ProposalServiceImpl implements ProposalService {
 			for (WorkflowDetail workflowDetail : workflowDetails) {
 				if (currentPerson == true) {
 					if (workflowDetail.getApprovalStatusCode()
-							.equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
+							.equals(Constants.WORKFLOW_STATUS_CODE_WAITING)) {
 						List<WorkflowReviewerDetail> reviewerDetails = workflowDetail.getWorkflowReviewerDetails();
 						if (reviewerDetails != null && !reviewerDetails.isEmpty()) {
 							for (WorkflowReviewerDetail reviewerDetail : reviewerDetails) {
@@ -438,14 +441,30 @@ public class ProposalServiceImpl implements ProposalService {
 								}
 							}
 						}
+					} else if (workflowDetail.getApprovalStatusCode()
+							.equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
+						if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId())) {
+							if (workflowDetail.getRoleTypeCode() == Constants.ADMIN_ROLE_TYPE_CODE) {
+								proposalVO.setIsGrantAdmin(true);
+							}
+							/*currentPerson = false;
+							proposalVO.setIsApproved(false);
+							proposalVO.setIsApprover(true);*/
+						}
+						if (workflowDetail.getRoleTypeCode() == Constants.ADMIN_ROLE_TYPE_CODE) {
+							proposalVO.setIsGrantAdmin(true);
+						}
 					}
 				}
 			}
 		}
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)) {
-			if (proposalVO.getPersonId().equals(Constants.SMU_GRANT_MANAGER_CODE)) {
-				proposalVO.setIsGrantManager(true);
-			}
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)
+				&& proposalVO.getPersonId().equals(Constants.SMU_GRANT_MANAGER_CODE)) {
+			proposalVO.setIsGrantManager(true);
+		}
+		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT)
+				&& proposalVO.getPersonId().equals(Constants.SMU_GRANT_PROVOST_CODE)) {
+			proposalVO.setIsProvost(true);
 		}
 	}
 
@@ -554,6 +573,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setProposal(proposal);
 		proposalVO.setIsGrantAdmin(true);
 		proposalVO.setIsReviewed(false);
+		proposalVO.setIsApprover(false);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
 	}
@@ -769,20 +789,31 @@ public class ProposalServiceImpl implements ProposalService {
 				List<WorkflowReviewerDetail> updatedlist = new ArrayList<WorkflowReviewerDetail>(list);
 				Collections.copy(updatedlist, list);
 				for (WorkflowReviewerDetail workflowReviewerDetail : list) {
-					if (workflowReviewerDetail.getReviewerDetailId().equals(proposalVO.getReviewerId())) {
+					if (workflowReviewerDetail.getReviewerPersonId().equals(proposalVO.getReviewerId())) {
 						updatedlist.remove(workflowReviewerDetail);
 					}
 				}
 				workflowDetail.getWorkflowReviewerDetails().clear();
 				workflowDetail.getWorkflowReviewerDetails().addAll(updatedlist);
+				if (workflowDetail.getWorkflowReviewerDetails() == null && workflowDetail.getWorkflowReviewerDetails().isEmpty()) {
+					proposalVO.setIsApproved(false);
+					proposalVO.setIsApprover(true);
+					Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
+					proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
+					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
+					proposal = proposalDao.saveOrUpdateProposal(proposal);
+					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+				}
 				workflowDao.saveWorkflowDetail(workflowDetail);
 			}
+			workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposalVO.getProposalId());
 			proposalVO.setWorkflow(workflow);
 			proposalVO.setStatus(true);
-			proposalVO.setMessage("Proposal budget deleted successfully");
+			proposalVO.setMessage("Reviewer deleted successfully");
 		} catch (Exception e) {
 			proposalVO.setStatus(true);
-			proposalVO.setMessage("Problem occurred in deleting proposal budget");
+			proposalVO.setMessage("Problem occurred in deleting reviewer");
 			e.printStackTrace();
 		}
 		return committeeDao.convertObjectToJSON(proposalVO);
