@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
+import com.polus.fibicomp.pojo.Protocol;
+import com.polus.fibicomp.pojo.ProtocolType;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.report.vo.ReportVO;
 
@@ -49,20 +51,54 @@ public class ReportDaoImpl implements ReportDao {
 	public ReportVO fetchApplicationByGrantCallId(ReportVO reportVO) {
 		Integer grantCallId = reportVO.getGrantCallId();
 		List<Integer> proposalStatus = new ArrayList<Integer>();
-		proposalStatus.add(2);
-		proposalStatus.add(4);
-		proposalStatus.add(5);
-		proposalStatus.add(8);
-		proposalStatus.add(9);
+		proposalStatus.add(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
+		proposalStatus.add(Constants.PROPOSAL_STATUS_CODE_APPROVED);
+		proposalStatus.add(Constants.PROPOSAL_STATUS_CODE_SUBMITTED);
+		proposalStatus.add(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS);
+		proposalStatus.add(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED);
+		proposalStatus.add(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT);
+		proposalStatus.add(Constants.PROPOSAL_STATUS_CODE_AWARDED);
+
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Proposal.class);
 		criteria.add(Restrictions.eq("grantCallId", grantCallId));
 		criteria.add(Restrictions.in("statusCode", proposalStatus));
 		@SuppressWarnings("unchecked")
 		List<Proposal> proposals = criteria.list();	
-		Integer proposalCount = proposals.size();
-		reportVO.setProposalCount(proposalCount);
-		reportVO.setProposals(proposals);
+		if (proposals != null && !proposals.isEmpty()) {
+			reportVO.setProposalCount(proposals.size());
+			reportVO.setProposals(proposals);
+		}
 		return reportVO;
 	}
+
+	@Override
+	public Long fetchApplicationsCountByGrantCallType(Integer grantCallTypeCode) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Proposal.class);
+		criteria.createAlias("grantCall", "grantCall");
+		criteria.add(Restrictions.eq("grantCall.grantTypeCode", grantCallTypeCode));
+		Long applicationsCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+		return applicationsCount;
+	}
+
+	@Override
+	public Long fetchProtocolsCountByProtocolType(String protocolTypeCode) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Protocol.class);
+		criteria.add(Restrictions.eq("protocolTypeCode", protocolTypeCode));
+		criteria.add(Restrictions.eq("protocolStatusCode", Constants.PROTOCOL_SATUS_CODE_ACTIVE_OPEN_TO_ENTROLLMENT));
+		Long protocolsCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+		return protocolsCount;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProtocolType> fetchAllProtocolTypes() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ProtocolType.class);
+		List<ProtocolType> protocolTypes = criteria.list();
+		return protocolTypes;
+	}
+
 }

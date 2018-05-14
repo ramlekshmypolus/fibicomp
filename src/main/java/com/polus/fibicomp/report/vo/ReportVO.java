@@ -1,6 +1,7 @@
 package com.polus.fibicomp.report.vo;
 
 import java.util.List;
+import java.util.Map;
 
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.proposal.pojo.Proposal;
@@ -16,6 +17,10 @@ public class ReportVO {
 	private List<GrantCall> grantIds;
 
 	private List<Proposal> proposals;
+
+	private Map<String, Long> applicationsByGrantCallType;
+
+	private Map<String, Long> protocolsByType;
 
 	public Integer getGrantCallId() {
 		return grantCallId;
@@ -55,6 +60,22 @@ public class ReportVO {
 
 	public void setProposalCount(Integer proposalCount) {
 		this.proposalCount = proposalCount;
+	}
+
+	public Map<String, Long> getApplicationsByGrantCallType() {
+		return applicationsByGrantCallType;
+	}
+
+	public void setApplicationsByGrantCallType(Map<String, Long> applicationsByGrantCallType) {
+		this.applicationsByGrantCallType = applicationsByGrantCallType;
+	}
+
+	public Map<String, Long> getProtocolsByType() {
+		return protocolsByType;
+	}
+
+	public void setProtocolsByType(Map<String, Long> protocolsByType) {
+		this.protocolsByType = protocolsByType;
 	}
 
 }

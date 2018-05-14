@@ -24,15 +24,16 @@ public class ReportController {
 	@Qualifier(value = "reportService")
 	private ReportService reportService;
 
-	@RequestMapping(value = "/fetchOpenGrantIds", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String fetchOpenGrantIds(@RequestBody ReportVO vo, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("Requesting for fetchOpenGrantIds");
-		return reportService.fetchOpenGrantIds(vo);
-	}
-
 	@RequestMapping(value = "/applicationReport", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String applicationReport(@RequestBody ReportVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for applicationReport");
 		return reportService.applicationReport(vo);
 	}
+
+	@RequestMapping(value = "/fetchReportData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String fetchReportData(@RequestBody ReportVO vo, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Requesting for fetchReportData");
+		return reportService.fetchReportData(vo);
+	}
+
 }

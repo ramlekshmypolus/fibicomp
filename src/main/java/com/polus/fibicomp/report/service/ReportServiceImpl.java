@@ -1,6 +1,8 @@
 package com.polus.fibicomp.report.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.committee.dao.CommitteeDao;
+import com.polus.fibicomp.grantcall.dao.GrantCallDao;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
+import com.polus.fibicomp.grantcall.pojo.GrantCallType;
+import com.polus.fibicomp.pojo.ProtocolType;
 import com.polus.fibicomp.report.dao.ReportDao;
 import com.polus.fibicomp.report.vo.ReportVO;
 
@@ -26,6 +31,9 @@ public class ReportServiceImpl implements ReportService {
 	@Autowired
 	private CommitteeDao committeeDao;
 
+	@Autowired
+	private GrantCallDao grantCallDao;
+
 	@Override
 	public String applicationReport(ReportVO reportVO) {
 		String reportName = reportVO.getReportName();
@@ -40,10 +48,44 @@ public class ReportServiceImpl implements ReportService {
 		return response;
 	}
 
-	@Override
-	public String fetchOpenGrantIds(ReportVO reportVO) {
+	public void fetchOpenGrantIds(ReportVO reportVO) {
 		List<GrantCall> grantIds = reportDao.fetchOpenGrantIds();
 		reportVO.setGrantIds(grantIds);
+	}
+
+	public void fetchApplicationsCountByGrantCallType(ReportVO reportVO) {
+		List<GrantCallType> grantCallTypes = grantCallDao.fetchAllGrantCallTypes();
+		if (grantCallTypes != null && !grantCallTypes.isEmpty()) {
+			Map<String, Long> applicationsByGrantCallType = new HashMap<String, Long>();
+			for (GrantCallType grantCallType : grantCallTypes) {
+				String grantCallTypeDesc = grantCallType.getDescription();
+				Long count = reportDao.fetchApplicationsCountByGrantCallType(grantCallType.getGrantTypeCode());
+				logger.info("Grant Call Type : " + grantCallTypeDesc + " ---------- count : " + count);
+				applicationsByGrantCallType.put(grantCallTypeDesc, count);
+			}
+			reportVO.setApplicationsByGrantCallType(applicationsByGrantCallType);
+		}
+	}
+
+	public void fetchProtocolsCountByProtocolType(ReportVO reportVO) {
+		List<ProtocolType> protocolTypes = reportDao.fetchAllProtocolTypes();
+		if (protocolTypes != null && !protocolTypes.isEmpty()) {
+			Map<String, Long> protocolsByType = new HashMap<String, Long>();
+			for (ProtocolType protocolType : protocolTypes) {
+				String protocolTypeDesc = protocolType.getDescription();
+				Long count = reportDao.fetchProtocolsCountByProtocolType(protocolType.getProtocolTypeCode());
+				logger.info("Protocol Type : " + protocolTypeDesc + " ---------- count : " + count);
+				protocolsByType.put(protocolTypeDesc, count);
+			}
+			reportVO.setProtocolsByType(protocolsByType);
+		}
+	}
+
+	@Override
+	public String fetchReportData(ReportVO reportVO) {
+		fetchOpenGrantIds(reportVO);
+		fetchApplicationsCountByGrantCallType(reportVO);
+		fetchProtocolsCountByProtocolType(reportVO);
 		String response = committeeDao.convertObjectToJSON(reportVO);
 		return response;
 	}

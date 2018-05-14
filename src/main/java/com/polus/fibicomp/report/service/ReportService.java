@@ -7,8 +7,8 @@ import com.polus.fibicomp.report.vo.ReportVO;
 @Service
 public interface ReportService {
 
-	public String fetchOpenGrantIds(ReportVO reportVO);
-
 	public String applicationReport(ReportVO reportVO);
+
+	public String fetchReportData(ReportVO reportVO);
 
 }
