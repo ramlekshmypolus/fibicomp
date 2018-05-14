@@ -165,7 +165,7 @@ public class ProposalController {
 	public String deleteReviewer(@RequestBody ProposalVO vo, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Requesting for deleteReviewer");
 		logger.info("proposalId : " + vo.getProposalId());
-		logger.info("budgetId : " + vo.getReviewerId());
+		logger.info("reviewerId : " + vo.getReviewerId());
 		return proposalService.deleteReviewer(vo);
 	}
 

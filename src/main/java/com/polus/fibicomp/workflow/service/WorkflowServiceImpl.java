@@ -92,7 +92,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 									WorkflowAttachment workflowAttachment = new WorkflowAttachment();
 									workflowAttachment.setDescription(attachment.getDescription());
 									workflowAttachment.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
-									workflowAttachment.setUpdateUser(userName);			
+									workflowAttachment.setUpdateUser(userName);
 									workflowAttachment.setAttachment(attachment.getAttachment());
 									workflowAttachment.setFileName(attachment.getFileName());
 									workflowAttachment.setMimeType(attachment.getMimeType());
@@ -237,8 +237,13 @@ public class WorkflowServiceImpl implements WorkflowService {
 
 	@Override
 	public Workflow assignWorkflowReviewers(Integer moduleItemId, WorkflowDetail workflowDetail) {
-		workflowDao.saveWorkflowDetail(workflowDetail);
 		Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(moduleItemId);
+		if (!workflowDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
+			workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
+			workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW));
+		}
+		workflowDetail.setWorkflow(workflow);
+		workflowDao.saveWorkflowDetail(workflowDetail);
 		workflow = workflowDao.saveWorkflow(workflow);
 		return workflow;
 	}
