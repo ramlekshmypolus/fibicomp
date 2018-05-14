@@ -76,4 +76,7 @@ public interface Constants {
     String SMU_GRANT_MANAGER_CODE = "10";
     String SMU_GRANT_PROVOST_CODE = "11";
 
+    // Protocol
+    String PROTOCOL_SATUS_CODE_ACTIVE_OPEN_TO_ENTROLLMENT = "200";
+
 }
