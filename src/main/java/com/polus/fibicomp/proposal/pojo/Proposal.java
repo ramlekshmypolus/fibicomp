@@ -149,6 +149,12 @@ public class Proposal implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK6_FIBI_SMU_PROPOSAL"), name = "GRANT_TYPE_CODE", referencedColumnName = "GRANT_TYPE_CODE", insertable = false, updatable = false)
 	private GrantCallType grantCallType;
 
+	@Column(name = "HOME_UNIT_NUMBER")
+	private String homeUnitNumber;
+
+	@Column(name = "HOME_UNIT_NAME")
+	private String homeUnitName;
+
 	public Proposal() {
 		proposalAttachments = new ArrayList<ProposalAttachment>();
 		proposalBudgets = new ArrayList<ProposalBudget>();
@@ -433,6 +439,22 @@ public class Proposal implements Serializable {
 
 	public void setGrantTypeCode(Integer grantTypeCode) {
 		this.grantTypeCode = grantTypeCode;
+	}
+
+	public String getHomeUnitNumber() {
+		return homeUnitNumber;
+	}
+
+	public void setHomeUnitNumber(String homeUnitNumber) {
+		this.homeUnitNumber = homeUnitNumber;
+	}
+
+	public String getHomeUnitName() {
+		return homeUnitName;
+	}
+
+	public void setHomeUnitName(String homeUnitName) {
+		this.homeUnitName = homeUnitName;
 	}
 
 }

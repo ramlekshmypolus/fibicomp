@@ -12,6 +12,7 @@ import com.polus.fibicomp.pojo.Protocol;
 import com.polus.fibicomp.pojo.ScienceKeyword;
 import com.polus.fibicomp.pojo.Sponsor;
 import com.polus.fibicomp.pojo.SponsorType;
+import com.polus.fibicomp.pojo.Unit;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachment;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
@@ -127,11 +128,9 @@ public class ProposalVO {
 
 	private Map<String, WorkflowStatus> workflowStatusMap;
 
-	private Boolean isGrantManager = false;
-
-	private Boolean isProvost = false;
-
 	private String reviewerId;
+
+	private List<Unit> homeUnits;
 
 	public ProposalVO() {
 		proposal = new Proposal();
@@ -529,28 +528,20 @@ public class ProposalVO {
 		this.workflowStatusMap = workflowStatusMap;
 	}
 
-	public Boolean getIsGrantManager() {
-		return isGrantManager;
-	}
-
-	public void setIsGrantManager(Boolean isGrantManager) {
-		this.isGrantManager = isGrantManager;
-	}
-
-	public Boolean getIsProvost() {
-		return isProvost;
-	}
-
-	public void setIsProvost(Boolean isProvost) {
-		this.isProvost = isProvost;
-	}
-
 	public String getReviewerId() {
 		return reviewerId;
 	}
 
 	public void setReviewerId(String reviewerId) {
 		this.reviewerId = reviewerId;
+	}
+
+	public List<Unit> getHomeUnits() {
+		return homeUnits;
+	}
+
+	public void setHomeUnits(List<Unit> homeUnits) {
+		this.homeUnits = homeUnits;
 	}
 
 }
