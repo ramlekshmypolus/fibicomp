@@ -35,7 +35,7 @@ public class FibiRepoConfig {
 	@Value("${jdbc.password}")
 	private String password;
 
-	@Value("${hibernate.dialect}")
+	@Value("${spring.jpa.database-platform}")
 	private String hibernateDialect;
 
 	@Value("${hibernate.show_sql}")

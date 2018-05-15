@@ -415,7 +415,7 @@ public class ProposalServiceImpl implements ProposalService {
 						if (workflowDetail.getRoleTypeCode() == Constants.ADMIN_ROLE_TYPE_CODE) {
 							proposalVO.setIsGrantAdmin(true);
 						}
-					} else if (workflowDetail.getApprovalStatusCode().equals("W")
+					} else if (workflowDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING)
 							&& !proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)) {
 						currentPerson = false;
 					}
@@ -425,7 +425,7 @@ public class ProposalServiceImpl implements ProposalService {
 		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)) {
 			for (WorkflowDetail workflowDetail : workflowDetails) {
 				if (currentPerson == true) {
-					if (workflowDetail.getApprovalStatusCode()
+					/*if (workflowDetail.getApprovalStatusCode()
 							.equals(Constants.WORKFLOW_STATUS_CODE_WAITING)) {
 						List<WorkflowReviewerDetail> reviewerDetails = workflowDetail.getWorkflowReviewerDetails();
 						if (reviewerDetails != null && !reviewerDetails.isEmpty()) {
@@ -441,31 +441,43 @@ public class ProposalServiceImpl implements ProposalService {
 								}
 							}
 						}
-					} else if (workflowDetail.getApprovalStatusCode()
+					} else*/ if (workflowDetail.getApprovalStatusCode()
 							.equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
 						if (workflowDetail.getApproverPersonId().equals(proposalVO.getPersonId())) {
 							if (workflowDetail.getRoleTypeCode() == Constants.ADMIN_ROLE_TYPE_CODE) {
 								proposalVO.setIsGrantAdmin(true);
 							}
-							/*currentPerson = false;
-							proposalVO.setIsApproved(false);
-							proposalVO.setIsApprover(true);*/
+						} else {
+							List<WorkflowReviewerDetail> reviewerDetails = workflowDetail.getWorkflowReviewerDetails();
+							if (reviewerDetails != null && !reviewerDetails.isEmpty()) {
+								for (WorkflowReviewerDetail reviewerDetail : reviewerDetails) {
+									if (reviewerDetail.getReviewerPersonId().equals(proposalVO.getPersonId())) {
+										currentPerson = false;
+										proposalVO.setIsReviewer(true);
+										proposalVO.setIsReviewed(false);
+									}
+									if (reviewerDetail.getApprovalStatusCode()
+											.equals(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED)) {
+										proposalVO.setIsReviewed(true);
+									}
+								}
+							}
 						}
-						if (workflowDetail.getRoleTypeCode() == Constants.ADMIN_ROLE_TYPE_CODE) {
+						/*if (workflowDetail.getRoleTypeCode() == Constants.ADMIN_ROLE_TYPE_CODE) {
 							proposalVO.setIsGrantAdmin(true);
-						}
+						}*/
 					}
 				}
 			}
 		}
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)
+		/*if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)
 				&& proposalVO.getPersonId().equals(Constants.SMU_GRANT_MANAGER_CODE)) {
 			proposalVO.setIsGrantManager(true);
 		}
 		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT)
 				&& proposalVO.getPersonId().equals(Constants.SMU_GRANT_PROVOST_CODE)) {
 			proposalVO.setIsProvost(true);
-		}
+		}*/
 	}
 
 	public void canTakeRoutingAction1(ProposalVO proposalVO) {
@@ -732,6 +744,7 @@ public class ProposalServiceImpl implements ProposalService {
 		proposalVO.setSponsorTypes(grantCallDao.fetchAllSponsorTypes());
 		proposalVO.setProposalTypes(proposalDao.fetchAllProposalTypes());
 		proposalVO.setDefaultGrantCallType(grantCallDao.fetchGrantCallTypeByGrantTypeCode(Constants.GRANT_CALL_TYPE_OTHERS));
+		proposalVO.setHomeUnits(committeeDao.fetchAllHomeUnits());
 	}
 
 	@Override

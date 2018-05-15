@@ -12,6 +12,7 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.pojo.PrincipalBo;
 import com.polus.fibicomp.pojo.UnitAdministrator;
@@ -63,6 +64,8 @@ public class LoginDaoImpl implements LoginDao {
 				personDTO.setUserName(userName);
 				personDTO.setUnitAdmin(isUnitAdmin(person.getPrncplId()));
 				personDTO.setLogin(true);
+				personDTO.setGrantManager(isGrantManager(person.getPrncplId()));
+				personDTO.setProvost(isProvost(person.getPrncplId()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,5 +89,37 @@ public class LoginDaoImpl implements LoginDao {
 		}
 		logger.info("isAdmin : " + isAdmin);
 		return isAdmin;
+	}
+
+	public boolean isGrantManager(String personId) {
+		logger.info("isGrantManager --- personId : " + personId);
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		boolean isGrantManager = false;
+		Criteria criteria = session.createCriteria(UnitAdministrator.class);
+		criteria.add(Restrictions.eq("personId", personId));
+		criteria.add(Restrictions.eq("unitAdministratorTypeCode", Constants.SMU_GRANT_MANAGER_CODE));
+		@SuppressWarnings("unchecked")
+		List<UnitAdministrator> administrators = criteria.list();
+		if (administrators != null && !administrators.isEmpty()) {
+			isGrantManager = true;
+		}
+		logger.info("isGrantManager : " + isGrantManager);
+		return isGrantManager;
+	}
+
+	public boolean isProvost(String personId) {
+		logger.info("isProvost --- personId : " + personId);
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		boolean isProvost = false;
+		Criteria criteria = session.createCriteria(UnitAdministrator.class);
+		criteria.add(Restrictions.eq("personId", personId));
+		criteria.add(Restrictions.eq("unitAdministratorTypeCode", Constants.SMU_GRANT_PROVOST_CODE));
+		@SuppressWarnings("unchecked")
+		List<UnitAdministrator> administrators = criteria.list();
+		if (administrators != null && !administrators.isEmpty()) {
+			isProvost = true;
+		}
+		logger.info("isProvost : " + isProvost);
+		return isProvost;
 	}
 }

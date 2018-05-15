@@ -38,6 +38,10 @@ public class PersonDTO {
 
 	private Collection<? extends GrantedAuthority> jwtRoles;
 
+	private boolean isGrantManager = false;
+
+	private boolean isProvost = false;
+
 	public boolean isLogin() {
 		return isLogin;
 	}
@@ -148,6 +152,22 @@ public class PersonDTO {
 
 	public void setJwtRoles(Collection<? extends GrantedAuthority> jwtRoles) {
 		this.jwtRoles = jwtRoles;
+	}
+
+	public boolean isGrantManager() {
+		return isGrantManager;
+	}
+
+	public void setGrantManager(boolean isGrantManager) {
+		this.isGrantManager = isGrantManager;
+	}
+
+	public boolean isProvost() {
+		return isProvost;
+	}
+
+	public void setProvost(boolean isProvost) {
+		this.isProvost = isProvost;
 	}
 
 }
