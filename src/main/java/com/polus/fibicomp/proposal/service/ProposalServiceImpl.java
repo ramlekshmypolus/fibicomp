@@ -146,7 +146,9 @@ public class ProposalServiceImpl implements ProposalService {
 		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)
 				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)
 				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)
-				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)) {
+				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)
+				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT)
+				|| proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_AWARDED)) {
 			canTakeRoutingAction(proposalVO);
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
 			WorkflowDetail finalWorkflowDetail = workflowDao.fetchFinalApprover(workflow.getWorkflowId());
@@ -470,14 +472,6 @@ public class ProposalServiceImpl implements ProposalService {
 				}
 			}
 		}
-		/*if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_APPROVED)
-				&& proposalVO.getPersonId().equals(Constants.SMU_GRANT_MANAGER_CODE)) {
-			proposalVO.setIsGrantManager(true);
-		}
-		if (proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT)
-				&& proposalVO.getPersonId().equals(Constants.SMU_GRANT_PROVOST_CODE)) {
-			proposalVO.setIsProvost(true);
-		}*/
 	}
 
 	public void canTakeRoutingAction1(ProposalVO proposalVO) {
