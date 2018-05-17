@@ -2,8 +2,6 @@ package com.polus.fibicomp.constants;
 
 public interface Constants {
 
-	String MODULE_NAMESPACE_PROPOSAL_DEVELOPMENT = "KC-PD";
-	String PARAMETER_COMPONENT_DOCUMENT = "Document";
 	String ALL_SPONSOR_HIERARCHY_NIH_MULTI_PI = "ALL_SPONSOR_HIERARCHY_NIH_MULTI_PI";
 	String KC_GENERIC_PARAMETER_NAMESPACE = "KC-GEN";
 	String KC = "KC";
@@ -34,6 +32,9 @@ public interface Constants {
 	String DESCRIPTION = "description";
 	String HASH_ALGORITHM = "SHA";
 	String CHARSET = "UTF-8";
+	String DECIMAL_FORMAT = "00000000";
+	String DECIMAL_FORMAT_FOR_NEW_IP = "0000";
+	String INSTITUTIONAL_PROPSAL_PROPSAL_NUMBER_SEQUENCE = "SEQ_PROPOSAL_PROPOSAL_ID";
 
 	// Security constants
 	String SECRET = "SecretKeyToGenJWTs";
@@ -78,5 +79,10 @@ public interface Constants {
 
     // Protocol
     String PROTOCOL_SATUS_CODE_ACTIVE_OPEN_TO_ENTROLLMENT = "200";
+
+    // Parameter Constants
+    String MODULE_NAMESPACE_PROPOSAL_DEVELOPMENT = "KC-PD";
+    String DOCUMENT_COMPONENT = "Document";
+    String FISCAL_YEAR_BASED_IP = "GENERATE_IP_BASED_ON_FY";
 
 }

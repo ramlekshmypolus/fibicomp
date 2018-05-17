@@ -839,7 +839,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(ParameterBo.class);
 		criteria.add(Restrictions.eq("namespaceCode", Constants.MODULE_NAMESPACE_PROPOSAL_DEVELOPMENT));
-		criteria.add(Restrictions.eq("componentCode", Constants.PARAMETER_COMPONENT_DOCUMENT));
+		criteria.add(Restrictions.eq("componentCode", Constants.DOCUMENT_COMPONENT));
 		criteria.add(Restrictions.eq("name", Constants.ALL_SPONSOR_HIERARCHY_NIH_MULTI_PI));
 		criteria.add(Restrictions.eq("applicationId", Constants.KC));
 		ParameterBo parameterBo = (ParameterBo) criteria.uniqueResult();

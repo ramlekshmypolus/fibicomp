@@ -24,6 +24,7 @@ import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.dao.GrantCallDao;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
+import com.polus.fibicomp.ip.service.InstitutionalProposalService;
 import com.polus.fibicomp.proposal.dao.ProposalDao;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachment;
@@ -65,6 +66,9 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Autowired
 	private WorkflowDao workflowDao;
+
+	@Autowired
+	private InstitutionalProposalService institutionalProposalService;
 
 	@Override
 	public String createProposal(ProposalVO proposalVO) {
@@ -778,9 +782,16 @@ public class ProposalServiceImpl implements ProposalService {
 	@Override
 	public String approveProvost(ProposalVO proposalVO) {
 		Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
-		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED);
-		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED));
-		proposal = proposalDao.saveOrUpdateProposal(proposal);
+		String ipNumber = institutionalProposalService.generateInstitutionalProposalNumber();
+		logger.info("ipNumber : " + ipNumber);
+		boolean isIPCreated = institutionalProposalService.createInstitutionalProposal(proposal.getProposalId(), ipNumber, proposalVO.getUserName());
+		logger.info("isIPCreated : " + isIPCreated);
+		if (isIPCreated) {
+			proposalVO.setIpNumber(ipNumber);
+			proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED);
+			proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED));
+			proposal = proposalDao.saveOrUpdateProposal(proposal);
+		}
 		proposalVO.setProposal(proposal);
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
