@@ -132,6 +132,8 @@ public class ProposalVO {
 
 	private List<Unit> homeUnits;
 
+	private String ipNumber;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -542,6 +544,14 @@ public class ProposalVO {
 
 	public void setHomeUnits(List<Unit> homeUnits) {
 		this.homeUnits = homeUnits;
+	}
+
+	public String getIpNumber() {
+		return ipNumber;
+	}
+
+	public void setIpNumber(String ipNumber) {
+		this.ipNumber = ipNumber;
 	}
 
 }
