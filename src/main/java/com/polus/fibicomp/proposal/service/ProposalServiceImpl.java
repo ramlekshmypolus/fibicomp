@@ -76,6 +76,8 @@ public class ProposalServiceImpl implements ProposalService {
 		Proposal proposal = proposalVO.getProposal();
 		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
 		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS));
+		proposal.setHomeUnitNumber(Constants.DEFAULT_HOME_UNIT_NUMBER);
+		proposal.setHomeUnitName(Constants.DEFAULT_HOME_UNIT_NAME);
 		if (grantCallId != null) {
 			GrantCall grantCall = grantCallDao.fetchGrantCallById(grantCallId);
 			proposal.setGrantCall(grantCall);
