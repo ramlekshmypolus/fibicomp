@@ -35,6 +35,8 @@ public interface Constants {
 	String DECIMAL_FORMAT = "00000000";
 	String DECIMAL_FORMAT_FOR_NEW_IP = "0000";
 	String INSTITUTIONAL_PROPSAL_PROPSAL_NUMBER_SEQUENCE = "SEQ_PROPOSAL_PROPOSAL_ID";
+	String DEFAULT_HOME_UNIT_NUMBER = "000001";
+	String DEFAULT_HOME_UNIT_NAME = "University";
 
 	// Security constants
 	String SECRET = "SecretKeyToGenJWTs";
