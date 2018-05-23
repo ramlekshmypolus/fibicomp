@@ -789,7 +789,7 @@ public class ProposalServiceImpl implements ProposalService {
 		boolean isIPCreated = institutionalProposalService.createInstitutionalProposal(proposal.getProposalId(), ipNumber, proposalVO.getUserName());
 		logger.info("isIPCreated : " + isIPCreated);
 		if (isIPCreated) {
-			proposalVO.setIpNumber(ipNumber);
+			proposal.setIpNumber(ipNumber);
 			proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED);
 			proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_AWARDED));
 			proposal = proposalDao.saveOrUpdateProposal(proposal);

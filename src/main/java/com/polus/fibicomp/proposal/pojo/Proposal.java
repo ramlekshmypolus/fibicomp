@@ -114,6 +114,9 @@ public class Proposal implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
+	@Column(name = "IP_NUMBER")
+	private String ipNumber;
+
 	@JsonManagedReference
 	@OneToMany(mappedBy = "proposal", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<ProposalAttachment> proposalAttachments;
@@ -455,6 +458,14 @@ public class Proposal implements Serializable {
 
 	public void setHomeUnitName(String homeUnitName) {
 		this.homeUnitName = homeUnitName;
+	}
+
+	public String getIpNumber() {
+		return ipNumber;
+	}
+
+	public void setIpNumber(String ipNumber) {
+		this.ipNumber = ipNumber;
 	}
 
 }

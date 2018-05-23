@@ -38,6 +38,7 @@ import com.polus.fibicomp.pojo.ParameterBo;
 import com.polus.fibicomp.pojo.PrincipalBo;
 import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.proposal.pojo.Proposal;
+import com.polus.fibicomp.proposal.pojo.ProposalPerson;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.DisclosureView;
 import com.polus.fibicomp.view.ExpenditureVolume;
@@ -1147,6 +1148,8 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
+		String personId = vo.getPersonId();
+		Boolean isUnitAdmin = vo.getIsUnitAdmin();
 
 		Conjunction and = Restrictions.conjunction();
 		try {
@@ -1175,7 +1178,15 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property4 != null && !property4.isEmpty()) {
 				and.add(Restrictions.like("proposalCategory.description", "%" + property4 + "%").ignoreCase());
 			}
-
+			if (vo.isProvost()) {
+				searchCriteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT));
+			}
+			if (personId != null && !personId.isEmpty()) {
+				if(!isUnitAdmin) {
+					searchCriteria.createAlias("proposalPersons", "proposalPersons");
+					searchCriteria.add(Restrictions.eq("proposalPersons.personId", personId));
+				}				
+			}
 			searchCriteria.add(and);
 			ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("proposalId"), "proposalId");

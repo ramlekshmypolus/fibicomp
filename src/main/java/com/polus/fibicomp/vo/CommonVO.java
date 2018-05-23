@@ -74,6 +74,8 @@ public class CommonVO {
 
 	private Boolean isUnitAdmin;
 
+	private boolean isProvost;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -328,5 +330,13 @@ public class CommonVO {
 
 	public void setIsUnitAdmin(Boolean isUnitAdmin) {
 		this.isUnitAdmin = isUnitAdmin;
+	}
+
+	public boolean isProvost() {
+		return isProvost;
+	}
+
+	public void setProvost(boolean isProvost) {
+		this.isProvost = isProvost;
 	}
 }
