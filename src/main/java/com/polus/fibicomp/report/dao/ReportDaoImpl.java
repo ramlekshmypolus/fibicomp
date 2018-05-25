@@ -186,6 +186,7 @@ public class ReportDaoImpl implements ReportDao {
 					}
 					Criteria searchCriteria = session.createCriteria(AwardView.class);
 					searchCriteria.add(Restrictions.in("awardId", awardIds));
+					searchCriteria.add(Restrictions.eq("personId", reportVO.getPersonId()));
 					@SuppressWarnings("unchecked")
 					List<AwardView> awardList = searchCriteria.list();
 					if (awardList != null && !awardList.isEmpty()) {
