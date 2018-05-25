@@ -40,9 +40,9 @@ public class ReportServiceImpl implements ReportService {
 		if (reportName.equals("Submitted Applications by Grant")) {
 			reportVO = reportDao.fetchApplicationByGrantCallId(reportVO);
 		} else if (reportName.equals("Awards by Grant")) {
-			
+			reportVO = reportDao.fetchAwardByGrantCallId(reportVO);
 		} else if (reportName.equals("Expenditure by Award")) {
-			
+			reportVO = reportDao.fetchExpenditureByAward(reportVO);
 		}
 		String response = committeeDao.convertObjectToJSON(reportVO);
 		return response;
@@ -86,8 +86,26 @@ public class ReportServiceImpl implements ReportService {
 		fetchOpenGrantIds(reportVO);
 		fetchApplicationsCountByGrantCallType(reportVO);
 		fetchProtocolsCountByProtocolType(reportVO);
+		fetchAwardByGrantCallType(reportVO);
 		String response = committeeDao.convertObjectToJSON(reportVO);
 		return response;
+	}
+
+	public void fetchAwardByGrantCallType(ReportVO reportVO) {
+		List<GrantCallType> grantCallTypes = reportDao.fetchAllGrantCallTypes();
+		if (grantCallTypes != null && !grantCallTypes.isEmpty()) {
+			Map<String, Long> awardByGrantType = new HashMap<String, Long>();
+			for (GrantCallType grantCallType : grantCallTypes) {
+				String grantCallTypeDesc = grantCallType.getDescription();
+				List<Integer> proposalId = reportDao.fetchIPByGrantTypeCode(grantCallType.getGrantTypeCode());
+				if (proposalId != null && !proposalId.isEmpty()) {
+					Long count = reportDao.fetchAwardCountByGrantType(proposalId);
+					logger.info("GrantCallType : " + grantCallTypeDesc + " ---------- count : " + count);
+					awardByGrantType.put(grantCallTypeDesc, count);
+				}
+			}
+			reportVO.setAwardByGrantType(awardByGrantType);
+		}
 	}
 
 }

@@ -1,10 +1,12 @@
 package com.polus.fibicomp.report.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
@@ -18,10 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
+import com.polus.fibicomp.grantcall.pojo.GrantCallType;
 import com.polus.fibicomp.pojo.Protocol;
 import com.polus.fibicomp.pojo.ProtocolType;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.report.vo.ReportVO;
+import com.polus.fibicomp.view.AwardView;
 
 @Transactional
 @Service(value = "reportDao")
@@ -99,6 +103,105 @@ public class ReportDaoImpl implements ReportDao {
 		Criteria criteria = session.createCriteria(ProtocolType.class);
 		List<ProtocolType> protocolTypes = criteria.list();
 		return protocolTypes;
+	}
+
+	@Override
+	public List<GrantCallType> fetchAllGrantCallTypes() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(GrantCallType.class);
+		@SuppressWarnings("unchecked")
+		List<GrantCallType> grantCallTypes = criteria.list();
+		return grantCallTypes;
+	}
+
+	@Override
+	public List<Integer> fetchIPByGrantTypeCode(Integer grantTypeCode) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Proposal.class);
+		criteria.add(Restrictions.eq("grantTypeCode", grantTypeCode));
+		criteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_AWARDED));
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("ipNumber"), "ipNumber");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
+		criteria.addOrder(Order.asc("ipNumber"));
+		@SuppressWarnings("unchecked")
+		List<Proposal> proposals = criteria.list();
+		if (proposals != null && !proposals.isEmpty()) {
+			List<String> ipNumbers = new ArrayList<String>();
+			String ipNumber = null;
+			for (Proposal proposal : proposals) {
+				ipNumber = proposal.getIpNumber();
+				ipNumbers.add(ipNumber);
+			}
+			if (ipNumbers != null && !ipNumbers.isEmpty()) {
+				Query query = session.createSQLQuery("select PROPOSAL_ID from PROPOSAL where PROPOSAL_NUMBER in (:ids)");
+				query.setParameterList("ids", ipNumbers);
+				@SuppressWarnings("unchecked")
+				List<Integer> proposalId = query.list();
+				return proposalId;
+			}
+		}
+		return new ArrayList<Integer>();
+	}
+
+	@Override
+	public Long fetchAwardCountByGrantType(List<Integer> proposalId) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query query = session.createSQLQuery("select count(AWARD_ID) from AWARD_FUNDING_PROPOSALS where PROPOSAL_ID in (:ids)");
+		query.setParameterList("ids", proposalId);
+		BigDecimal bigDecimal = (BigDecimal) query.uniqueResult();
+		Long count = bigDecimal.longValue();
+		return count;
+	}
+
+	@Override
+	public ReportVO fetchAwardByGrantCallId(ReportVO reportVO) {
+		Integer grantCallId = reportVO.getGrantCallId();
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Proposal.class);
+		criteria.add(Restrictions.eq("grantCallId", grantCallId));
+		criteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_AWARDED));
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("ipNumber"), "ipNumber");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
+		@SuppressWarnings("unchecked")
+		List<Proposal> proposals = criteria.list();
+		if (proposals != null && !proposals.isEmpty()) {
+			List<String> ipNumbers = new ArrayList<String>();
+			String ipNumber = null;
+			for (Proposal proposal : proposals) {
+				ipNumber = proposal.getIpNumber();
+				ipNumbers.add(ipNumber);
+			}
+			if (ipNumbers != null && !ipNumbers.isEmpty()) {
+				Query query = session.createSQLQuery(
+						"select AWARD_ID from AWARD_FUNDING_PROPOSALS where PROPOSAL_ID in (select PROPOSAL_ID from PROPOSAL where PROPOSAL_NUMBER in (:ids))");
+				query.setParameterList("ids", ipNumbers);
+				@SuppressWarnings("unchecked")
+				List<BigDecimal> awardId = query.list();
+				if (awardId != null && !awardId.isEmpty()) {
+					List<Integer> awardIds = new ArrayList<Integer>();
+					for (BigDecimal val : awardId) {
+						awardIds.add(val.intValue());
+					}
+					Criteria searchCriteria = session.createCriteria(AwardView.class);
+					searchCriteria.add(Restrictions.in("awardId", awardIds));
+					@SuppressWarnings("unchecked")
+					List<AwardView> awardList = searchCriteria.list();
+					if (awardList != null && !awardList.isEmpty()) {
+						reportVO.setAwardCount(awardList.size());
+						reportVO.setAwards(awardList);
+					}
+				}
+			}
+		}
+		return reportVO;
+	}
+
+	@Override
+	public ReportVO fetchExpenditureByAward(ReportVO reportVO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
