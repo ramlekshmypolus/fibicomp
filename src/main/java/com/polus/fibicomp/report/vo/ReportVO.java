@@ -29,6 +29,8 @@ public class ReportVO {
 
 	private List<AwardView> awards;
 
+	private String personId;
+
 	public Integer getGrantCallId() {
 		return grantCallId;
 	}
@@ -107,6 +109,14 @@ public class ReportVO {
 
 	public void setAwards(List<AwardView> awards) {
 		this.awards = awards;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
 	}
 
 }
