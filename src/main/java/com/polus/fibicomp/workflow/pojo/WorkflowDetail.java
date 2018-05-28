@@ -103,6 +103,9 @@ public class WorkflowDetail implements Serializable {
 	@OneToMany(mappedBy = "workflowDetail", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<WorkflowReviewerDetail> workflowReviewerDetails;
 
+	@Column(name = "EMAIL_ADDRESS")
+	private String emailAddress;
+
 	public WorkflowDetail() {
 		workflowAttachments = new ArrayList<WorkflowAttachment>();
 		workflowReviewerDetails = new ArrayList<WorkflowReviewerDetail>();
@@ -270,6 +273,14 @@ public class WorkflowDetail implements Serializable {
 
 	public void setWorkflowReviewerDetails(List<WorkflowReviewerDetail> workflowReviewerDetails) {
 		this.workflowReviewerDetails = workflowReviewerDetails;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 }

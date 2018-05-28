@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.pojo.ParameterBo;
+import com.polus.fibicomp.util.Truth;
 
 @Transactional
 @Service(value = "commonDao")
@@ -40,13 +41,8 @@ public class CommonDaoImpl implements CommonDao {
 		criteria.add(Restrictions.eq("componentCode", componentCode));
 		criteria.add(Restrictions.eq("name", parameterName));
 		ParameterBo parameterBo = (ParameterBo) criteria.uniqueResult();
-		String strValues = parameterBo.getValue();
-		if (strValues.equals("Y")) {
-			return true;
-		} else if (strValues.equals("N")) {
-			return false;
-		}
-		return false;
+		String value = parameterBo != null ? parameterBo.getValue() : null;
+		return Truth.strToBooleanIgnoreCase(value);
 	}
 
 	@Override
@@ -58,6 +54,17 @@ public class CommonDaoImpl implements CommonDao {
 		criteria.add(Restrictions.eq("name", parameterName));
 		ParameterBo parameterBo = (ParameterBo) criteria.uniqueResult();
 		return Integer.parseInt(parameterBo.getValue());	
+	}
+
+	@Override
+	public String getParameterValueAsString(String namespaceCode, String componentCode, String parameterName) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ParameterBo.class);
+		criteria.add(Restrictions.eq("namespaceCode", namespaceCode));
+		criteria.add(Restrictions.eq("componentCode", componentCode));
+		criteria.add(Restrictions.eq("name", parameterName));
+		ParameterBo parameterBo = (ParameterBo) criteria.uniqueResult();
+		return parameterBo != null ? parameterBo.getValue() : null;
 	}
 
 }
