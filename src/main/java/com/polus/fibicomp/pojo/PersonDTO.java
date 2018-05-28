@@ -42,6 +42,8 @@ public class PersonDTO {
 
 	private boolean isProvost = false;
 
+	private boolean isReviewer = false;
+
 	public boolean isLogin() {
 		return isLogin;
 	}
@@ -168,6 +170,14 @@ public class PersonDTO {
 
 	public void setProvost(boolean isProvost) {
 		this.isProvost = isProvost;
+	}
+
+	public boolean isReviewer() {
+		return isReviewer;
+	}
+
+	public void setReviewer(boolean isReviewer) {
+		this.isReviewer = isReviewer;
 	}
 
 }
