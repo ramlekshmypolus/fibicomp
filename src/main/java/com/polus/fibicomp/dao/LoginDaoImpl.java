@@ -17,6 +17,7 @@ import com.polus.fibicomp.pojo.PersonDTO;
 import com.polus.fibicomp.pojo.PrincipalBo;
 import com.polus.fibicomp.pojo.UnitAdministrator;
 import com.polus.fibicomp.view.PersonDetailsView;
+import com.polus.fibicomp.workflow.pojo.WorkflowMapDetail;
 
 @Transactional
 @Service(value = "loginDao")
@@ -66,6 +67,7 @@ public class LoginDaoImpl implements LoginDao {
 				personDTO.setLogin(true);
 				personDTO.setGrantManager(isGrantManager(person.getPrncplId()));
 				personDTO.setProvost(isProvost(person.getPrncplId()));
+				personDTO.setReviewer(isReviewer(person.getPrncplId()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,5 +123,21 @@ public class LoginDaoImpl implements LoginDao {
 		}
 		logger.info("isProvost : " + isProvost);
 		return isProvost;
+	}
+
+	public boolean isReviewer(String personId) {
+		logger.info("isReviewer --- personId : " + personId);
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		boolean isReviewer = false;
+		Criteria criteria = session.createCriteria(WorkflowMapDetail.class);
+		criteria.add(Restrictions.eq("approverPersonId", personId));
+		criteria.add(Restrictions.eq("roleTypeCode", Constants.REVIEWER_ROLE_TYPE_CODE));
+		@SuppressWarnings("unchecked")
+		List<WorkflowMapDetail> reviewers = criteria.list();
+		if (reviewers != null && !reviewers.isEmpty()) {
+			isReviewer = true;
+		}
+		logger.info("isReviewer : " + isReviewer);
+		return isReviewer;
 	}
 }

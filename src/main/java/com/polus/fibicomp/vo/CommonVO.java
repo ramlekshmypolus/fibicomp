@@ -76,6 +76,8 @@ public class CommonVO {
 
 	private boolean isProvost;
 
+	private boolean isReviewer;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -338,5 +340,13 @@ public class CommonVO {
 
 	public void setProvost(boolean isProvost) {
 		this.isProvost = isProvost;
+	}
+
+	public boolean isReviewer() {
+		return isReviewer;
+	}
+
+	public void setReviewer(boolean isReviewer) {
+		this.isReviewer = isReviewer;
 	}
 }

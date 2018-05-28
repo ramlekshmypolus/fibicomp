@@ -1149,6 +1149,8 @@ public class DashboardDaoImpl implements DashboardDao {
 		Integer currentPage = vo.getCurrentPage();
 		String personId = vo.getPersonId();
 		Boolean isUnitAdmin = vo.getIsUnitAdmin();
+		boolean isProvost = vo.isProvost();
+		boolean isReviewer = vo.isReviewer();
 
 		Conjunction and = Restrictions.conjunction();
 		try {
@@ -1177,14 +1179,17 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (property4 != null && !property4.isEmpty()) {
 				and.add(Restrictions.like("proposalCategory.description", "%" + property4 + "%").ignoreCase());
 			}
-			if (vo.isProvost()) {
+			if (isProvost) {
 				searchCriteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT));
 			}
+			if (isReviewer) {
+				searchCriteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS));
+			}
 			if (personId != null && !personId.isEmpty()) {
-				if(!isUnitAdmin) {
+				if(!isUnitAdmin && !isProvost && !isReviewer) {
 					searchCriteria.createAlias("proposalPersons", "proposalPersons");
 					searchCriteria.add(Restrictions.eq("proposalPersons.personId", personId));
-				}				
+				}			
 			}
 			searchCriteria.add(and);
 			ProjectionList projList = Projections.projectionList();
