@@ -5,12 +5,16 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.polus.fibicomp.committee.dao.CommitteeDao;
 import com.polus.fibicomp.constants.Constants;
+import com.polus.fibicomp.email.service.FibiEmailService;
 import com.polus.fibicomp.grantcall.dao.GrantCallDao;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.ip.service.InstitutionalProposalService;
@@ -46,6 +51,7 @@ import com.polus.fibicomp.workflow.pojo.WorkflowStatus;
 import com.polus.fibicomp.workflow.service.WorkflowService;
 
 @Transactional
+@Configuration
 @Service(value = "proposalService")
 public class ProposalServiceImpl implements ProposalService {
 
@@ -69,6 +75,12 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Autowired
 	private InstitutionalProposalService institutionalProposalService;
+
+	@Autowired
+	private FibiEmailService fibiEmailService;
+
+	@Value("${application.context.name}")
+	private String context;
 
 	@Override
 	public String createProposal(ProposalVO proposalVO) {
@@ -392,7 +404,20 @@ public class ProposalServiceImpl implements ProposalService {
 		proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
 		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
 		proposal = proposalDao.saveOrUpdateProposal(proposal);
-		Workflow workflow = workflowService.createWorkflow(proposal.getProposalId(), proposalVO.getUserName(), proposalVO.getProposalStatusCode());
+		String piName = getPrincipalInvestigator(proposal.getProposalPersons());
+		String message = "The following application has routed for approval:<br/><br/>Application Title: "+ proposal.getTitle() +"<br/>"
+				+ "Principal Investigator: "+ piName +"<br/>Sponsor Due Date: "+ proposal.getSubmissionDate() +"<br/><br/>Please go to "
+				+ "<a title=\"\" target=\"_self\" href=\""+ context +"/proposal/createProposal?proposalId="+ proposal.getProposalId() +"\">this link</a> "
+				+ "to review the application and provide your response by clicking on the Approve or Reject buttons. "
+				+ "Please direct any questions to the application's Principal Investigator (PI) "
+				+ "or the contact associated with a given application.<br/><br/>Thank you.<br/><br/>"
+				+ "Application Details as follows:<br/>Application Number: "+ proposal.getProposalId() +"<br/>"
+				+ "Application Title: "+ proposal.getTitle() +"<br/>Principal Investigator: "+ piName +"<br/>"
+				+ "Lead Unit: "+ proposal.getHomeUnitNumber() +" - "+ proposal.getHomeUnitName() +"<br/>"
+				+ "Deadline Date: "+ proposal.getSubmissionDate() +"";//Sponsor: {SPONSOR_CODE} - {SPONSOR_NAME}<br/>
+		String subject = "Action Required: Approval for "+ proposal.getTitle();
+
+		Workflow workflow = workflowService.createWorkflow(proposal.getProposalId(), proposalVO.getUserName(), proposalVO.getProposalStatusCode(), subject, message);
 		canTakeRoutingAction(proposalVO);
 		proposalVO.setWorkflow(workflow);
 		proposalVO.setProposal(proposal);
@@ -530,7 +555,20 @@ public class ProposalServiceImpl implements ProposalService {
 			logger.info("approverComment : " + approverComment);
 			logger.info("approvalStopNumber : " + approvalStopNumber);
 
-			WorkflowDetail workflowDetail = workflowService.approveOrRejectWorkflowDetail(actionType, proposal.getProposalId(), proposalVO.getPersonId(), approverComment, files, approvalStopNumber);
+			String piName = getPrincipalInvestigator(proposal.getProposalPersons());
+			String message = "The following application has routed for approval:<br/><br/>Application Title: "+ proposal.getTitle() +"<br/>"
+					+ "Principal Investigator: "+ piName +"<br/>Sponsor Due Date: "+ proposal.getSubmissionDate() +"<br/><br/>Please go to "
+					+ "<a title=\"\" target=\"_self\" href=\""+ context +"/proposal/createProposal?proposalId="+ proposal.getProposalId() +"\">this link</a> "
+					+ "to review the application and provide your response by clicking on the Approve or Reject buttons. "
+					+ "Please direct any questions to the application's Principal Investigator (PI) "
+					+ "or the contact associated with a given application.<br/><br/>Thank you.<br/><br/>"
+					+ "Application Details as follows:<br/>Application Number: "+ proposal.getProposalId() +"<br/>"
+					+ "Application Title: "+ proposal.getTitle() +"<br/>Principal Investigator: "+ piName +"<br/>"
+					+ "Lead Unit: "+ proposal.getHomeUnitNumber() +" - "+ proposal.getHomeUnitName() +"<br/>"
+					+ "Deadline Date: "+ proposal.getSubmissionDate() +"";//Sponsor: {SPONSOR_CODE} - {SPONSOR_NAME}<br/>
+			String subject = "Action Required: Review for "+ proposal.getTitle();
+
+			WorkflowDetail workflowDetail = workflowService.approveOrRejectWorkflowDetail(actionType, proposal.getProposalId(), proposalVO.getPersonId(), approverComment, files, approvalStopNumber, subject, message);
 			/*boolean isFirstApprover = workflowService.isFirstApprover(proposal.getProposalId(), proposalVO.getPersonId());
 			if (isFirstApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
@@ -580,7 +618,21 @@ public class ProposalServiceImpl implements ProposalService {
 			proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS));
 			proposal = proposalDao.saveOrUpdateProposal(proposal);
 		}
-		Workflow workflow = workflowService.assignWorkflowReviewers(proposalVO.getProposalId(), proposalVO.getLoggedInWorkflowDetail());
+
+		String piName = getPrincipalInvestigator(proposal.getProposalPersons());
+		String message = "The following application has assigned for review:<br/><br/>Application Title: "+ proposal.getTitle() +"<br/>"
+				+ "Principal Investigator: "+ piName +"<br/>Sponsor Due Date: "+ proposal.getSubmissionDate() +"<br/><br/>Please go to "
+				+ "<a title=\"\" target=\"_self\" href=\""+ context +"/proposal/createProposal?proposalId="+ proposal.getProposalId() +"\">this link</a> "
+				+ "to review the application and provide your response by clicking on the Complete button. "
+				+ "Please direct any questions to the application's Administrator "
+				+ "or the contact associated with a given application.<br/><br/>Thank you.<br/><br/>"
+				+ "Application Details as follows:<br/>Application Number: "+ proposal.getProposalId() +"<br/>"
+				+ "Application Title: "+ proposal.getTitle() +"<br/>Principal Investigator: "+ piName +"<br/>"
+				+ "Lead Unit: "+ proposal.getHomeUnitNumber() +" - "+ proposal.getHomeUnitName() +"<br/>"
+				+ "Deadline Date: "+ proposal.getSubmissionDate() +"";//Sponsor: {SPONSOR_CODE} - {SPONSOR_NAME}<br/>
+		String subject = "Action Required: Review for "+ proposal.getTitle();
+
+		Workflow workflow = workflowService.assignWorkflowReviewers(proposalVO.getProposalId(), proposalVO.getLoggedInWorkflowDetail(), subject, message);
 		proposalVO.setWorkflow(workflow);
 		proposalVO.setProposal(proposal);
 		proposalVO.setIsGrantAdmin(true);
@@ -663,6 +715,19 @@ public class ProposalServiceImpl implements ProposalService {
 		try {
 			proposalVO = mapper.readValue(formDataJSON, ProposalVO.class);		
 			Proposal proposal = proposalVO.getProposal();
+			String piName = getPrincipalInvestigator(proposal.getProposalPersons());
+			String message = "The following application has routed for approval:<br/><br/>Application Title: "+ proposal.getTitle() +"<br/>"
+					+ "Principal Investigator: "+ piName +"<br/>Sponsor Due Date: "+ proposal.getSubmissionDate() +"<br/><br/>Please go to "
+					+ "<a title=\"\" target=\"_self\" href=\""+ context +"/proposal/createProposal?proposalId="+ proposal.getProposalId() +"\">this link</a> "
+					+ "to review the application and provide your response by clicking on the Approve or Reject buttons. "
+					+ "Please direct any questions to the application's Principal Investigator (PI) "
+					+ "or the contact associated with a given application.<br/><br/>Thank you.<br/><br/>"
+					+ "Application Details as follows:<br/>Application Number: "+ proposal.getProposalId() +"<br/>"
+					+ "Application Title: "+ proposal.getTitle() +"<br/>Principal Investigator: "+ piName +"<br/>"
+					+ "Lead Unit: "+ proposal.getHomeUnitNumber() +" - "+ proposal.getHomeUnitName() +"<br/>"
+					+ "Deadline Date: "+ proposal.getSubmissionDate() +"";//Sponsor: {SPONSOR_CODE} - {SPONSOR_NAME}<br/>
+			String subject = "Action Required: Approval for "+ proposal.getTitle();
+
 			Workflow workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposal.getProposalId());
 			List<WorkflowDetail> workflowDetails = workflowDao.fetchWorkflowDetailListByApprovalStopNumber(workflow.getWorkflowId(), null, Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW);
 			for(WorkflowDetail workflowDetail : workflowDetails) {
@@ -715,6 +780,9 @@ public class ProposalServiceImpl implements ProposalService {
 					adminWorkflow.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
 					adminWorkflow.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
 					workflowDao.saveWorkflowDetail(adminWorkflow);
+					Set<String> toAddresses = new HashSet<String>();
+					toAddresses.add(adminWorkflow.getEmailAddress());
+					fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
 				}
 			}
 			proposalVO.setIsReviewed(true);
@@ -839,4 +907,13 @@ public class ProposalServiceImpl implements ProposalService {
 		return committeeDao.convertObjectToJSON(proposalVO);
 	}
 
+	public String getPrincipalInvestigator(List<ProposalPerson> proposalPersons) {
+		String piName = "";
+		for (ProposalPerson person : proposalPersons) {
+			if (person.getProposalPersonRole().getCode().equals(Constants.PRINCIPAL_INVESTIGATOR)) {
+				piName = person.getFullName();
+			}
+		}
+		return piName;
+	}
 }

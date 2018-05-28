@@ -69,6 +69,9 @@ public class WorkflowReviewerDetail implements Serializable {
 	@OneToMany(mappedBy = "workflowReviewerDetail", orphanRemoval = true, cascade = { CascadeType.ALL })
 	private List<WorkflowAttachment> workflowAttachments;
 
+	@Column(name = "EMAIL_ADDRESS")
+	private String emailAddress;
+
 	public WorkflowReviewerDetail() {
 		workflowAttachments = new ArrayList<WorkflowAttachment>();
 	}
@@ -159,5 +162,13 @@ public class WorkflowReviewerDetail implements Serializable {
 
 	public void setWorkflowAttachments(List<WorkflowAttachment> workflowAttachments) {
 		this.workflowAttachments = workflowAttachments;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 }

@@ -11,4 +11,6 @@ public interface CommonDao {
 
 	public Integer getParameter(String namespaceCode, String componentCode, String parameterName);
 
+	public String getParameterValueAsString(String namespaceCode, String componentCode, String parameterName);
+
 }

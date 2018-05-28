@@ -74,6 +74,9 @@ public class WorkflowMapDetail implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
+	@Column(name = "EMAIL_ADDRESS")
+	private String emailAddress;
+
 	public Integer getMapDetailId() {
 		return mapDetailId;
 	}
@@ -188,6 +191,14 @@ public class WorkflowMapDetail implements Serializable {
 
 	public void setWorkflowRoleType(WorkflowRoleType workflowRoleType) {
 		this.workflowRoleType = workflowRoleType;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 }

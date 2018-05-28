@@ -18,9 +18,9 @@ public interface WorkflowService {
 	 * @param proposalVO
 	 * @return
 	 */
-	public Workflow createWorkflow(Integer moduleItemId, String userName, Integer statusCode);
+	public Workflow createWorkflow(Integer moduleItemId, String userName, Integer statusCode, String subject, String message);
 
-	public WorkflowDetail approveOrRejectWorkflowDetail(String actionType, Integer moduleItemId, String personId, String approverComment, MultipartFile[] files, Integer approverStopNumber) throws IOException;
+	public WorkflowDetail approveOrRejectWorkflowDetail(String actionType, Integer moduleItemId, String personId, String approverComment, MultipartFile[] files, Integer approverStopNumber, String subject, String message) throws IOException;
 
 	public boolean isFinalApprover(Integer moduleItemId, String personId, Integer approverStopNumber);
 
@@ -28,7 +28,7 @@ public interface WorkflowService {
 
 	public boolean isFirstApprover(Integer moduleItemId, String personId, Integer approverStopNumber);
 
-	public Workflow assignWorkflowReviewers(Integer moduleItemId, WorkflowDetail workflowDetail);
+	public Workflow assignWorkflowReviewers(Integer moduleItemId, WorkflowDetail workflowDetail, String subject, String message);
 
 	public List<WorkflowMapDetail> fetchAvailableReviewers(Integer workflowDetailId);
 
