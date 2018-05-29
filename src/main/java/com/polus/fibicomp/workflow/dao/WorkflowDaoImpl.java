@@ -1,6 +1,8 @@
 package com.polus.fibicomp.workflow.dao;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.polus.fibicomp.constants.Constants;
+import com.polus.fibicomp.pojo.UnitAdministrator;
+import com.polus.fibicomp.view.PersonDetailsView;
 import com.polus.fibicomp.workflow.pojo.Workflow;
 import com.polus.fibicomp.workflow.pojo.WorkflowAttachment;
 import com.polus.fibicomp.workflow.pojo.WorkflowDetail;
@@ -221,6 +225,32 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		@SuppressWarnings("unchecked")
 		List<WorkflowReviewerDetail> reviewerDetails = criteria.list();
 		return reviewerDetails;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<String> fetchEmailAdressByUserType(String roleTypeCode) {
+		Set<String> mailAdressList = new HashSet<String>();
+		Set<String> personIdList = new HashSet<String>();
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession()
+				.createCriteria(UnitAdministrator.class);
+		Criteria personCriteria = hibernateTemplate.getSessionFactory().getCurrentSession()
+				.createCriteria(PersonDetailsView.class);
+		criteria.add(Restrictions.eq("unitAdministratorTypeCode", roleTypeCode));
+		List<UnitAdministrator> grantPersons = criteria.list();
+		if (grantPersons != null && !grantPersons.isEmpty()) {
+			for (UnitAdministrator grantPerson : grantPersons) {
+				personIdList.add(grantPerson.getPersonId());
+			}
+		}
+		personCriteria.add(Restrictions.in("prncplId", personIdList));
+		List<PersonDetailsView> personDetailsViews = personCriteria.list();
+		if (personDetailsViews != null && !personDetailsViews.isEmpty()) {
+			for (PersonDetailsView personDetailsView : personDetailsViews) {
+				mailAdressList.add(personDetailsView.getEmailAddress());
+			}
+		}
+		return mailAdressList;
 	}
 
 }

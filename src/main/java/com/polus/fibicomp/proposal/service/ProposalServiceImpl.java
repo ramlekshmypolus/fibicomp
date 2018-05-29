@@ -580,6 +580,24 @@ public class ProposalServiceImpl implements ProposalService {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED);
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVED));
 				proposal = proposalDao.saveOrUpdateProposal(proposal);
+
+				subject = "Action Required: Submit '" + proposal.getTitle() + "' for endorsement";
+				Set<String> toAddresses = new HashSet<String>();
+				toAddresses = workflowService.getEmailAdressByUserType(Constants.SMU_GRANT_MANAGER_CODE);
+				message = "The following application has been approved by grant administrator and waiting to be submitted for endorsement:"
+						+ "<br/><br/>Application Title: "+ proposal.getTitle() +"<br/>"
+						+ "Principal Investigator: "+ piName +"<br/>Sponsor Due Date: "+ proposal.getSubmissionDate() +"<br/><br/>Please go to "
+						+ "<a title=\"\" target=\"_self\" href=\""+ context +"/proposal/createProposal?proposalId="+ proposal.getProposalId() +"\">this link</a> "
+						+ "to review the application and forward to provost for endorsement by clicking on Submit to Provost button. "
+						+ "Please direct any questions to the application's Principal Investigator (PI) "
+						+ "or the contact associated with a given application.<br/><br/>Thank you.<br/><br/>"
+						+ "Application Details as follows:<br/>Application Number: "+ proposal.getProposalId() +"<br/>"
+						+ "Application Title: "+ proposal.getTitle() +"<br/>Principal Investigator: "+ piName +"<br/>"
+						+ "Lead Unit: "+ proposal.getHomeUnitNumber() +" - "+ proposal.getHomeUnitName() +"<br/>"
+						+ "Deadline Date: "+ proposal.getSubmissionDate() +"";
+				if(!toAddresses.isEmpty()) {
+					fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+				}
 			} else if (!isFinalApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
 				proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
@@ -845,6 +863,24 @@ public class ProposalServiceImpl implements ProposalService {
 		proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT));
 		proposal = proposalDao.saveOrUpdateProposal(proposal);
 		proposalVO.setProposal(proposal);
+		String piName = getPrincipalInvestigator(proposal.getProposalPersons());
+		String subject = "Action Required: Endorse " + proposal.getTitle();
+		Set<String> toAddresses = new HashSet<String>();
+		toAddresses = workflowService.getEmailAdressByUserType(Constants.SMU_GRANT_PROVOST_CODE);
+		String message = "The following application has been routed for endorsement: <br/><br/>Application Title: "
+				+ proposal.getTitle() + "<br/>" + "Principal Investigator: " + piName + "<br/>Sponsor Due Date: "
+				+ proposal.getSubmissionDate() + "<br/><br/>Please go to " + "<a title=\"\" target=\"_self\" href=\""
+				+ context + "/proposal/createProposal?proposalId=" + proposal.getProposalId() + "\">this link</a> "
+				+ "to review the application and provide your response with endorse by clicking on Endorse button. "
+				+ "Please direct any questions to the application's Principal Investigator (PI) "
+				+ "or the contact associated with a given application.<br/><br/>Thank you.<br/><br/>"
+				+ "Application Details as follows:<br/>Application Number: " + proposal.getProposalId() + "<br/>"
+				+ "Application Title: " + proposal.getTitle() + "<br/>Principal Investigator: " + piName + "<br/>"
+				+ "Lead Unit: " + proposal.getHomeUnitNumber() + " - " + proposal.getHomeUnitName() + "<br/>"
+				+ "Deadline Date: " + proposal.getSubmissionDate() + "";
+		if (!toAddresses.isEmpty()) {
+			fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+		}
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
 	}
