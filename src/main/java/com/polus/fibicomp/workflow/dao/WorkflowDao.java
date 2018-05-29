@@ -1,6 +1,7 @@
 package com.polus.fibicomp.workflow.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -55,5 +56,7 @@ public interface WorkflowDao {
 	public List<WorkflowDetail> fetchWorkflowDetailByWorkflowId(Integer workflowId);
  
 	public List<WorkflowReviewerDetail> fetchWorkflowReviewerByCriteria(Integer workflowDetailId);
+
+	public Set<String> fetchEmailAdressByUserType(String roleTypeCode);
 
 }

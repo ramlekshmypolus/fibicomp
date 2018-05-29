@@ -294,4 +294,9 @@ public class WorkflowServiceImpl implements WorkflowService {
 		return workflowDao.getCurrentWorkflowDetail(workflowId, personId, roleCode);
 	}
 
+	@Override
+	public Set<String> getEmailAdressByUserType(String roleTypeCode) {
+		return workflowDao.fetchEmailAdressByUserType(roleTypeCode);
+	}
+
 }

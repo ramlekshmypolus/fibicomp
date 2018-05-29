@@ -2,6 +2,7 @@ package com.polus.fibicomp.workflow.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,11 @@ public interface WorkflowService {
 	public List<WorkflowMapDetail> fetchAvailableReviewers(Integer workflowDetailId);
 
 	public WorkflowDetail getCurrentWorkflowDetail(Integer workflowId, String personId, Integer roleCode);
+
+	/**
+	 * @param roleType specifies the type of user in routing
+	 * @return set of email address of all grant managers
+	 */
+	public Set<String> getEmailAdressByUserType(String roleTypeCode);
 
 }
