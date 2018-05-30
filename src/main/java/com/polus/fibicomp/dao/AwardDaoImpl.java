@@ -141,6 +141,8 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("person_id", rset.getString("person_id"));
 				detailsField.put("full_name", rset.getString("full_name"));
 				detailsField.put("prncpl_nm", rset.getString("prncpl_nm"));
+				detailsField.put("is_awd_budget", rset.getString("is_awd_budget"));			
+				detailsField.put("latest_version_number", rset.getString("latest_version_number"));
 				awardDetails.add(detailsField);
 			}
 			awardDetailsVO.setAwardDetails(awardDetails);
