@@ -26,6 +26,7 @@ import com.polus.fibicomp.pojo.ProtocolType;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.report.vo.ReportVO;
 import com.polus.fibicomp.view.AwardView;
+import com.polus.fibicomp.view.ExpenditureByAwardView;
 
 @Transactional
 @Service(value = "reportDao")
@@ -199,10 +200,31 @@ public class ReportDaoImpl implements ReportDao {
 		return reportVO;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ReportVO fetchExpenditureByAward(ReportVO reportVO) {
-		// TODO Auto-generated method stub
-		return null;
+		String awardNumber = reportVO.getAwardNumber();
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Query query = session.createSQLQuery(
+				"select t1.LINE_ITEM_COST, t1.COST_ELEMENT, t2.DESCRIPTION from MITKC_AB_DETAIL t1 left outer join MITKC_AB_COST_ELEMENT t2 on t1.COST_ELEMENT = t2.COST_ELEMENT where t1.award_number = :awardNumber");
+		query.setParameter("awardNumber", awardNumber);
+		List<ExpenditureByAwardView> expenditureList = query.list();
+		reportVO.setExpenditureList(expenditureList);
+		return reportVO;
+	}
+
+	@Override
+	public List<AwardView> fetchAwardNumbers() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(AwardView.class);
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("awardNumber"), "awardNumber");
+		projList.add(Projections.property("title"), "title");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(AwardView.class));
+		criteria.addOrder(Order.asc("awardNumber"));
+		@SuppressWarnings("unchecked")
+		List<AwardView> awardNumbers = criteria.list();
+		return awardNumbers;
 	}
 
 }

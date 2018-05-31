@@ -17,6 +17,7 @@ import com.polus.fibicomp.grantcall.pojo.GrantCallType;
 import com.polus.fibicomp.pojo.ProtocolType;
 import com.polus.fibicomp.report.dao.ReportDao;
 import com.polus.fibicomp.report.vo.ReportVO;
+import com.polus.fibicomp.view.AwardView;
 
 @Transactional
 @Service(value = "reportService")
@@ -87,6 +88,7 @@ public class ReportServiceImpl implements ReportService {
 		fetchApplicationsCountByGrantCallType(reportVO);
 		fetchProtocolsCountByProtocolType(reportVO);
 		fetchAwardByGrantCallType(reportVO);
+		fetchAwardNumbers(reportVO);
 		String response = committeeDao.convertObjectToJSON(reportVO);
 		return response;
 	}
@@ -106,6 +108,11 @@ public class ReportServiceImpl implements ReportService {
 			}
 			reportVO.setAwardByGrantType(awardByGrantType);
 		}
+	}
+
+	public void fetchAwardNumbers(ReportVO reportVO) {
+		List<AwardView> awardNumbers = reportDao.fetchAwardNumbers();
+		reportVO.setAwardNumbers(awardNumbers);
 	}
 
 }
