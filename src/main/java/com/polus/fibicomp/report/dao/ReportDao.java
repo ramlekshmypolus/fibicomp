@@ -8,6 +8,7 @@ import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallType;
 import com.polus.fibicomp.pojo.ProtocolType;
 import com.polus.fibicomp.report.vo.ReportVO;
+import com.polus.fibicomp.view.AwardView;
 
 @Service
 public interface ReportDao {
@@ -31,5 +32,7 @@ public interface ReportDao {
 	public ReportVO fetchAwardByGrantCallId(ReportVO reportVO);
 
 	public ReportVO fetchExpenditureByAward(ReportVO reportVO);
+
+	public List<AwardView> fetchAwardNumbers();
 
 }

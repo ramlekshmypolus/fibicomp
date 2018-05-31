@@ -6,6 +6,7 @@ import java.util.Map;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.view.AwardView;
+import com.polus.fibicomp.view.ExpenditureByAwardView;
 
 public class ReportVO {
 
@@ -30,6 +31,12 @@ public class ReportVO {
 	private List<AwardView> awards;
 
 	private String personId;
+
+	private List<AwardView> awardNumbers;
+
+	private String awardNumber;
+
+	private List<ExpenditureByAwardView> expenditureByAward;
 
 	public Integer getGrantCallId() {
 		return grantCallId;
@@ -103,6 +110,30 @@ public class ReportVO {
 		this.awardCount = awardCount;
 	}
 
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	public List<AwardView> getAwardNumbers() {
+		return awardNumbers;
+	}
+
+	public void setAwardNumbers(List<AwardView> awardNumbers) {
+		this.awardNumbers = awardNumbers;
+	}
+
+	public String getAwardNumber() {
+		return awardNumber;
+	}
+
+	public void setAwardNumber(String awardNumber) {
+		this.awardNumber = awardNumber;
+	}
+
 	public List<AwardView> getAwards() {
 		return awards;
 	}
@@ -111,12 +142,12 @@ public class ReportVO {
 		this.awards = awards;
 	}
 
-	public String getPersonId() {
-		return personId;
+	public List<ExpenditureByAwardView> getExpenditureList() {
+		return expenditureByAward;
 	}
 
-	public void setPersonId(String personId) {
-		this.personId = personId;
+	public void setExpenditureList(List<ExpenditureByAwardView> expenditureList) {
+		this.expenditureByAward = expenditureList;
 	}
 
 }
