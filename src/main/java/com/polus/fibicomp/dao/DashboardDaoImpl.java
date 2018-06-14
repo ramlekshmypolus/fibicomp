@@ -1072,7 +1072,7 @@ public class DashboardDaoImpl implements DashboardDao {
 		String property3 = vo.getProperty3();
 		String property4 = vo.getProperty4();
 		Integer currentPage = vo.getCurrentPage();
-		String unitNumber = vo.getUnitNumber();
+		//String unitNumber = vo.getUnitNumber();
 		boolean isUnitAdmin = vo.getIsUnitAdmin();
 
 		Conjunction and = Restrictions.conjunction();
@@ -1090,21 +1090,21 @@ public class DashboardDaoImpl implements DashboardDao {
 					searchCriteria.addOrder(Order.asc(sortBy));
 				}
 			}
-			if (property1 != null && !property1.isEmpty()) {
+			if (property1 != null && !property1.isEmpty()) {				
 				and.add(Restrictions.like("grantCallId", "%" + property1 + "%").ignoreCase());
 			}
 			if (property2 != null && !property2.isEmpty()) {
 				and.add(Restrictions.like("grantCallName", "%" + property2 + "%").ignoreCase());
 			}
 			if (property3 != null && !property3.isEmpty()) {
-				and.add(Restrictions.like("grantCallStatus.description", "%" + property3 + "%").ignoreCase());
+				and.add(Restrictions.like("grantCallType.description", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				and.add(Restrictions.like("sponsorType.description", "%" + property4 + "%").ignoreCase());
+				and.add(Restrictions.like("sponsor.sponsorName", "%" + property4 + "%").ignoreCase());
 			}
 
 			if (!isUnitAdmin) {
-				searchCriteria.add(Restrictions.like("homeUnitNumber", unitNumber));
+				//searchCriteria.add(Restrictions.like("homeUnitNumber", unitNumber));
 				searchCriteria.add(Restrictions.like("grantStatusCode", 2));
 			}
 			searchCriteria.add(and);
@@ -1180,16 +1180,24 @@ public class DashboardDaoImpl implements DashboardDao {
 				and.add(Restrictions.like("proposalCategory.description", "%" + property4 + "%").ignoreCase());
 			}
 			if (isProvost) {
-				searchCriteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT));
+				//searchCriteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT));
+				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode",Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
 			if (isReviewer) {
-				searchCriteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS));
+				//searchCriteria.add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS));
+				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
 			if (personId != null && !personId.isEmpty()) {
 				if(!isUnitAdmin && !isProvost && !isReviewer) {
 					searchCriteria.createAlias("proposalPersons", "proposalPersons");
-					searchCriteria.add(Restrictions.eq("proposalPersons.personId", personId));
-				}			
+					//searchCriteria.add(Restrictions.eq("proposalPersons.personId", personId));
+					searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
+				}
+			}
+			if (vo.getUserName() != null) {
+				//searchCriteria.add(Restrictions.like("createUser", vo.getUserName()));
+				//and.add(Restrictions.like("createUser", vo.getUserName()));
+				//searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("createUser", vo.getUserName())));
 			}
 			searchCriteria.add(and);
 			ProjectionList projList = Projections.projectionList();
