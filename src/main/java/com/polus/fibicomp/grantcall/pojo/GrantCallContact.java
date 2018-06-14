@@ -50,6 +50,9 @@ public class GrantCallContact implements Serializable {
 	@Column(name = "MOBILE")
 	private String mobile;
 
+	@Column(name = "IS_SMU_PERSON")
+	private boolean isSMUPerson;
+
 	public Integer getGrantContactId() {
 		return grantContactId;
 	}
@@ -108,5 +111,13 @@ public class GrantCallContact implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public boolean isSMUPerson() {
+		return isSMUPerson;
+	}
+
+	public void setSMUPerson(boolean isSMUPerson) {
+		this.isSMUPerson = isSMUPerson;
 	}
 }
