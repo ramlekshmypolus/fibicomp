@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.polus.fibicomp.util.JpaCharBooleanConversion;
 
 @Entity
 @Table(name = "FIBI_GRANT_CALL_CONTACTS")
@@ -51,7 +53,8 @@ public class GrantCallContact implements Serializable {
 	private String mobile;
 
 	@Column(name = "IS_SMU_PERSON")
-	private boolean isSMUPerson;
+	@Convert(converter = JpaCharBooleanConversion.class)
+	private Boolean isSMUPerson;
 
 	public Integer getGrantContactId() {
 		return grantContactId;
@@ -113,11 +116,12 @@ public class GrantCallContact implements Serializable {
 		return serialVersionUID;
 	}
 
-	public boolean isSMUPerson() {
+	public Boolean getIsSMUPerson() {
 		return isSMUPerson;
 	}
 
-	public void setSMUPerson(boolean isSMUPerson) {
+	public void setIsSMUPerson(Boolean isSMUPerson) {
 		this.isSMUPerson = isSMUPerson;
 	}
+
 }
