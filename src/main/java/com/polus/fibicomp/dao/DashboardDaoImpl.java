@@ -994,6 +994,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Criteria searchCriteria = session.createCriteria(CommitteeSchedule.class);
 			searchCriteria.createAlias("committee", "committee");
 			Criteria countCriteria = session.createCriteria(CommitteeSchedule.class);
+			countCriteria.createAlias("committee", "committee");
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimestamp"));
 			} else {
@@ -1079,7 +1080,11 @@ public class DashboardDaoImpl implements DashboardDao {
 			logger.info("----------- getDashBoardDataForGrantCall ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(GrantCall.class);
+			searchCriteria.createAlias("grantCallType", "grantCallType");
+			searchCriteria.createAlias("sponsor", "sponsor");
 			Criteria countCriteria = session.createCriteria(GrantCall.class);
+			countCriteria.createAlias("grantCallType", "grantCallType");
+			countCriteria.createAlias("sponsor", "sponsor");
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimeStamp"));
 			} else {
@@ -1090,7 +1095,8 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			if (property1 != null && !property1.isEmpty()) {
-				and.add(Restrictions.like("grantCallId", "%" + property1 + "%").ignoreCase());
+				Integer grantCallId = Integer.valueOf(property1);
+				and.add(Restrictions.like("grantCallId", grantCallId));
 			}
 			if (property2 != null && !property2.isEmpty()) {
 				and.add(Restrictions.like("grantCallName", "%" + property2 + "%").ignoreCase());
@@ -1155,7 +1161,11 @@ public class DashboardDaoImpl implements DashboardDao {
 			logger.info("----------- getDashBoardDataForSmuProposal ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(Proposal.class);
+			searchCriteria.createAlias("proposalStatus", "proposalStatus");
+			searchCriteria.createAlias("proposalCategory", "proposalCategory");
 			Criteria countCriteria = session.createCriteria(Proposal.class);
+			countCriteria.createAlias("proposalStatus", "proposalStatus");
+			countCriteria.createAlias("proposalCategory", "proposalCategory");
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimeStamp"));
 			} else {
@@ -1166,7 +1176,8 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			if (property1 != null && !property1.isEmpty()) {
-				and.add(Restrictions.like("proposalId", "%" + property1 + "%").ignoreCase());
+				Integer proposalId = Integer.valueOf(property1);
+				and.add(Restrictions.like("proposalId", proposalId));
 			}
 			if (property2 != null && !property2.isEmpty()) {
 				and.add(Restrictions.like("title", "%" + property2 + "%").ignoreCase());
@@ -1216,4 +1227,5 @@ public class DashboardDaoImpl implements DashboardDao {
 		}
 		return dashBoardProfile;
 	}
+
 }
