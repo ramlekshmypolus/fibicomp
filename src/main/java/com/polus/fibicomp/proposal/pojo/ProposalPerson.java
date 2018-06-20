@@ -64,6 +64,9 @@ public class ProposalPerson implements Serializable {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
+	@Column(name = "DEPARTMENT")
+	private String department;
+
 	public Integer getProposalPersonId() {
 		return proposalPersonId;
 	}
@@ -150,6 +153,14 @@ public class ProposalPerson implements Serializable {
 
 	public void setLeadUnitName(String leadUnitName) {
 		this.leadUnitName = leadUnitName;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
 }
