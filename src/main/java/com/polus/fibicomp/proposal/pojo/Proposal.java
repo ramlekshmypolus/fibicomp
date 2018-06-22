@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -157,6 +158,15 @@ public class Proposal implements Serializable {
 
 	@Column(name = "HOME_UNIT_NAME")
 	private String homeUnitName;
+
+	@Transient
+	private String applicationStatus;
+
+	@Transient
+	private String applicationCategory;
+
+	@Transient
+	private String applicationType;
 
 	public Proposal() {
 		proposalAttachments = new ArrayList<ProposalAttachment>();
@@ -466,6 +476,30 @@ public class Proposal implements Serializable {
 
 	public void setIpNumber(String ipNumber) {
 		this.ipNumber = ipNumber;
+	}
+
+	public String getApplicationStatus() {
+		return applicationStatus;
+	}
+
+	public void setApplicationStatus(String applicationStatus) {
+		this.applicationStatus = applicationStatus;
+	}
+
+	public String getApplicationCategory() {
+		return applicationCategory;
+	}
+
+	public void setApplicationCategory(String applicationCategory) {
+		this.applicationCategory = applicationCategory;
+	}
+
+	public String getApplicationType() {
+		return applicationType;
+	}
+
+	public void setApplicationType(String applicationType) {
+		this.applicationType = applicationType;
 	}
 
 }

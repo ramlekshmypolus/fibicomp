@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -56,11 +57,11 @@ public class GrantCall implements Serializable {
 	@Column(name = "QUANTUM")
 	private Integer quantum;
 
-	@Column(name = "GRANT_TYPE_CODE")
-	private Integer grantTypeCode;
-
 	@Column(name = "GRANT_THEME")
 	private String grantTheme;
+
+	@Column(name = "GRANT_TYPE_CODE")
+	private Integer grantTypeCode;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK1_FIBI_GRANT_CALL_HEDAER"), name = "GRANT_TYPE_CODE", referencedColumnName = "GRANT_TYPE_CODE", insertable = false, updatable = false)
@@ -147,6 +148,15 @@ public class GrantCall implements Serializable {
 
 	@Column(name = "HOME_UNIT_NAME")
 	private String homeUnitName;
+
+	@Transient
+	private String grantCallTypeDesc;
+
+	@Transient
+	private String grantCallStatusDesc;
+
+	@Transient
+	private String sponsorName;
 
 	public GrantCall() {
 		grantCallKeywords = new ArrayList<GrantCallKeyword>();
@@ -430,6 +440,30 @@ public class GrantCall implements Serializable {
 
 	public void setHomeUnitName(String homeUnitName) {
 		this.homeUnitName = homeUnitName;
+	}
+
+	public String getGrantCallTypeDesc() {
+		return grantCallTypeDesc;
+	}
+
+	public void setGrantCallTypeDesc(String grantCallTypeDesc) {
+		this.grantCallTypeDesc = grantCallTypeDesc;
+	}
+
+	public String getGrantCallStatusDesc() {
+		return grantCallStatusDesc;
+	}
+
+	public void setGrantCallStatusDesc(String grantCallStatusDesc) {
+		this.grantCallStatusDesc = grantCallStatusDesc;
+	}
+
+	public String getSponsorName() {
+		return sponsorName;
+	}
+
+	public void setSponsorName(String sponsorName) {
+		this.sponsorName = sponsorName;
 	}
 
 }
