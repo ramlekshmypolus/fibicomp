@@ -1082,6 +1082,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Criteria searchCriteria = session.createCriteria(GrantCall.class);
 			searchCriteria.createAlias("grantCallType", "grantCallType");
 			searchCriteria.createAlias("sponsor", "sponsor");
+			searchCriteria.createAlias("grantCallStatus", "grantCallStatus");
 			Criteria countCriteria = session.createCriteria(GrantCall.class);
 			countCriteria.createAlias("grantCallType", "grantCallType");
 			countCriteria.createAlias("sponsor", "sponsor");
@@ -1109,17 +1110,17 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 
 			if (!isUnitAdmin) {
-				searchCriteria.add(Restrictions.like("grantStatusCode", 2));
+				searchCriteria.add(Restrictions.like("grantStatusCode", Constants.GRANT_CALL_STATUS_CODE_OPEN));
 			}
 			searchCriteria.add(and);
 			ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("grantCallId"), "grantCallId");
 			projList.add(Projections.property("grantCallName"), "grantCallName");
-			projList.add(Projections.property("grantCallStatus"), "grantCallStatus");
-			projList.add(Projections.property("description"), "description");
+			projList.add(Projections.property("grantCallType.description"), "grantCallTypeDesc");
 			projList.add(Projections.property("openingDate"), "openingDate");
 			projList.add(Projections.property("closingDate"), "closingDate");
-			projList.add(Projections.property("homeUnitName"), "homeUnitName");
+			projList.add(Projections.property("sponsor.sponsorName"), "sponsorName");
+			projList.add(Projections.property("grantCallStatus.description"), "grantCallStatusDesc");
 			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(GrantCall.class));
 			countCriteria.add(and);
 
@@ -1163,6 +1164,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			Criteria searchCriteria = session.createCriteria(Proposal.class);
 			searchCriteria.createAlias("proposalStatus", "proposalStatus");
 			searchCriteria.createAlias("proposalCategory", "proposalCategory");
+			searchCriteria.createAlias("proposalType", "proposalType");
+			searchCriteria.createAlias("proposalPersons", "proposalPersons");
+
 			Criteria countCriteria = session.createCriteria(Proposal.class);
 			countCriteria.createAlias("proposalStatus", "proposalStatus");
 			countCriteria.createAlias("proposalCategory", "proposalCategory");
@@ -1196,7 +1200,6 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 			if (personId != null && !personId.isEmpty()) {
 				if(!isUnitAdmin && !isProvost && !isReviewer) {
-					searchCriteria.createAlias("proposalPersons", "proposalPersons");
 					searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 				}
 			}
@@ -1204,10 +1207,10 @@ public class DashboardDaoImpl implements DashboardDao {
 			ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("proposalId"), "proposalId");
 			projList.add(Projections.property("title"), "title");
-			projList.add(Projections.property("proposalStatus"), "proposalStatus");
-			projList.add(Projections.property("proposalCategory"), "proposalCategory");
-			projList.add(Projections.property("startDate"), "startDate");
-			projList.add(Projections.property("endDate"), "endDate");
+			projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
+			projList.add(Projections.property("proposalType.description"), "applicationType");
+			projList.add(Projections.property("proposalStatus.description"), "applicationStatus");
+			projList.add(Projections.property("submissionDate"), "submissionDate");
 			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
 			countCriteria.add(and);
 

@@ -256,7 +256,7 @@ public class ProposalServiceImpl implements ProposalService {
 			List<ProposalPerson> updatedlist = new ArrayList<ProposalPerson>(list);
 			Collections.copy(updatedlist, list);
 			for (ProposalPerson proposalPerson : list) {
-				if (proposalPerson.getPersonId().equals(vo.getProposalPersonId())) {
+				if (proposalPerson.getProposalPersonId().equals(vo.getProposalPersonId())) {
 					updatedlist.remove(proposalPerson);
 				}
 			}

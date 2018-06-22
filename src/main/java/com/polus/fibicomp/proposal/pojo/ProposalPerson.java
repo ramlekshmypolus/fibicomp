@@ -46,7 +46,7 @@ public class ProposalPerson implements Serializable {
 	private String fullName;
 
 	@Column(name = "PROP_PERSON_ROLE_ID")
-	private String personRoleId;
+	private Long personRoleId;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK2_FIBI_SMU_PROPOSAL_PERSONS"), name = "PROP_PERSON_ROLE_ID", referencedColumnName = "PROP_PERSON_ROLE_ID", insertable = false, updatable = false)
@@ -123,14 +123,6 @@ public class ProposalPerson implements Serializable {
 		this.updateUser = updateUser;
 	}
 
-	public String getPersonRoleId() {
-		return personRoleId;
-	}
-
-	public void setPersonRoleId(String personRoleId) {
-		this.personRoleId = personRoleId;
-	}
-
 	public ProposalPersonRole getProposalPersonRole() {
 		return proposalPersonRole;
 	}
@@ -161,6 +153,18 @@ public class ProposalPerson implements Serializable {
 
 	public void setDepartment(String department) {
 		this.department = department;
+	}
+
+	public Long getPersonRoleId() {
+		return personRoleId;
+	}
+
+	public void setPersonRoleId(Long personRoleId) {
+		this.personRoleId = personRoleId;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }
