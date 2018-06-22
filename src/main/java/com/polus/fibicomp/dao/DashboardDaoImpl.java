@@ -1165,7 +1165,6 @@ public class DashboardDaoImpl implements DashboardDao {
 			searchCriteria.createAlias("proposalStatus", "proposalStatus");
 			searchCriteria.createAlias("proposalCategory", "proposalCategory");
 			searchCriteria.createAlias("proposalType", "proposalType");
-			searchCriteria.createAlias("proposalPersons", "proposalPersons");
 
 			Criteria countCriteria = session.createCriteria(Proposal.class);
 			countCriteria.createAlias("proposalStatus", "proposalStatus");
@@ -1200,6 +1199,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 			if (personId != null && !personId.isEmpty()) {
 				if(!isUnitAdmin && !isProvost && !isReviewer) {
+					searchCriteria.createAlias("proposalPersons", "proposalPersons");
 					searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 				}
 			}
