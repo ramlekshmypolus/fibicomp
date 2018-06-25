@@ -1172,7 +1172,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Criteria countCriteria = session.createCriteria(Proposal.class);
 			countCriteria.createAlias("proposalStatus", "proposalStatus");
 			countCriteria.createAlias("proposalCategory", "proposalCategory");
-			searchCriteria.createAlias("proposalType", "proposalType");
+			countCriteria.createAlias("proposalType", "proposalType");
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimeStamp"));
 			} else {
