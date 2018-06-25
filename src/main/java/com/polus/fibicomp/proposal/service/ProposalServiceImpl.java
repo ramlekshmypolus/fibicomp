@@ -608,8 +608,10 @@ public class ProposalServiceImpl implements ProposalService {
 					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED));
 					proposal = proposalDao.saveOrUpdateProposal(proposal);
 				} else {
-					proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
-					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS));
+					/*proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS);
+					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS));*/
+					proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED);
+					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED));
 					proposal = proposalDao.saveOrUpdateProposal(proposal);
 				}				
 			}
