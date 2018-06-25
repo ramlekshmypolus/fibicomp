@@ -18,6 +18,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -992,9 +993,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			logger.info("----------- getDashBoardDataForCommitteeSchedule ------------");
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(CommitteeSchedule.class);
-			searchCriteria.createAlias("committee", "committee");
+			searchCriteria.createAlias("committee", "committee", JoinType.LEFT_OUTER_JOIN);
 			Criteria countCriteria = session.createCriteria(CommitteeSchedule.class);
-			countCriteria.createAlias("committee", "committee");
+			countCriteria.createAlias("committee", "committee", JoinType.LEFT_OUTER_JOIN);
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimestamp"));
 			} else {
@@ -1036,8 +1037,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			projList.add(Projections.property("committee"), "committee");
 			projList.add(Projections.property("scheduleStatus"), "scheduleStatus");
 
-			searchCriteria.setProjection(projList)
-					.setResultTransformer(new AliasToBeanResultTransformer(CommitteeSchedule.class));
+			searchCriteria.setProjection(projList).setResultTransformer(new AliasToBeanResultTransformer(CommitteeSchedule.class));
 			@SuppressWarnings("unchecked")
 			List<CommitteeSchedule> committeeSchedules = searchCriteria.list();
 			Date scheduleDate = null;
@@ -1081,11 +1081,13 @@ public class DashboardDaoImpl implements DashboardDao {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(GrantCall.class);
 			searchCriteria.createAlias("grantCallType", "grantCallType");
-			searchCriteria.createAlias("sponsor", "sponsor");
+			searchCriteria.createAlias("sponsor", "sponsor", JoinType.LEFT_OUTER_JOIN);
 			searchCriteria.createAlias("grantCallStatus", "grantCallStatus");
+
 			Criteria countCriteria = session.createCriteria(GrantCall.class);
 			countCriteria.createAlias("grantCallType", "grantCallType");
-			countCriteria.createAlias("sponsor", "sponsor");
+			countCriteria.createAlias("sponsor", "sponsor", JoinType.LEFT_OUTER_JOIN);
+			countCriteria.createAlias("grantCallStatus", "grantCallStatus");
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimeStamp"));
 			} else {
@@ -1110,7 +1112,8 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 
 			if (!isUnitAdmin) {
-				searchCriteria.add(Restrictions.like("grantStatusCode", Constants.GRANT_CALL_STATUS_CODE_OPEN));
+				searchCriteria.add(Restrictions.eq("grantStatusCode", Constants.GRANT_CALL_STATUS_CODE_OPEN));
+				countCriteria.add(Restrictions.eq("grantStatusCode", Constants.GRANT_CALL_STATUS_CODE_OPEN));
 			}
 			searchCriteria.add(and);
 			ProjectionList projList = Projections.projectionList();
@@ -1169,6 +1172,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			Criteria countCriteria = session.createCriteria(Proposal.class);
 			countCriteria.createAlias("proposalStatus", "proposalStatus");
 			countCriteria.createAlias("proposalCategory", "proposalCategory");
+			searchCriteria.createAlias("proposalType", "proposalType");
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				searchCriteria.addOrder(Order.desc("updateTimeStamp"));
 			} else {
@@ -1193,14 +1197,17 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 			if (isProvost) {
 				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT)).add(Restrictions.eq("createUser", vo.getUserName())));
+				countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_ENDORSEMENT)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
 			if (isReviewer) {
 				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
+				countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
 			if (personId != null && !personId.isEmpty()) {
 				if(!isUnitAdmin && !isProvost && !isReviewer) {
-					searchCriteria.createAlias("proposalPersons", "proposalPersons");
+					searchCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
 					searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
+					countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 				}
 			}
 			searchCriteria.add(and);
