@@ -7,6 +7,7 @@ import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.ExpenditureByAwardView;
+import com.polus.fibicomp.view.ProtocolView;
 
 public class ReportVO {
 
@@ -20,9 +21,9 @@ public class ReportVO {
 
 	private List<Proposal> proposals;
 
-	private Map<String, Long> applicationsByGrantCallType;
+	private Map<String, List<Proposal>> applicationsByGrantCallType;
 
-	private Map<String, Long> protocolsByType;
+	private Map<String, List<ProtocolView>> protocolsByType;
 
 	private Map<String, Long> awardByGrantType;
 
@@ -36,15 +37,7 @@ public class ReportVO {
 
 	private String awardNumber;
 
-	private List<ExpenditureByAwardView> expenditureByAward;
-
-	public Integer getGrantCallId() {
-		return grantCallId;
-	}
-
-	public void setGrantCallId(Integer grantCallId) {
-		this.grantCallId = grantCallId;
-	}
+	private List<ExpenditureByAwardView> expenditureList;
 
 	public String getReportName() {
 		return reportName;
@@ -76,22 +69,6 @@ public class ReportVO {
 
 	public void setProposalCount(Integer proposalCount) {
 		this.proposalCount = proposalCount;
-	}
-
-	public Map<String, Long> getApplicationsByGrantCallType() {
-		return applicationsByGrantCallType;
-	}
-
-	public void setApplicationsByGrantCallType(Map<String, Long> applicationsByGrantCallType) {
-		this.applicationsByGrantCallType = applicationsByGrantCallType;
-	}
-
-	public Map<String, Long> getProtocolsByType() {
-		return protocolsByType;
-	}
-
-	public void setProtocolsByType(Map<String, Long> protocolsByType) {
-		this.protocolsByType = protocolsByType;
 	}
 
 	public Map<String, Long> getAwardByGrantType() {
@@ -142,12 +119,36 @@ public class ReportVO {
 		this.awards = awards;
 	}
 
+	public Map<String, List<Proposal>> getApplicationsByGrantCallType() {
+		return applicationsByGrantCallType;
+	}
+
+	public void setApplicationsByGrantCallType(Map<String, List<Proposal>> applicationsByGrantCallType) {
+		this.applicationsByGrantCallType = applicationsByGrantCallType;
+	}
+
 	public List<ExpenditureByAwardView> getExpenditureList() {
-		return expenditureByAward;
+		return expenditureList;
 	}
 
 	public void setExpenditureList(List<ExpenditureByAwardView> expenditureList) {
-		this.expenditureByAward = expenditureList;
+		this.expenditureList = expenditureList;
+	}
+
+	public Map<String, List<ProtocolView>> getProtocolsByType() {
+		return protocolsByType;
+	}
+
+	public void setProtocolsByType(Map<String, List<ProtocolView>> protocolsByType) {
+		this.protocolsByType = protocolsByType;
+	}
+
+	public Integer getGrantCallId() {
+		return grantCallId;
+	}
+
+	public void setGrantCallId(Integer grantCallId) {
+		this.grantCallId = grantCallId;
 	}
 
 }

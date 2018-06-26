@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallType;
 import com.polus.fibicomp.pojo.ProtocolType;
+import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.report.vo.ReportVO;
 import com.polus.fibicomp.view.AwardView;
+import com.polus.fibicomp.view.ProtocolView;
 
 @Service
 public interface ReportDao {
@@ -19,13 +21,13 @@ public interface ReportDao {
 
 	public List<ProtocolType> fetchAllProtocolTypes();
 
-	public Long fetchApplicationsCountByGrantCallType(Integer grantCallTypeCode);
+	public List<Proposal> fetchApplicationsByGrantCallType(Integer grantCallTypeCode);
 
-	public Long fetchProtocolsCountByProtocolType(String protocolTypeCode);
+	public List<ProtocolView> fetchProtocolsByProtocolType(String protocolTypeCode);
 
 	public List<GrantCallType> fetchAllGrantCallTypes();
 
-	public List<Integer> fetchIPByGrantTypeCode(Integer grantTypeCode);
+	public List<Integer> fetchProposalIdByGrantTypeCode(Integer grantTypeCode);
 
 	public Long fetchAwardCountByGrantType(List<Integer> proposalId);
 
