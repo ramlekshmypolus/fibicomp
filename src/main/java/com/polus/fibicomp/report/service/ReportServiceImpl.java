@@ -15,9 +15,11 @@ import com.polus.fibicomp.grantcall.dao.GrantCallDao;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallType;
 import com.polus.fibicomp.pojo.ProtocolType;
+import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.report.dao.ReportDao;
 import com.polus.fibicomp.report.vo.ReportVO;
 import com.polus.fibicomp.view.AwardView;
+import com.polus.fibicomp.view.ProtocolView;
 
 @Transactional
 @Service(value = "reportService")
@@ -38,11 +40,12 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public String applicationReport(ReportVO reportVO) {
 		String reportName = reportVO.getReportName();
-		if (reportName.equals("Submitted Applications by Grant")) {
+		logger.info("reportName : " + reportName);
+		if (reportName.equals("Submitted Applications by Grant Call")) {
 			reportVO = reportDao.fetchApplicationByGrantCallId(reportVO);
-		} else if (reportName.equals("Awards by Grant")) {
+		} else if (reportName.equals("Projects by Grant Call")) {
 			reportVO = reportDao.fetchAwardByGrantCallId(reportVO);
-		} else if (reportName.equals("Expenditure by Award")) {
+		} else if (reportName.equals("Expenditure by Project")) {
 			reportVO = reportDao.fetchExpenditureByAward(reportVO);
 		}
 		String response = committeeDao.convertObjectToJSON(reportVO);
@@ -57,12 +60,12 @@ public class ReportServiceImpl implements ReportService {
 	public void fetchApplicationsCountByGrantCallType(ReportVO reportVO) {
 		List<GrantCallType> grantCallTypes = grantCallDao.fetchAllGrantCallTypes();
 		if (grantCallTypes != null && !grantCallTypes.isEmpty()) {
-			Map<String, Long> applicationsByGrantCallType = new HashMap<String, Long>();
+			Map<String, List<Proposal>> applicationsByGrantCallType = new HashMap<String, List<Proposal>>();
 			for (GrantCallType grantCallType : grantCallTypes) {
 				String grantCallTypeDesc = grantCallType.getDescription();
-				Long count = reportDao.fetchApplicationsCountByGrantCallType(grantCallType.getGrantTypeCode());
-				logger.info("Grant Call Type : " + grantCallTypeDesc + " ---------- count : " + count);
-				applicationsByGrantCallType.put(grantCallTypeDesc, count);
+				List<Proposal> proposals = reportDao.fetchApplicationsByGrantCallType(grantCallType.getGrantTypeCode());
+				logger.info("Grant Call Type : " + grantCallTypeDesc + " ---------- Applications : " + proposals);
+				applicationsByGrantCallType.put(grantCallTypeDesc, proposals);
 			}
 			reportVO.setApplicationsByGrantCallType(applicationsByGrantCallType);
 		}
@@ -71,12 +74,12 @@ public class ReportServiceImpl implements ReportService {
 	public void fetchProtocolsCountByProtocolType(ReportVO reportVO) {
 		List<ProtocolType> protocolTypes = reportDao.fetchAllProtocolTypes();
 		if (protocolTypes != null && !protocolTypes.isEmpty()) {
-			Map<String, Long> protocolsByType = new HashMap<String, Long>();
+			Map<String, List<ProtocolView>> protocolsByType = new HashMap<String, List<ProtocolView>>();
 			for (ProtocolType protocolType : protocolTypes) {
 				String protocolTypeDesc = protocolType.getDescription();
-				Long count = reportDao.fetchProtocolsCountByProtocolType(protocolType.getProtocolTypeCode());
-				logger.info("Protocol Type : " + protocolTypeDesc + " ---------- count : " + count);
-				protocolsByType.put(protocolTypeDesc, count);
+				List<ProtocolView> protocols = reportDao.fetchProtocolsByProtocolType(protocolType.getProtocolTypeCode());
+				logger.info("Protocol Type : " + protocolTypeDesc + " ---------- Protocols : " + protocols);
+				protocolsByType.put(protocolTypeDesc, protocols);
 			}
 			reportVO.setProtocolsByType(protocolsByType);
 		}
@@ -99,7 +102,7 @@ public class ReportServiceImpl implements ReportService {
 			Map<String, Long> awardByGrantType = new HashMap<String, Long>();
 			for (GrantCallType grantCallType : grantCallTypes) {
 				String grantCallTypeDesc = grantCallType.getDescription();
-				List<Integer> proposalId = reportDao.fetchIPByGrantTypeCode(grantCallType.getGrantTypeCode());
+				List<Integer> proposalId = reportDao.fetchProposalIdByGrantTypeCode(grantCallType.getGrantTypeCode());
 				if (proposalId != null && !proposalId.isEmpty()) {
 					Long count = reportDao.fetchAwardCountByGrantType(proposalId);
 					logger.info("GrantCallType : " + grantCallTypeDesc + " ---------- count : " + count);

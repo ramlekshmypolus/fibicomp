@@ -613,7 +613,7 @@ public class ProposalServiceImpl implements ProposalService {
 					proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED);
 					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED));
 					proposal = proposalDao.saveOrUpdateProposal(proposal);
-				}				
+				}
 			}
 			if (proposal.getStatusCode() == Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS || proposal.getStatusCode() == Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED) {
 				loadInitialData(proposalVO);

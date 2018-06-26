@@ -21,12 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallType;
-import com.polus.fibicomp.pojo.Protocol;
 import com.polus.fibicomp.pojo.ProtocolType;
 import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.report.vo.ReportVO;
 import com.polus.fibicomp.view.AwardView;
 import com.polus.fibicomp.view.ExpenditureByAwardView;
+import com.polus.fibicomp.view.ProtocolView;
 
 @Transactional
 @Service(value = "reportDao")
@@ -41,7 +41,7 @@ public class ReportDaoImpl implements ReportDao {
 	public List<GrantCall> fetchOpenGrantIds() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(GrantCall.class);
-		criteria.add(Restrictions.like("grantStatusCode",Constants.GRANT_CALL_STATUS_CODE_OPEN));
+		criteria.add(Restrictions.eq("grantStatusCode", Constants.GRANT_CALL_STATUS_CODE_OPEN));
 		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.property("grantCallId"), "grantCallId");
 		projList.add(Projections.property("grantCallName"), "grantCallName");
@@ -78,23 +78,39 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public Long fetchApplicationsCountByGrantCallType(Integer grantCallTypeCode) {
+	public List<Proposal> fetchApplicationsByGrantCallType(Integer grantCallTypeCode) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Proposal.class);
 		criteria.createAlias("grantCall", "grantCall");
+		criteria.createAlias("proposalStatus", "proposalStatus");
+		criteria.createAlias("proposalCategory", "proposalCategory");
+		criteria.createAlias("proposalType", "proposalType");
+
 		criteria.add(Restrictions.eq("grantCall.grantTypeCode", grantCallTypeCode));
-		Long applicationsCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
-		return applicationsCount;
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("proposalId"), "proposalId");
+		projList.add(Projections.property("title"), "title");
+		projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
+		projList.add(Projections.property("proposalType.description"), "applicationType");
+		projList.add(Projections.property("proposalStatus.description"), "applicationStatus");
+		projList.add(Projections.property("submissionDate"), "submissionDate");
+		criteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
+		//Long applicationsCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+		@SuppressWarnings("unchecked")
+		List<Proposal> proposals = criteria.list();
+		return proposals;
 	}
 
 	@Override
-	public Long fetchProtocolsCountByProtocolType(String protocolTypeCode) {
+	public List<ProtocolView> fetchProtocolsByProtocolType(String protocolTypeCode) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Protocol.class);
+		Criteria criteria = session.createCriteria(ProtocolView.class);
 		criteria.add(Restrictions.eq("protocolTypeCode", protocolTypeCode));
-		criteria.add(Restrictions.eq("protocolStatusCode", Constants.PROTOCOL_SATUS_CODE_ACTIVE_OPEN_TO_ENTROLLMENT));
-		Long protocolsCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
-		return protocolsCount;
+		criteria.add(Restrictions.eq("statusCode", Constants.PROTOCOL_SATUS_CODE_ACTIVE_OPEN_TO_ENTROLLMENT));
+		//Long protocolsCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+		@SuppressWarnings("unchecked")
+		List<ProtocolView> protocols = criteria.list();
+		return protocols;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,7 +132,7 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public List<Integer> fetchIPByGrantTypeCode(Integer grantTypeCode) {
+	public List<Integer> fetchProposalIdByGrantTypeCode(Integer grantTypeCode) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Proposal.class);
 		criteria.add(Restrictions.eq("grantTypeCode", grantTypeCode));
@@ -158,6 +174,7 @@ public class ReportDaoImpl implements ReportDao {
 	@Override
 	public ReportVO fetchAwardByGrantCallId(ReportVO reportVO) {
 		Integer grantCallId = reportVO.getGrantCallId();
+		logger.info("grantCallId : " + grantCallId);
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Proposal.class);
 		criteria.add(Restrictions.eq("grantCallId", grantCallId));
