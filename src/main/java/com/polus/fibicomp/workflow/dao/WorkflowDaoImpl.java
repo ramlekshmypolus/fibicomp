@@ -1,5 +1,6 @@
 package com.polus.fibicomp.workflow.dao;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -146,12 +147,20 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 	@Override
 	public WorkflowDetail fetchWorkflowByParams(Integer workflowId, String personId, Integer stopNumber) {
+		List<String> approvalStatusCodes = new ArrayList<String>();
+		approvalStatusCodes.add("A");
+		approvalStatusCodes.add("R");
 		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowDetail.class);
 		criteria.add(Restrictions.eq("workflow.workflowId", workflowId));
 		criteria.add(Restrictions.eq("approvalStopNumber", stopNumber));
-		criteria.add(Restrictions.eq("approverPersonId", personId));
-		criteria.add(Restrictions.eq("approvalStatusCode", "A"));
-		WorkflowDetail workflowDetail = (WorkflowDetail) criteria.list().get(0);
+		//criteria.add(Restrictions.eq("approverPersonId", personId));
+		criteria.add(Restrictions.in("approvalStatusCode", approvalStatusCodes));
+		WorkflowDetail workflowDetail = null;
+		@SuppressWarnings("unchecked")
+		List<WorkflowDetail> workflowDetails = criteria.list();
+		if (workflowDetails != null && !workflowDetails.isEmpty()) {
+			workflowDetail = workflowDetails.get(0);
+		}
 		return workflowDetail;
 	}
 
