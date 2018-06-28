@@ -73,24 +73,52 @@ public class WorkflowServiceImpl implements WorkflowService {
 		Collections.sort(workflowMapDetails, new WorkflowMapDetailComparator());
 		List<WorkflowDetail> workflowDetails = new ArrayList<WorkflowDetail>();
 		for (WorkflowMapDetail workflowMapDetail : workflowMapDetails) {
-			if (!workflowMapDetail.getRoleTypeCode().equals(3)) {
+			if (!workflowMapDetail.getRoleTypeCode().equals(Constants.REVIEWER_ROLE_TYPE_CODE)) {
 				WorkflowDetail workflowDetail = new WorkflowDetail();
 				if (!isResubmission && workflowMapDetail.getApprovalStopNumber().equals(Constants.WORKFLOW_FIRST_STOP_NUMBER)) {
 					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
 					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
 					toAddresses.add(workflowMapDetail.getEmailAddress());
 				} else if (isResubmission) {
-					if (statusCode.equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)
+					WorkflowDetail rejectedWorkflowDetail = workflowDao.fetchWorkflowByParams(activeWorkflow.getWorkflowId(), workflowMapDetail.getApproverPersonId(), Constants.WORKFLOW_FIRST_STOP_NUMBER);
+					/*if (statusCode.equals(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS)
 							&& workflowMapDetail.getApprovalStopNumber().equals(Constants.WORKFLOW_FIRST_STOP_NUMBER)) {
 						workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
 						workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
 						toAddresses.add(workflowMapDetail.getEmailAddress());
-					} else if (statusCode.equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)
+					} else */if (statusCode.equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)
 							&& workflowMapDetail.getApprovalStopNumber().equals(Constants.WORKFLOW_FIRST_STOP_NUMBER)) {
-						workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
-						workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
-						WorkflowDetail rejectedWorkflowDetail = workflowDao.fetchWorkflowByParams(activeWorkflow.getWorkflowId(), workflowMapDetail.getApproverPersonId(), Constants.WORKFLOW_FIRST_STOP_NUMBER);
-						if (rejectedWorkflowDetail != null) {
+						/*workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
+						workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));*/
+						if (rejectedWorkflowDetail.getApprovalStopNumber().equals(Constants.WORKFLOW_FIRST_STOP_NUMBER) && rejectedWorkflowDetail.getApprovalStatusCode().equals("R")) {
+							workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+							workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+							toAddresses.add(workflowMapDetail.getEmailAddress());	
+						} else {
+							workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
+							workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
+							if (rejectedWorkflowDetail != null) {
+								workflowDetail.setApprovalDate(rejectedWorkflowDetail.getApprovalDate());
+								workflowDetail.setApprovalComment(rejectedWorkflowDetail.getApprovalComment());
+								List<WorkflowAttachment> files = rejectedWorkflowDetail.getWorkflowAttachments();
+								if (files != null && !files.isEmpty()) {
+									List<WorkflowAttachment> workflowAttachments = new ArrayList<WorkflowAttachment>();
+									for (WorkflowAttachment attachment : files) {
+										WorkflowAttachment workflowAttachment = new WorkflowAttachment();
+										workflowAttachment.setDescription(attachment.getDescription());
+										workflowAttachment.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+										workflowAttachment.setUpdateUser(userName);
+										workflowAttachment.setAttachment(attachment.getAttachment());
+										workflowAttachment.setFileName(attachment.getFileName());
+										workflowAttachment.setMimeType(attachment.getMimeType());
+										workflowAttachment.setWorkflowDetail(workflowDetail);
+										workflowAttachments.add(workflowAttachment);
+									}
+									workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
+								}
+							}
+						}
+						/*if (rejectedWorkflowDetail != null) {
 							workflowDetail.setApprovalDate(rejectedWorkflowDetail.getApprovalDate());
 							workflowDetail.setApprovalComment(rejectedWorkflowDetail.getApprovalComment());
 							List<WorkflowAttachment> files = rejectedWorkflowDetail.getWorkflowAttachments();
@@ -109,10 +137,15 @@ public class WorkflowServiceImpl implements WorkflowService {
 								}
 								workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
 							}
-						}
+						}*/
 					} else if (statusCode.equals(Constants.PROPOSAL_STATUS_CODE_REVISION_REQUESTED)) {
-						workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
-						workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+						if (rejectedWorkflowDetail.getApprovalStatusCode().equals("A")) {
+							workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
+							workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
+						} else {
+							workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
+							workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED));
+						}
 						toAddresses.add(workflowMapDetail.getEmailAddress());
 					} else {
 						workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_TO_BE_SUBMITTED);
@@ -138,7 +171,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 				workflowDetails.add(workflowDetail);
 			}
 		}
-		fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+		fibiEmailService.sendEmail(toAddresses, subject, null, null, message, true);
 		workflow.setWorkflowDetails(workflowDetails);
 		workflow = workflowDao.saveWorkflow(workflow);
 		return workflow;
@@ -200,7 +233,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 			}
 		}
 		workflowDetail = workflowDao.saveWorkflowDetail(workflowDetail);
-		fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+		fibiEmailService.sendEmail(toAddresses, subject, null, null, message, true);
 		return workflowDetail;
 	}
 
@@ -264,7 +297,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 				}
 			}
 		}
-		fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+		fibiEmailService.sendEmail(toAddresses, subject, null, null, message, true);
 		workflowDetail.setWorkflow(workflow);
 		workflowDao.saveWorkflowDetail(workflowDetail);
 		workflow = workflowDao.saveWorkflow(workflow);
