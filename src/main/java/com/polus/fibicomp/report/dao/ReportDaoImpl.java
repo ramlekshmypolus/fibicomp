@@ -162,13 +162,22 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public Long fetchAwardCountByGrantType(List<Integer> proposalId) {
+	public List<Integer> fetchAwardCountByGrantType(List<Integer> proposalId) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Query query = session.createSQLQuery("select count(AWARD_ID) from AWARD_FUNDING_PROPOSALS where PROPOSAL_ID in (:ids)");
+		//Query query = session.createSQLQuery("select count(AWARD_ID) from AWARD_FUNDING_PROPOSALS where PROPOSAL_ID in (:ids)");
+		Query query = session.createSQLQuery("select AWARD_ID from AWARD_FUNDING_PROPOSALS where PROPOSAL_ID in (:ids)");
 		query.setParameterList("ids", proposalId);
-		BigDecimal bigDecimal = (BigDecimal) query.uniqueResult();
-		Long count = bigDecimal.longValue();
-		return count;
+		/*BigDecimal bigDecimal = (BigDecimal) query.uniqueResult();
+		Long count = bigDecimal.longValue();*/
+		@SuppressWarnings("unchecked")
+		List<BigDecimal> ids = query.list();
+		List<Integer> awardIds = new ArrayList<Integer>();
+		if (ids != null && !ids.isEmpty()) {
+			for (BigDecimal val : ids) {
+				awardIds.add(val.intValue());
+			}
+		}
+		return awardIds;
 	}
 
 	@Override
@@ -242,6 +251,16 @@ public class ReportDaoImpl implements ReportDao {
 		@SuppressWarnings("unchecked")
 		List<AwardView> awardNumbers = criteria.list();
 		return awardNumbers;
+	}
+
+	@Override
+	public List<AwardView> fetchAwardByAwardNumbers(List<Integer> awardIds) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(AwardView.class);
+		criteria.add(Restrictions.in("awardId", awardIds));
+		@SuppressWarnings("unchecked")
+		List<AwardView> awardList = criteria.list();
+		return awardList;
 	}
 
 }

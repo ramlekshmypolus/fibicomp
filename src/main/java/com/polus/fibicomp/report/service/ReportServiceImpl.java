@@ -99,14 +99,18 @@ public class ReportServiceImpl implements ReportService {
 	public void fetchAwardByGrantCallType(ReportVO reportVO) {
 		List<GrantCallType> grantCallTypes = reportDao.fetchAllGrantCallTypes();
 		if (grantCallTypes != null && !grantCallTypes.isEmpty()) {
-			Map<String, Long> awardByGrantType = new HashMap<String, Long>();
+			Map<String, List<AwardView>> awardByGrantType = new HashMap<String, List<AwardView>>();
 			for (GrantCallType grantCallType : grantCallTypes) {
 				String grantCallTypeDesc = grantCallType.getDescription();
-				List<Integer> proposalId = reportDao.fetchProposalIdByGrantTypeCode(grantCallType.getGrantTypeCode());
-				if (proposalId != null && !proposalId.isEmpty()) {
-					Long count = reportDao.fetchAwardCountByGrantType(proposalId);
-					logger.info("GrantCallType : " + grantCallTypeDesc + " ---------- count : " + count);
-					awardByGrantType.put(grantCallTypeDesc, count);
+				List<Integer> proposalIds = reportDao.fetchProposalIdByGrantTypeCode(grantCallType.getGrantTypeCode());
+				if (proposalIds != null && !proposalIds.isEmpty()) {
+					List<Integer> awardIds = reportDao.fetchAwardCountByGrantType(proposalIds);
+					logger.info("awardIds : " + awardIds);
+					if (awardIds != null && !awardIds.isEmpty()) {
+						List<AwardView> awardList = reportDao.fetchAwardByAwardNumbers(awardIds);
+						logger.info("GrantCallType : " + grantCallTypeDesc + " ---------- awardList : " + awardList);
+						awardByGrantType.put(grantCallTypeDesc, awardList);
+					}
 				}
 			}
 			reportVO.setAwardByGrantType(awardByGrantType);

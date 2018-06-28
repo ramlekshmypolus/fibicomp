@@ -596,7 +596,7 @@ public class ProposalServiceImpl implements ProposalService {
 						+ "Lead Unit: "+ proposal.getHomeUnitNumber() +" - "+ proposal.getHomeUnitName() +"<br/>"
 						+ "Deadline Date: "+ proposal.getSubmissionDate() +"";
 				if(!toAddresses.isEmpty()) {
-					fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+					fibiEmailService.sendEmail(toAddresses, subject, null, null, message, true);
 				}
 			} else if (!isFinalApprover && actionType.equals("A")) {
 				proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
@@ -802,7 +802,7 @@ public class ProposalServiceImpl implements ProposalService {
 					workflowDao.saveWorkflowDetail(adminWorkflow);
 					Set<String> toAddresses = new HashSet<String>();
 					toAddresses.add(adminWorkflow.getEmailAddress());
-					fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+					fibiEmailService.sendEmail(toAddresses, subject, null, null, message, true);
 				}
 			}
 			proposalVO.setIsReviewed(true);
@@ -881,7 +881,7 @@ public class ProposalServiceImpl implements ProposalService {
 				+ "Lead Unit: " + proposal.getHomeUnitNumber() + " - " + proposal.getHomeUnitName() + "<br/>"
 				+ "Deadline Date: " + proposal.getSubmissionDate() + "";
 		if (!toAddresses.isEmpty()) {
-			fibiEmailService.sendEail(toAddresses, subject, null, null, message, true);
+			fibiEmailService.sendEmail(toAddresses, subject, null, null, message, true);
 		}
 		String response = committeeDao.convertObjectToJSON(proposalVO);
 		return response;
@@ -921,9 +921,10 @@ public class ProposalServiceImpl implements ProposalService {
 				}
 				workflowDetail.getWorkflowReviewerDetails().clear();
 				workflowDetail.getWorkflowReviewerDetails().addAll(updatedlist);
-				if (workflowDetail.getWorkflowReviewerDetails() == null && workflowDetail.getWorkflowReviewerDetails().isEmpty()) {
+				if (workflowDetail.getWorkflowReviewerDetails() == null || workflowDetail.getWorkflowReviewerDetails().isEmpty()) {
 					proposalVO.setIsApproved(false);
 					proposalVO.setIsApprover(true);
+					proposalVO.setIsGrantAdmin(true);
 					Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
 					proposal.setStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS);
 					proposal.setProposalStatus(proposalDao.fetchStatusByStatusCode(Constants.PROPOSAL_STATUS_CODE_APPROVAL_INPROGRESS));
@@ -931,6 +932,8 @@ public class ProposalServiceImpl implements ProposalService {
 					workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING);
 					workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_WAITING));
 				}
+				List<WorkflowMapDetail> availableReviewers = workflowService.fetchAvailableReviewers(workflowDetail.getWorkflowDetailId());
+				proposalVO.setAvailableReviewers(availableReviewers);
 				workflowDao.saveWorkflowDetail(workflowDetail);
 			}
 			workflow = workflowDao.fetchActiveWorkflowByModuleItemId(proposalVO.getProposalId());

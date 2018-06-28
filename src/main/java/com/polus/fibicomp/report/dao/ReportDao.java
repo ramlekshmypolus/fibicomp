@@ -29,12 +29,14 @@ public interface ReportDao {
 
 	public List<Integer> fetchProposalIdByGrantTypeCode(Integer grantTypeCode);
 
-	public Long fetchAwardCountByGrantType(List<Integer> proposalId);
+	public List<Integer> fetchAwardCountByGrantType(List<Integer> proposalId);
 
 	public ReportVO fetchAwardByGrantCallId(ReportVO reportVO);
 
 	public ReportVO fetchExpenditureByAward(ReportVO reportVO);
 
 	public List<AwardView> fetchAwardNumbers();
+
+	public List<AwardView> fetchAwardByAwardNumbers(List<Integer> awardIds);
 
 }
