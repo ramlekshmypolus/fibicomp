@@ -25,7 +25,7 @@ public class ReportVO {
 
 	private Map<String, List<ProtocolView>> protocolsByType;
 
-	private Map<String, Long> awardByGrantType;
+	private Map<String, List<AwardView>> awardByGrantType;
 
 	private Integer awardCount;
 
@@ -69,14 +69,6 @@ public class ReportVO {
 
 	public void setProposalCount(Integer proposalCount) {
 		this.proposalCount = proposalCount;
-	}
-
-	public Map<String, Long> getAwardByGrantType() {
-		return awardByGrantType;
-	}
-
-	public void setAwardByGrantType(Map<String, Long> awardByGrantType) {
-		this.awardByGrantType = awardByGrantType;
 	}
 
 	public Integer getAwardCount() {
@@ -149,6 +141,14 @@ public class ReportVO {
 
 	public void setGrantCallId(Integer grantCallId) {
 		this.grantCallId = grantCallId;
+	}
+
+	public Map<String, List<AwardView>> getAwardByGrantType() {
+		return awardByGrantType;
+	}
+
+	public void setAwardByGrantType(Map<String, List<AwardView>> awardByGrantType) {
+		this.awardByGrantType = awardByGrantType;
 	}
 
 }

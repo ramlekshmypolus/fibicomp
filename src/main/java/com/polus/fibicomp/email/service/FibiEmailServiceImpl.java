@@ -58,7 +58,7 @@ public class FibiEmailServiceImpl implements FibiEmailService {
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 
 	@Override
-	public void sendEail(Set<String> toAddresses, String subject, Set<String> ccAddresses, Set<String> bccAddresses, String body, boolean htmlMessage) {
+	public void sendEmail(Set<String> toAddresses, String subject, Set<String> ccAddresses, Set<String> bccAddresses, String body, boolean htmlMessage) {
 		logger.info("Received request for mail sending");
 		if (mailSender != null) {
 			if (CollectionUtils.isEmpty(toAddresses)) {

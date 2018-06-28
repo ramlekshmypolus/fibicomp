@@ -12,6 +12,6 @@ public interface FibiEmailService {
 	 * @param subject - subject of mail
 	 * @param text - body
 	 */
-	public void sendEail(Set<String> toAddresses, String subject, Set<String> ccAddresses, Set<String> bccAddresses, String body, boolean htmlMessage);
+	public void sendEmail(Set<String> toAddresses, String subject, Set<String> ccAddresses, Set<String> bccAddresses, String body, boolean htmlMessage);
 
 }
