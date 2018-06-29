@@ -442,7 +442,11 @@ public class ProposalServiceImpl implements ProposalService {
 						if (!proposal.getStatusCode().equals(Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)
 								&& !workflowDetail.getApprovalStatusCode()
 										.equals(Constants.WORKFLOW_STATUS_CODE_WAITING_FOR_REVIEW)) {
-							proposalVO.setIsApproved(false);
+							if (workflowDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_APPROVED)) {
+								proposalVO.setIsApproved(true);
+							} else {
+								proposalVO.setIsApproved(false);
+							}
 							proposalVO.setIsApprover(true);
 						}
 						if (workflowDetail.getRoleTypeCode() == Constants.ADMIN_ROLE_TYPE_CODE) {
