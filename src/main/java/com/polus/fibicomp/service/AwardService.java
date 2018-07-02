@@ -2,6 +2,8 @@ package com.polus.fibicomp.service;
 
 import org.springframework.stereotype.Service;
 
+import com.polus.fibicomp.vo.CommonVO;
+
 @Service
 public interface AwardService {
 
@@ -41,4 +43,9 @@ public interface AwardService {
 	 */
 	public String getAwardCommitmentsData(String awardId) throws Exception;
 
+	public String createProjectVariationRequest(CommonVO vo) throws Exception;
+
+	public String viewTemplate(CommonVO vo) throws Exception;
+
+	public String saveOSTDetails(CommonVO vo) throws Exception;
 }

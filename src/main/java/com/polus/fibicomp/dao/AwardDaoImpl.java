@@ -24,6 +24,7 @@ import com.polus.fibicomp.vo.AwardDetailsVO;
 import com.polus.fibicomp.vo.AwardHierarchyVO;
 import com.polus.fibicomp.vo.AwardTermsAndReportsVO;
 import com.polus.fibicomp.vo.CommitmentsVO;
+import com.polus.fibicomp.vo.CommonVO;
 
 import oracle.jdbc.OracleTypes;
 
@@ -892,4 +893,141 @@ public class AwardDaoImpl implements AwardDao {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public CommonVO getDropDownDatas(CommonVO vo) {
+		getCategoryList(vo);
+		getTypeList(vo);
+		logger.info("CommonVO : " + vo);
+		return vo;
+	}
+
+	public void getCategoryList(CommonVO vo) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> categoryList = new ArrayList<HashMap<String, Object>>();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall("{call get_ost_category()}");
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_ost_category";
+				String functionCall = "{call " + procedureName + "(?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
+			while (rset.next()) {
+				HashMap<String, Object> categoryMap = new HashMap<String, Object>();
+				categoryMap.put("CATEGORY_CODE", rset.getString("CATEGORY_CODE"));
+				categoryMap.put("DESCRIPTION", rset.getString("DESCRIPTION"));
+				categoryList.add(categoryMap);
+			}
+			vo.setCategoryMap(categoryList);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getTypeList(CommonVO vo) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> typeList = new ArrayList<HashMap<String, Object>>();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall("{call get_ost_type()}");
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_ost_type";
+				String functionCall = "{call " + procedureName + "(?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.registerOutParameter(1, OracleTypes.CURSOR);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(1);
+			}
+			while (rset.next()) {
+				HashMap<String, Object> typeMap = new HashMap<String, Object>();
+				typeMap.put("CATEGORY_CODE", rset.getString("CATEGORY_CODE"));
+				typeMap.put("DESCRIPTION", rset.getString("DESCRIPTION"));
+				typeMap.put("TOOL_TIP", rset.getString("TOOL_TIP"));
+				typeMap.put("TYPE_CODE", rset.getString("TYPE_CODE"));
+				typeMap.put("HELP_LINK", rset.getString("HELP_LINK"));
+				typeList.add(typeMap);
+			}
+			vo.setTypeMap(typeList);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<HashMap<String, Object>> viewTemplate(Integer categoryCode, Integer serviceTypeCode) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> templateList = new ArrayList<HashMap<String, Object>>();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall("{call get_ost_template(?,?)}");
+				statement.setInt(1, categoryCode);
+				statement.setInt(2, serviceTypeCode);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_ost_template";
+				String functionCall = "{call " + procedureName + "(?,?,?)}";
+				statement = connection.prepareCall(functionCall);			
+				statement.setInt(1, categoryCode);
+				statement.setInt(2, serviceTypeCode);
+				statement.registerOutParameter(3, OracleTypes.CURSOR);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(3);
+			}
+			while (rset.next()) {
+				HashMap<String, Object> templateMap = new HashMap<String, Object>();
+				templateMap.put("CATEGORY_CODE", rset.getString("CATEGORY_CODE"));
+				templateMap.put("SERVICE_TYPE", rset.getString("SERVICE_TYPE"));
+				templateMap.put("TOOL_TIP", rset.getString("TOOL_TIP"));
+				templateMap.put("TEMPLATE", rset.getString("TEMPLATE"));
+				templateMap.put("TEMPLATE_ID", rset.getString("TEMPLATE_ID"));
+				templateMap.put("HELP_LINK", rset.getString("HELP_LINK"));
+				templateList.add(templateMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return templateList;
+	}
+
+	@Override
+	public Integer generateServiceRequestId() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		Integer serviceRequestId = null;
+		try {
+			String functionName = "fn_ost_get_next_service_req_id";
+			String functionCall = "{ ? = call "  + functionName + "() }";			
+			statement = connection.prepareCall(functionCall);
+			statement.registerOutParameter(1, OracleTypes.INTEGER);
+			statement.execute();
+			serviceRequestId = statement.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return serviceRequestId;
+	}
+
 }

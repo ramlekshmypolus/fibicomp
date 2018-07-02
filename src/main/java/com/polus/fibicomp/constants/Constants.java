@@ -87,4 +87,8 @@ public interface Constants {
     String DOCUMENT_COMPONENT = "Document";
     String FISCAL_YEAR_BASED_IP = "GENERATE_IP_BASED_ON_FY";
 
+    //OST Status
+    Integer STATUS_AT_DLC_NOT_SUBMITTED_CODE = 9;
+	String STATUS_AT_DLC_NOT_SUBMITTED = "DLC-Not Submitted";
+
 }
