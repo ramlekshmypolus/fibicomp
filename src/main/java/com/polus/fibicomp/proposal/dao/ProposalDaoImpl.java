@@ -88,6 +88,7 @@ public class ProposalDaoImpl implements ProposalDao {
 	public List<GrantCall> fetchAllGrantCalls() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(GrantCall.class);
+		criteria.add(Restrictions.like("grantStatusCode", Constants.GRANT_CALL_STATUS_CODE_OPEN));
 		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.property("grantCallId"), "grantCallId");
 		projList.add(Projections.property("grantCallName"), "grantCallName");

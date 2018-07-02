@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.polus.fibicomp.pojo.ServiceRequest;
+
 /**
  * Value object for service argument.
  *
@@ -77,6 +79,20 @@ public class CommonVO {
 	private boolean isProvost;
 
 	private boolean isReviewer;
+
+	private ServiceRequest serviceRequest;
+
+	private String fullName;
+
+	private List<HashMap<String, Object>> categoryMap;
+
+	private List<HashMap<String, Object>> typeMap;
+
+	private List<HashMap<String, Object>> templateList;
+
+	private Integer categoryCode;
+
+	private Integer serviceTypeCode;
 
 	public String getUserName() {
 		return userName;
@@ -348,5 +364,61 @@ public class CommonVO {
 
 	public void setReviewer(boolean isReviewer) {
 		this.isReviewer = isReviewer;
+	}
+
+	public ServiceRequest getServiceRequest() {
+		return serviceRequest;
+	}
+
+	public void setServiceRequest(ServiceRequest serviceRequest) {
+		this.serviceRequest = serviceRequest;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public List<HashMap<String, Object>> getCategoryMap() {
+		return categoryMap;
+	}
+
+	public void setCategoryMap(List<HashMap<String, Object>> categoryMap) {
+		this.categoryMap = categoryMap;
+	}
+
+	public List<HashMap<String, Object>> getTypeMap() {
+		return typeMap;
+	}
+
+	public void setTypeMap(List<HashMap<String, Object>> typeMap) {
+		this.typeMap = typeMap;
+	}
+
+	public List<HashMap<String, Object>> getTemplateList() {
+		return templateList;
+	}
+
+	public void setTemplateList(List<HashMap<String, Object>> templateList) {
+		this.templateList = templateList;
+	}
+
+	public Integer getCategoryCode() {
+		return categoryCode;
+	}
+
+	public void setCategoryCode(Integer categoryCode) {
+		this.categoryCode = categoryCode;
+	}
+
+	public Integer getServiceTypeCode() {
+		return serviceTypeCode;
+	}
+
+	public void setServiceTypeCode(Integer serviceTypeCode) {
+		this.serviceTypeCode = serviceTypeCode;
 	}
 }

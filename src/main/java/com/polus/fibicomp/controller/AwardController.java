@@ -42,4 +42,18 @@ public class AwardController {
 		return awardService.getAwardCommitmentsData(vo.getAwardId());
 	}
 
+	@RequestMapping(value = "/createProjectVariationRequest", method = RequestMethod.POST)
+	public String createProjectVariationRequest(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return awardService.createProjectVariationRequest(vo);
+	}
+
+	@RequestMapping(value = "/viewTemplate", method = RequestMethod.POST)
+	public String viewTemplate(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {		
+		return awardService.viewTemplate(vo);
+	}
+
+	@RequestMapping(value = "/saveOSTDetails", method = RequestMethod.POST)
+	public String saveOSTDetails(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return awardService.saveOSTDetails(vo);
+	}
 }

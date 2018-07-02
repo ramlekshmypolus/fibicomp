@@ -1,9 +1,13 @@
 package com.polus.fibicomp.dao;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.polus.fibicomp.vo.AwardDetailsVO;
 import com.polus.fibicomp.vo.AwardHierarchyVO;
 import com.polus.fibicomp.vo.AwardTermsAndReportsVO;
 import com.polus.fibicomp.vo.CommitmentsVO;
+import com.polus.fibicomp.vo.CommonVO;
 
 public interface AwardDao {
 
@@ -43,5 +47,11 @@ public interface AwardDao {
 	 * @throws Exception
 	 */
 	public CommitmentsVO fetchAwardCommitmentsData(String awardId);
+
+	public CommonVO getDropDownDatas(CommonVO vo);
+
+	public List<HashMap<String, Object>> viewTemplate(Integer categoryCode,Integer serviceTypeCode);
+
+	public Integer generateServiceRequestId();
 
 }
