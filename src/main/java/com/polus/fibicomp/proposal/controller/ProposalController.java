@@ -137,7 +137,7 @@ public class ProposalController {
 		return proposalService.submitProposal(vo);
 	}
 
-	@RequestMapping(value = "/approveOrRejectProposal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/approveOrRejectProposal", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String approveProposal(@RequestParam(value = "files", required = false) MultipartFile[] files, @RequestParam("formDataJson") String formDataJson) {
 		logger.info("Requesting for approveOrRejectProposal");
 		return proposalService.approveOrRejectProposal(files, formDataJson);
@@ -149,7 +149,7 @@ public class ProposalController {
 		return proposalService.assignReviewer(vo);
 	}
 
-	@RequestMapping(value = "/reviewCompleted", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/reviewCompleted", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String reviewCompleted(@RequestParam(value = "files", required = false) MultipartFile[] files, @RequestParam("formDataJson") String formDataJson) {
 		logger.info("Requesting for reviewCompleted");
 		return proposalService.reviewCompleted(files, formDataJson);

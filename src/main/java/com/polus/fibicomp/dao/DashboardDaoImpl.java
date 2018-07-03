@@ -215,7 +215,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			}
 
 			searchCriteria.add(and);
+			searchCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			countCriteria.add(and);
+			countCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
 			logger.info("dashboardCount : " + dashboardCount);
@@ -1206,8 +1208,13 @@ public class DashboardDaoImpl implements DashboardDao {
 				countCriteria.add(Restrictions.disjunction().add(Restrictions.in("statusCode", proposalStatusCode)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
 			if (isReviewer) {
-				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
-				countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
+				searchCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
+				countCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
+				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
+				//searchCriteria.addOrder(Order.desc("statusCode"));
+				countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
+				//searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
+				//countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
 			if (personId != null && !personId.isEmpty()) {
 				if(!isUnitAdmin && !isProvost && !isReviewer) {
