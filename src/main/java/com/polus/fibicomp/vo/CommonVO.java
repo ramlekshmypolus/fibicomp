@@ -94,6 +94,18 @@ public class CommonVO {
 
 	private Integer serviceTypeCode;
 
+	private String successMsg;
+
+	private List<HashMap<String, Object>> departmentList;
+
+	private List<HashMap<String, Object>> userList;
+
+	private Integer moduleCode;
+
+	private String moduleItemKey;
+
+	private Integer ostprojectId;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -421,4 +433,53 @@ public class CommonVO {
 	public void setServiceTypeCode(Integer serviceTypeCode) {
 		this.serviceTypeCode = serviceTypeCode;
 	}
+
+	public String getSuccessMsg() {
+		return successMsg;
+	}
+
+	public void setSuccessMsg(String successMsg) {
+		this.successMsg = successMsg;
+	}
+
+	public List<HashMap<String, Object>> getDepartmentList() {
+		return departmentList;
+	}
+
+	public void setDepartmentList(List<HashMap<String, Object>> departmentList) {
+		this.departmentList = departmentList;
+	}
+
+	public List<HashMap<String, Object>> getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List<HashMap<String, Object>> userList) {
+		this.userList = userList;
+	}
+
+	public Integer getModuleCode() {
+		return moduleCode;
+	}
+
+	public void setModuleCode(Integer moduleCode) {
+		this.moduleCode = moduleCode;
+	}
+
+	public String getModuleItemKey() {
+		return moduleItemKey;
+	}
+
+	public void setModuleItemKey(String moduleItemKey) {
+		this.moduleItemKey = moduleItemKey;
+	}
+
+	public Integer getOstprojectId() {
+		return ostprojectId;
+	}
+
+	public void setOstprojectId(Integer ostprojectId) {
+		this.ostprojectId = ostprojectId;
+	}
+
 }

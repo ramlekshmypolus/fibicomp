@@ -19,7 +19,9 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.pojo.AwardHierarchy;
+import com.polus.fibicomp.pojo.ServiceRequest;
 import com.polus.fibicomp.vo.AwardDetailsVO;
 import com.polus.fibicomp.vo.AwardHierarchyVO;
 import com.polus.fibicomp.vo.AwardTermsAndReportsVO;
@@ -142,7 +144,7 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("person_id", rset.getString("person_id"));
 				detailsField.put("full_name", rset.getString("full_name"));
 				detailsField.put("prncpl_nm", rset.getString("prncpl_nm"));
-				detailsField.put("is_awd_budget", rset.getString("is_awd_budget"));			
+				detailsField.put("is_awd_budget", rset.getString("is_awd_budget"));
 				detailsField.put("latest_version_number", rset.getString("latest_version_number"));
 				awardDetails.add(detailsField);
 			}
@@ -898,6 +900,7 @@ public class AwardDaoImpl implements AwardDao {
 	public CommonVO getDropDownDatas(CommonVO vo) {
 		getCategoryList(vo);
 		getTypeList(vo);
+		getDepartmentList(vo);
 		logger.info("CommonVO : " + vo);
 		return vo;
 	}
@@ -969,6 +972,57 @@ public class AwardDaoImpl implements AwardDao {
 		}
 	}
 
+	public void getDepartmentList(CommonVO vo) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> departmentList = new ArrayList<HashMap<String, Object>>();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
+		try {
+			if (vo.getIsUnitAdmin() == true) {
+				if (oracledb.equalsIgnoreCase("N")) {
+					statement = connection.prepareCall("{call GET_OST_ALL_UNITS()}");
+					statement.execute();
+					rset = statement.getResultSet();
+				} else if (oracledb.equalsIgnoreCase("Y")) {
+					String procedureName = "GET_OST_ALL_UNITS";
+					String functionCall = "{call " + procedureName + "(?)}";
+					statement = connection.prepareCall(functionCall);
+					statement.registerOutParameter(1, OracleTypes.CURSOR);
+					statement.execute();
+					rset = (ResultSet) statement.getObject(1);
+				}
+			} else {
+				if (oracledb.equalsIgnoreCase("N")) {
+					statement = connection.prepareCall("{call get_ost_person_units(?)}");
+					statement.setString(1, vo.getPersonId());
+					statement.execute();
+					rset = statement.getResultSet();
+				} else if (oracledb.equalsIgnoreCase("Y")) {
+					String procedureName = "get_ost_person_units";
+					String functionCall = "{call " + procedureName + "(?,?)}";
+					statement = connection.prepareCall(functionCall);
+					statement.setString(1, vo.getPersonId());
+					statement.registerOutParameter(2, OracleTypes.CURSOR);
+					statement.execute();
+					rset = (ResultSet) statement.getObject(1);
+				}
+			}
+			while (rset.next()) {
+				HashMap<String, Object> departmentMap = new HashMap<String, Object>();
+				departmentMap.put("AO_FULL_NAME", rset.getString("AO_FULL_NAME"));
+				departmentMap.put("AO_PERSON_ID", rset.getString("AO_PERSON_ID"));
+				departmentMap.put("UNIT_NAME", rset.getString("UNIT_NAME"));
+				departmentMap.put("UNIT_NUMBER", rset.getString("UNIT_NUMBER"));
+				departmentList.add(departmentMap);
+			}
+			vo.setDepartmentList(departmentList);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public List<HashMap<String, Object>> viewTemplate(Integer categoryCode, Integer serviceTypeCode) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
@@ -987,7 +1041,7 @@ public class AwardDaoImpl implements AwardDao {
 			} else if (oracledb.equalsIgnoreCase("Y")) {
 				String procedureName = "get_ost_template";
 				String functionCall = "{call " + procedureName + "(?,?,?)}";
-				statement = connection.prepareCall(functionCall);			
+				statement = connection.prepareCall(functionCall);
 				statement.setInt(1, categoryCode);
 				statement.setInt(2, serviceTypeCode);
 				statement.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1019,7 +1073,7 @@ public class AwardDaoImpl implements AwardDao {
 		Integer serviceRequestId = null;
 		try {
 			String functionName = "fn_ost_get_next_service_req_id";
-			String functionCall = "{ ? = call "  + functionName + "() }";			
+			String functionCall = "{ ? = call " + functionName + "() }";
 			statement = connection.prepareCall(functionCall);
 			statement.registerOutParameter(1, OracleTypes.INTEGER);
 			statement.execute();
@@ -1028,6 +1082,395 @@ public class AwardDaoImpl implements AwardDao {
 			e.printStackTrace();
 		}
 		return serviceRequestId;
+	}
+
+	@Override
+	public Integer updateServiceRequest(ServiceRequest serviceRequest, String userName, String fullName,
+			Boolean isUnitAdmin) throws Exception {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		String result = null;
+		Integer isUpdated = 0;
+		performStatusChanges(serviceRequest, isUnitAdmin);
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall(
+						"{call UPD_OST_SERVICE_REQUEST(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				statement.setInt(1, serviceRequest.getServiceRequestId());
+				statement.setInt(2, serviceRequest.getStatusCode());
+				statement.setInt(3, serviceRequest.getServiceTypeCode());
+				statement.setString(4, serviceRequest.getSummary());
+				statement.setString(5, serviceRequest.getUnitNumber());
+				if (serviceRequest.getReporterPersonId() == null) {
+					statement.setString(6, null);
+					statement.setString(7, null);
+				} else {
+					statement.setString(6, serviceRequest.getReporterPersonId());
+					statement.setString(7, serviceRequest.getReporterName());
+				}
+				statement.setString(8, serviceRequest.getContractAdminPersonId());
+				statement.setString(9, serviceRequest.getContractAdminName());
+				statement.setString(10, serviceRequest.getDescription());
+				statement.setInt(11, serviceRequest.getPriorityId());
+				if (serviceRequest.getAcType().equalsIgnoreCase("I")) {
+					statement.setString(12, userName);
+					statement.setString(13, userName);
+				} else {
+					statement.setString(12, serviceRequest.getCreateUser());
+					statement.setString(13, userName);
+				}
+				statement.setString(14, serviceRequest.getAcType());
+				statement.setString(15, serviceRequest.getAssigneePersonId());
+				statement.setString(16, serviceRequest.getAssigneePersonName());
+				statement.setInt(17, serviceRequest.getCaReviewStatusCode());
+				statement.setInt(18, serviceRequest.getOstCategoryCode());
+				if (serviceRequest.getFdpFlag() != null && serviceRequest.getFdpFlag() == true) {
+					statement.setString(19, "Y");
+				} else {
+					statement.setString(19, "N");
+				}
+				statement.setDate(20, serviceRequest.getArrivalDate());
+				if (serviceRequest.getNegotiationFlag() != null && serviceRequest.getNegotiationFlag() == true) {
+					statement.setString(21, "Y");
+				} else {
+					statement.setString(21, "N");
+				}
+				statement.setString(22, serviceRequest.getStatusComment());
+				if (serviceRequest.getNegotiatorId() != null) {
+					statement.setInt(23, serviceRequest.getNegotiatorId());
+				} else {
+					statement.setString(23, null);
+				}
+				if (serviceRequest.getNegotiatorId() != null) {
+					statement.setString(24, serviceRequest.getNegotiatorName());
+				} else {
+					statement.setString(24, null);
+				}
+				statement.setInt(25, serviceRequest.getWorkFlowTaskCode());
+				statement.setTimestamp(26, serviceRequest.getSqlUpdateDate());
+				statement.execute();
+				result = statement.getString(27);
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "UPD_OST_SERVICE_REQUEST";
+				String functionCall = "{call " + procedureName
+						+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.setInt(1, serviceRequest.getServiceRequestId());
+				statement.setInt(2, serviceRequest.getStatusCode());
+				statement.setInt(3, serviceRequest.getServiceTypeCode());
+				statement.setString(4, serviceRequest.getSummary());
+				statement.setString(5, serviceRequest.getUnitNumber());
+				if (serviceRequest.getReporterPersonId() == null) {
+					statement.setString(6, null);
+					statement.setString(7, null);
+				} else {
+					statement.setString(6, serviceRequest.getReporterPersonId());
+					statement.setString(7, serviceRequest.getReporterName());
+				}
+				statement.setString(8, serviceRequest.getContractAdminPersonId());
+				statement.setString(9, serviceRequest.getContractAdminName());
+				statement.setString(10, serviceRequest.getDescription());
+				statement.setInt(11, serviceRequest.getPriorityId());
+				if (serviceRequest.getAcType().equalsIgnoreCase("I")) {
+					statement.setString(12, userName);
+					statement.setString(13, userName);
+				} else {
+					statement.setString(12, serviceRequest.getCreateUser());
+					statement.setString(13, userName);
+				}
+				statement.setString(14, serviceRequest.getAcType());
+				statement.setString(15, serviceRequest.getAssigneePersonId());
+				statement.setString(16, serviceRequest.getAssigneePersonName());
+				statement.setObject(17, serviceRequest.getCaReviewStatusCode());
+				statement.setInt(18, serviceRequest.getOstCategoryCode());
+				if (serviceRequest.getFdpFlag() != null && serviceRequest.getFdpFlag() == true) {
+					statement.setString(19, "Y");
+				} else {
+					statement.setString(19, "N");
+				}
+				statement.setDate(20, serviceRequest.getArrivalDate());
+				if (serviceRequest.getNegotiationFlag() != null && serviceRequest.getNegotiationFlag() == true) {
+					statement.setString(21, "Y");
+				} else {
+					statement.setString(21, "N");
+				}
+				statement.setString(22, serviceRequest.getStatusComment());
+				if (serviceRequest.getNegotiatorId() != null) {
+					statement.setInt(23, serviceRequest.getNegotiatorId());
+				} else {
+					statement.setString(23, null);
+				}
+				if (serviceRequest.getNegotiatorId() != null) {
+					statement.setString(24, serviceRequest.getNegotiatorName());
+				} else {
+					statement.setString(24, null);
+				}
+				statement.setObject(25, serviceRequest.getWorkFlowTaskCode());
+				statement.setTimestamp(26, serviceRequest.getSqlUpdateDate());
+				statement.registerOutParameter(27, OracleTypes.CURSOR);
+				statement.execute();
+				result = statement.getString(27);
+			}
+			if (result == null) {
+				isUpdated = 0;
+			} else if (Integer.parseInt(result) == 20100) {
+				isUpdated = 20100;
+			} else {
+				isUpdated = Integer.parseInt(result);
+			}
+			if (serviceRequest.getPreviousReporterId() != null
+					&& !(serviceRequest.getPreviousReporterId().equalsIgnoreCase(serviceRequest.getReporterPersonId()))
+					&& serviceRequest.getIsSubmittedOnce() == true) {
+				updateReporter(serviceRequest, userName, fullName);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUpdated;
+	}
+
+	private void performStatusChanges(ServiceRequest serviceRequest, Boolean isUnitAdmin) {
+		if (serviceRequest.getAssigneePersonId() != null && serviceRequest.getIsSubmittedOnce() != null
+				&& isUnitAdmin == true && serviceRequest.getStatusCode() == Constants.STATUS_AT_OSP_CODE) {
+			serviceRequest.setStatusCode(Constants.STATUS_PROCESSING_CODE);
+		}
+	}
+
+	public void updateReporter(ServiceRequest serviceRequest, String userName, String fullName) throws Exception {
+		Integer actionLogId = generateAndLogActionId(serviceRequest, Constants.ACTION_NEW_REPORTER, userName);
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall("{call upd_ost_new_reporter(?,?,?,?,?,?)}");
+				statement.setInt(1, serviceRequest.getServiceRequestId());
+				statement.setString(2, serviceRequest.getReporterPersonId());
+				statement.setString(3, userName);
+				statement.setString(4, userName);
+				statement.setString(5, fullName);
+				statement.setInt(6, actionLogId);
+				statement.execute();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "upd_ost_new_reporter";
+				String functionCall = "{call " + procedureName + "(?,?,?,?,?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.setInt(1, serviceRequest.getServiceRequestId());
+				statement.setString(2, serviceRequest.getReporterPersonId());
+				statement.setString(3, userName);
+				statement.setString(4, userName);
+				statement.setString(5, fullName);
+				statement.setInt(6, actionLogId);
+				statement.execute();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Integer generateAndLogActionId(ServiceRequest serviceRequest, Integer actionCode, String userName)
+			throws Exception {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		Integer actionId = null;
+		try {
+			String functionName = "fn_ost_log_action";
+			String functionCall = "{ ? = call " + functionName + "(?,?,?,?,?,?) }";
+			statement = connection.prepareCall(functionCall);
+			statement.registerOutParameter(1, OracleTypes.INTEGER);
+			statement.setInt(2, serviceRequest.getServiceRequestId());
+			statement.setInt(3, actionCode);
+			statement.setInt(4, serviceRequest.getStatusCode());
+			statement.setString(5, serviceRequest.getAssigneePersonId());
+			statement.setString(6, serviceRequest.getAssigneePersonName());
+			statement.setString(7, userName);
+			statement.execute();
+			actionId = statement.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return actionId;
+	}
+
+	@Override
+	public void updateProcessFlow(Integer serviceRequestId, Integer actionLogId, Integer statusCode, Integer roleType,
+			String returnToMeForReview, String userName) throws Exception {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		try {
+			if (returnToMeForReview != null && returnToMeForReview.equalsIgnoreCase("true")) {
+				returnToMeForReview = "Y";
+			} else {
+				returnToMeForReview = "N";
+			}
+			String functionName = "fn_ost_log_process_flow";
+			String functionCall = "{ ? = call " + functionName + "(?,?,?,?,?,?) }";
+			statement = connection.prepareCall(functionCall);
+			statement.registerOutParameter(1, OracleTypes.INTEGER);
+			statement.setInt(2, serviceRequestId);
+			statement.setInt(3, actionLogId);
+			statement.setInt(4, statusCode);
+			statement.setObject(5, roleType);
+			statement.setString(6, returnToMeForReview);
+			statement.setString(7, userName);
+			statement.execute();
+			// int result = statement.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getServiceDetails(Integer serviceRequestId) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
+		List<HashMap<String, Object>> serviceRequestList = new ArrayList<HashMap<String, Object>>();
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall("{call get_ost_service_details(?,?)}");
+				statement.setInt(1, serviceRequestId);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_ost_service_details";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.setInt(1, serviceRequestId);
+				statement.registerOutParameter(2, OracleTypes.CURSOR);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(2);
+			}
+			while (rset.next()) {
+				HashMap<String, Object> serviceRequestMap = new HashMap<String, Object>();
+				serviceRequestMap.put("SERVICE_REQUEST_ID", rset.getString("SERVICE_REQUEST_ID"));
+				serviceRequestMap.put("STATUS_CODE", rset.getString("STATUS_CODE"));
+				serviceRequestMap.put("SUMMARY", rset.getString("SUMMARY"));
+				serviceRequestMap.put("REPORTER_PERSON_ID", rset.getString("REPORTER_PERSON_ID"));
+				serviceRequestMap.put("REPORTER_USER_NAME", rset.getString("REPORTER_USER_NAME"));
+				serviceRequestMap.put("UPDATE_DATE", rset.getString("UPDATE_DATE"));
+				serviceRequestMap.put("UNIT_NUMBER", rset.getString("UNIT_NUMBER"));
+				serviceRequestMap.put("IS_ONCE_SUBMIT", rset.getString("IS_ONCE_SUBMIT"));
+				serviceRequestMap.put("REVIEWER_USER_NAME", rset.getString("REVIEWER_USER_NAME"));
+				serviceRequestMap.put("REVIEWER_PERSON_ID", rset.getString("REVIEWER_PERSON_ID"));
+				serviceRequestMap.put("UNIT_NAME", rset.getString("UNIT_NAME"));
+				serviceRequestMap.put("DESCRIPTION", rset.getString("DESCRIPTION"));
+				serviceRequestMap.put("CURRENT_CA_USER_NAME", rset.getString("CURRENT_CA_USER_NAME"));
+				serviceRequestMap.put("CURRENT_CA_NAME", rset.getString("CURRENT_CA_NAME"));
+				serviceRequestMap.put("REPORTER_NAME", rset.getString("REPORTER_NAME"));
+				serviceRequestMap.put("SERVICE_TYPE_CODE", rset.getString("SERVICE_TYPE_CODE"));
+				serviceRequestMap.put("SERVICE_TYPE", rset.getString("SERVICE_TYPE"));
+				serviceRequestMap.put("CURRENT_CA_PERSON_ID", rset.getString("CURRENT_CA_PERSON_ID"));
+				serviceRequestMap.put("ASSIGNEE_PERSON_NAME", rset.getString("ASSIGNEE_PERSON_NAME"));
+				serviceRequestMap.put("PREV_ASSIGNEE_PERSON_NAME", rset.getString("PREV_ASSIGNEE_PERSON_NAME"));
+				serviceRequestMap.put("ASSIGNEE_PERSON_ID", rset.getString("ASSIGNEE_PERSON_ID"));
+				serviceRequestMap.put("PREV_ASSIGNEE_PERSON_ID", rset.getString("PREV_ASSIGNEE_PERSON_ID"));
+				serviceRequestMap.put("ARRIVAL_DATE", rset.getString("ARRIVAL_DATE"));
+				// serviceRequestMap.put("CA_REVIEW_STATUS_CODE",
+				// rset.getObject("CA_REVIEW_STATUS_CODE"));
+				serviceRequestMap.put("CREATE_TIMESTAMP", rset.getString("CREATE_TIMESTAMP"));
+				serviceRequestMap.put("SERVICE_STATUS", rset.getString("SERVICE_STATUS"));
+				serviceRequestMap.put("NEGOTIATOR_ID", rset.getString("NEGOTIATOR_ID"));
+				serviceRequestMap.put("NEGOTIATOR_NAME", rset.getString("NEGOTIATOR_NAME"));
+				serviceRequestMap.put("CATEGORY", rset.getString("CATEGORY"));
+				serviceRequestMap.put("CATEGORY_CODE", rset.getString("CATEGORY_CODE"));
+				serviceRequestMap.put("STATUS_COMMENT", rset.getString("STATUS_COMMENT"));
+				serviceRequestMap.put("DLC_TIME", rset.getString("DLC_TIME"));
+				serviceRequestMap.put("HOLD_INTERVAL", rset.getString("HOLD_INTERVAL"));
+				serviceRequestMap.put("PRIORITY", rset.getString("PRIORITY"));
+				serviceRequestMap.put("PRIORITY_ID", rset.getString("PRIORITY_ID"));
+				serviceRequestMap.put("UPDATE_TIMESTAMP", rset.getString("UPDATE_TIMESTAMP"));
+				serviceRequestMap.put("OSP_TIME", rset.getString("OSP_TIME"));
+				serviceRequestMap.put("POPS_TASK_TYPE_CODE", rset.getString("POPS_TASK_TYPE_CODE"));
+				serviceRequestMap.put("POPS_TASK_TYPE", rset.getString("POPS_TASK_TYPE"));
+				serviceRequestList.add(serviceRequestMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return serviceRequestList;
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getCADetails(String unitNumber) throws Exception {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		List<HashMap<String, Object>> userDetails = new ArrayList<HashMap<String, Object>>();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		ResultSet rset = null;
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall("{call get_ost_ca_dept(?,?)}");
+				statement.setString(1, unitNumber);
+				statement.execute();
+				rset = statement.getResultSet();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "get_ost_ca_dept";
+				String functionCall = "{call " + procedureName + "(?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.setString(1, unitNumber);
+				statement.registerOutParameter(2, OracleTypes.CURSOR);
+				statement.execute();
+				rset = (ResultSet) statement.getObject(2);
+			}
+			while (rset.next()) {
+				HashMap<String, Object> userMap = new HashMap<String, Object>();
+				userMap.put("FIRST_NAME", rset.getString("FIRST_NAME"));
+				userMap.put("FULL_NAME", rset.getString("FULL_NAME"));
+				userMap.put("LAST_NAME", rset.getString("LAST_NAME"));
+				userMap.put("PERSON_ID", rset.getString("PERSON_ID"));
+				userMap.put("USER_ID", rset.getString("USER_ID"));
+				userDetails.add(userMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return userDetails;
+	}
+
+	@Override
+	public void updateOSTProject(Integer serviceRequestId, Integer moduleCode, String moduleItemKey, String personId,
+			Integer ostprojectId, String acType) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		SessionImpl sessionImpl = (SessionImpl) session;
+		Connection connection = sessionImpl.connection();
+		CallableStatement statement = null;
+		try {
+			if (oracledb.equalsIgnoreCase("N")) {
+				statement = connection.prepareCall("{call upd_ost_projects(?,?,?,?,?,?)}");
+				statement.setInt(1, serviceRequestId);
+				statement.setInt(2, moduleCode);
+				statement.setString(3, moduleItemKey);
+				statement.setString(4, personId);
+				statement.setInt(5, ostprojectId);
+				statement.setString(6, acType);
+				statement.execute();
+			} else if (oracledb.equalsIgnoreCase("Y")) {
+				String procedureName = "upd_ost_projects";
+				String functionCall = "{call " + procedureName + "(?,?,?,?,?,?)}";
+				statement = connection.prepareCall(functionCall);
+				statement.setInt(1, serviceRequestId);
+				statement.setInt(2, moduleCode);
+				statement.setString(3, moduleItemKey);
+				statement.setString(4, personId);
+				statement.setObject(5, ostprojectId);
+				statement.setString(6, acType);
+				statement.execute();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
