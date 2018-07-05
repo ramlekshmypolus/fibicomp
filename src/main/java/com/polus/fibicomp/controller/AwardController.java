@@ -48,12 +48,19 @@ public class AwardController {
 	}
 
 	@RequestMapping(value = "/viewTemplate", method = RequestMethod.POST)
-	public String viewTemplate(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {		
+	public String viewTemplate(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
 		return awardService.viewTemplate(vo);
 	}
 
-	@RequestMapping(value = "/saveOSTDetails", method = RequestMethod.POST)
-	public String saveOSTDetails(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
-		return awardService.saveOSTDetails(vo);
+	@RequestMapping(value = "/getContractAdmin", method = RequestMethod.POST)
+	public String getContractAdmin(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		return awardService.getContractAdmin(vo);
 	}
+
+	@RequestMapping(value = "/submitOSTDetails", method = RequestMethod.POST)
+	public String submitOSTDetails(@RequestBody CommonVO vo, HttpServletRequest request) throws Exception {
+		logger.info("Request for submitOSTDetails");
+		return awardService.submitOSTDetails(vo);
+	}
+
 }

@@ -1,5 +1,9 @@
 package com.polus.fibicomp.pojo;
 
+import java.sql.Date;
+import java.util.HashMap;
+import java.util.List;
+
 public class ServiceRequest {
 
 	private Integer serviceRequestId;
@@ -66,7 +70,7 @@ public class ServiceRequest {
 
 	private Boolean fdpFlag;
 
-	private String arrivalDate;
+	private Date arrivalDate;
 
 	private Boolean negotiationFlag;
 
@@ -99,6 +103,8 @@ public class ServiceRequest {
 	private String workFlowTaskName;
 
 	private java.sql.Timestamp sqlUpdateDate;
+
+	private List<HashMap<String, Object>> serviceList;
 
 	public Integer getServiceRequestId() {
 		return serviceRequestId;
@@ -356,11 +362,11 @@ public class ServiceRequest {
 		this.fdpFlag = fdpFlag;
 	}
 
-	public String getArrivalDate() {
+	public Date getArrivalDate() {
 		return arrivalDate;
 	}
 
-	public void setArrivalDate(String arrivalDate) {
+	public void setArrivalDate(Date arrivalDate) {
 		this.arrivalDate = arrivalDate;
 	}
 
@@ -490,6 +496,14 @@ public class ServiceRequest {
 
 	public void setSqlUpdateDate(java.sql.Timestamp sqlUpdateDate) {
 		this.sqlUpdateDate = sqlUpdateDate;
+	}
+
+	public List<HashMap<String, Object>> getServiceList() {
+		return serviceList;
+	}
+
+	public void setServiceList(List<HashMap<String, Object>> serviceList) {
+		this.serviceList = serviceList;
 	}
 
 }
