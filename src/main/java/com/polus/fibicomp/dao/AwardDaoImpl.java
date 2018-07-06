@@ -993,6 +993,14 @@ public class AwardDaoImpl implements AwardDao {
 					statement.execute();
 					rset = (ResultSet) statement.getObject(1);
 				}
+				while (rset.next()) {
+					HashMap<String, Object> departmentMap = new HashMap<String, Object>();
+					departmentMap.put("AO_FULL_NAME", rset.getString("AO_FULL_NAME"));
+					departmentMap.put("AO_PERSON_ID", rset.getString("AO_PERSON_ID"));
+					departmentMap.put("UNIT_NAME", rset.getString("UNIT_NAME"));
+					departmentMap.put("UNIT_NUMBER", rset.getString("UNIT_NUMBER"));
+					departmentList.add(departmentMap);
+				}
 			} else {
 				if (oracledb.equalsIgnoreCase("N")) {
 					statement = connection.prepareCall("{call get_ost_person_units(?)}");
@@ -1006,17 +1014,18 @@ public class AwardDaoImpl implements AwardDao {
 					statement.setString(1, vo.getPersonId());
 					statement.registerOutParameter(2, OracleTypes.CURSOR);
 					statement.execute();
-					rset = (ResultSet) statement.getObject(1);
+					rset = (ResultSet) statement.getObject(2);
 				}
-			}
-			while (rset.next()) {
-				HashMap<String, Object> departmentMap = new HashMap<String, Object>();
-				departmentMap.put("AO_FULL_NAME", rset.getString("AO_FULL_NAME"));
-				departmentMap.put("AO_PERSON_ID", rset.getString("AO_PERSON_ID"));
-				departmentMap.put("UNIT_NAME", rset.getString("UNIT_NAME"));
-				departmentMap.put("UNIT_NUMBER", rset.getString("UNIT_NUMBER"));
-				departmentList.add(departmentMap);
-			}
+				while (rset.next()) {
+					HashMap<String, Object> departmentMap = new HashMap<String, Object>();
+					departmentMap.put("LIST_ORDER", rset.getString("LIST_ORDER"));
+					departmentMap.put("OSP_ADMINISTRATOR", rset.getString("OSP_ADMINISTRATOR"));
+					departmentMap.put("OSP_PERSON_ID", rset.getString("OSP_PERSON_ID"));
+					departmentMap.put("UNIT_NAME", rset.getString("UNIT_NAME"));
+					departmentMap.put("UNIT_NUMBER", rset.getString("UNIT_NUMBER"));
+					departmentList.add(departmentMap);
+				}
+			}			
 			vo.setDepartmentList(departmentList);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1376,8 +1385,7 @@ public class AwardDaoImpl implements AwardDao {
 				serviceRequestMap.put("ASSIGNEE_PERSON_ID", rset.getString("ASSIGNEE_PERSON_ID"));
 				serviceRequestMap.put("PREV_ASSIGNEE_PERSON_ID", rset.getString("PREV_ASSIGNEE_PERSON_ID"));
 				serviceRequestMap.put("ARRIVAL_DATE", rset.getString("ARRIVAL_DATE"));
-				// serviceRequestMap.put("CA_REVIEW_STATUS_CODE",
-				// rset.getObject("CA_REVIEW_STATUS_CODE"));
+				//serviceRequestMap.put("CA_REVIEW_STATUS_CODE", rset.getObject("CA_REVIEW_STATUS_CODE"));
 				serviceRequestMap.put("CREATE_TIMESTAMP", rset.getString("CREATE_TIMESTAMP"));
 				serviceRequestMap.put("SERVICE_STATUS", rset.getString("SERVICE_STATUS"));
 				serviceRequestMap.put("NEGOTIATOR_ID", rset.getString("NEGOTIATOR_ID"));
