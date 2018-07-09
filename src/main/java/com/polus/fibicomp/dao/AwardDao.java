@@ -18,7 +18,7 @@ public interface AwardDao {
 	 * @return set of values to display award view
 	 * @throws Exception
 	 */
-	public AwardDetailsVO fetchAwardSummaryData(String awardId);
+	public AwardDetailsVO fetchAwardSummaryData(String awardId) throws Exception;
 
 	/**
 	 * This method is to retrieve award reports and terms details

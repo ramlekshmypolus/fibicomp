@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AwardDaoImpl implements AwardDao {
 	private HibernateTemplate hibernateTemplate;
 
 	@Override
-	public AwardDetailsVO fetchAwardSummaryData(String awardId) {
+	public AwardDetailsVO fetchAwardSummaryData(String awardId) throws Exception {
 		logger.info("---------- fetchAwardDetails -----------");
 		AwardDetailsVO awardDetailsVO = new AwardDetailsVO();
 		getAwardSummaryDetails(awardId, awardDetailsVO);
@@ -91,7 +92,7 @@ public class AwardDaoImpl implements AwardDao {
 		return commitmentsVO;
 	}
 
-	public void getAwardSummaryDetails(String awardId, AwardDetailsVO awardDetailsVO) {
+	public void getAwardSummaryDetails(String awardId, AwardDetailsVO awardDetailsVO) throws Exception {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		List<HashMap<String, Object>> awardDetails = new ArrayList<HashMap<String, Object>>();
 		SessionImpl sessionImpl = (SessionImpl) session;
@@ -130,7 +131,11 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("title", rset.getString("title"));
 				detailsField.put("award_effective_date", rset.getString("award_effective_date"));
 				detailsField.put("obligation_start", rset.getString("obligation_start"));
-				detailsField.put("obligation_end", rset.getString("obligation_end"));
+				String obligationEnd = rset.getString("obligation_end");
+				SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
+				java.util.Date date = sdf.parse(obligationEnd);
+				java.sql.Date obligationEndDate = new java.sql.Date(date.getTime());
+				detailsField.put("obligation_end", obligationEndDate);
 				detailsField.put("notice_date", rset.getString("notice_date"));
 				detailsField.put("obligated_amount", rset.getString("obligated_amount"));
 				detailsField.put("anticipated_amount", rset.getString("anticipated_amount"));
@@ -1025,7 +1030,7 @@ public class AwardDaoImpl implements AwardDao {
 					departmentMap.put("UNIT_NUMBER", rset.getString("UNIT_NUMBER"));
 					departmentList.add(departmentMap);
 				}
-			}			
+			}
 			vo.setDepartmentList(departmentList);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1385,7 +1390,8 @@ public class AwardDaoImpl implements AwardDao {
 				serviceRequestMap.put("ASSIGNEE_PERSON_ID", rset.getString("ASSIGNEE_PERSON_ID"));
 				serviceRequestMap.put("PREV_ASSIGNEE_PERSON_ID", rset.getString("PREV_ASSIGNEE_PERSON_ID"));
 				serviceRequestMap.put("ARRIVAL_DATE", rset.getString("ARRIVAL_DATE"));
-				//serviceRequestMap.put("CA_REVIEW_STATUS_CODE", rset.getObject("CA_REVIEW_STATUS_CODE"));
+				// serviceRequestMap.put("CA_REVIEW_STATUS_CODE",
+				// rset.getObject("CA_REVIEW_STATUS_CODE"));
 				serviceRequestMap.put("CREATE_TIMESTAMP", rset.getString("CREATE_TIMESTAMP"));
 				serviceRequestMap.put("SERVICE_STATUS", rset.getString("SERVICE_STATUS"));
 				serviceRequestMap.put("NEGOTIATOR_ID", rset.getString("NEGOTIATOR_ID"));
