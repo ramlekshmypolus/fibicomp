@@ -59,4 +59,6 @@ public interface WorkflowDao {
 
 	public Set<String> fetchEmailAdressByUserType(String roleTypeCode);
 
+	public List<WorkflowReviewerDetail> getWorkflowReviewerDetails(Integer workflowDetailId, String approvalStatusCode);
+
 }
