@@ -155,7 +155,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			List<ResearchSummaryPieChart> summaryAwardPiechart) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select t2.SPONSOR_TYPE_CODE, t3.DESCRIPTION as sponsor_type, count(1) from AWARD t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.sequence_number in(select max(sequence_number) from AWARD where AWARD_NUMBER=t1.AWARD_NUMBER) and t1.LEAD_UNIT_NUMBER in(select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Award' and person_id = :person_id) group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
+				"select t2.SPONSOR_TYPE_CODE, t3.DESCRIPTION as sponsor_type, count(1) from AWARD t1 inner join SPONSOR t2 on t1.sponsor_code=t2.sponsor_code inner join sponsor_type t3 on t2.SPONSOR_TYPE_CODE=t3.SPONSOR_TYPE_CODE where t1.award_sequence_status = 'ACTIVE' and t1.LEAD_UNIT_NUMBER in(select distinct UNIT_NUMBER from MITKC_USER_RIGHT_MV where PERM_NM ='View Award' and person_id = :person_id) group by t2.SPONSOR_TYPE_CODE,t3.DESCRIPTION");
 		query.setString("person_id", person_id);
 		return summaryAwardPiechart = query.list();
 	}
@@ -1210,9 +1210,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (isReviewer) {
 				searchCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
 				countCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
-				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
+				searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.ne("statusCode", Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
 				//searchCriteria.addOrder(Order.desc("statusCode"));
-				countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("statusCode", Constants.PROPOSAL_STATUS_CODE_REVIEW_INPROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
+				countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.ne("statusCode", Constants.PROPOSAL_STATUS_CODE_IN_PROGRESS)).add(Restrictions.eq("createUser", vo.getUserName())));
 				//searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 				//countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
@@ -1225,14 +1225,14 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			searchCriteria.add(and);
-			ProjectionList projList = Projections.projectionList();
+			/*ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("proposalId"), "proposalId");
 			projList.add(Projections.property("title"), "title");
 			projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
 			projList.add(Projections.property("proposalType.description"), "applicationType");
 			projList.add(Projections.property("proposalStatus.description"), "applicationStatus");
 			projList.add(Projections.property("submissionDate"), "submissionDate");
-			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
+			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));*/
 			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
@@ -1242,6 +1242,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			int count = pageNumber * (currentPage - 1);
 			searchCriteria.setFirstResult(count);
 			searchCriteria.setMaxResults(pageNumber);
+			searchCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			@SuppressWarnings("unchecked")
 			List<Proposal> proposals = searchCriteria.list();
 			dashBoardProfile.setProposal(proposals);

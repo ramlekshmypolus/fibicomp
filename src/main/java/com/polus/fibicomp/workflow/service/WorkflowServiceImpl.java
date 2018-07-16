@@ -98,7 +98,27 @@ public class WorkflowServiceImpl implements WorkflowService {
 							workflowDetail.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED);
 							workflowDetail.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_APPROVED));
 							if (rejectedWorkflowDetail != null) {
-								workflowDetail.setApprovalDate(rejectedWorkflowDetail.getApprovalDate());
+								if(rejectedWorkflowDetail.getApproverPersonId().equals(workflowMapDetail.getApproverPersonId())){
+									workflowDetail.setApprovalDate(rejectedWorkflowDetail.getApprovalDate());
+									workflowDetail.setApprovalComment(rejectedWorkflowDetail.getApprovalComment());
+									List<WorkflowAttachment> files = rejectedWorkflowDetail.getWorkflowAttachments();
+									if (files != null && !files.isEmpty()) {
+										List<WorkflowAttachment> workflowAttachments = new ArrayList<WorkflowAttachment>();
+										for (WorkflowAttachment attachment : files) {
+											WorkflowAttachment workflowAttachment = new WorkflowAttachment();
+											workflowAttachment.setDescription(attachment.getDescription());
+											workflowAttachment.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
+											workflowAttachment.setUpdateUser(userName);
+											workflowAttachment.setAttachment(attachment.getAttachment());
+											workflowAttachment.setFileName(attachment.getFileName());
+											workflowAttachment.setMimeType(attachment.getMimeType());
+											workflowAttachment.setWorkflowDetail(workflowDetail);
+											workflowAttachments.add(workflowAttachment);
+										}
+										workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
+									}
+								}
+								/*workflowDetail.setApprovalDate(rejectedWorkflowDetail.getApprovalDate());
 								workflowDetail.setApprovalComment(rejectedWorkflowDetail.getApprovalComment());
 								List<WorkflowAttachment> files = rejectedWorkflowDetail.getWorkflowAttachments();
 								if (files != null && !files.isEmpty()) {
@@ -115,7 +135,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 										workflowAttachments.add(workflowAttachment);
 									}
 									workflowDetail.getWorkflowAttachments().addAll(workflowAttachments);
-								}
+								}*/
 							}
 						}
 						/*if (rejectedWorkflowDetail != null) {

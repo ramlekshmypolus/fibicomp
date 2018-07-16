@@ -18,10 +18,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.polus.fibicomp.constants.Constants;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallType;
 
@@ -160,13 +162,7 @@ public class Proposal implements Serializable {
 	private String homeUnitName;
 
 	@Transient
-	private String applicationStatus;
-
-	@Transient
-	private String applicationCategory;
-
-	@Transient
-	private String applicationType;
+	private String principalInvestigator;
 
 	public Proposal() {
 		proposalAttachments = new ArrayList<ProposalAttachment>();
@@ -478,28 +474,16 @@ public class Proposal implements Serializable {
 		this.ipNumber = ipNumber;
 	}
 
-	public String getApplicationStatus() {
-		return applicationStatus;
-	}
-
-	public void setApplicationStatus(String applicationStatus) {
-		this.applicationStatus = applicationStatus;
-	}
-
-	public String getApplicationCategory() {
-		return applicationCategory;
-	}
-
-	public void setApplicationCategory(String applicationCategory) {
-		this.applicationCategory = applicationCategory;
-	}
-
-	public String getApplicationType() {
-		return applicationType;
-	}
-
-	public void setApplicationType(String applicationType) {
-		this.applicationType = applicationType;
+	public String getPrincipalInvestigator() {
+		ProposalPerson pi = null;
+		for (ProposalPerson person : proposalPersons) {
+			if (StringUtils.equals(person.getProposalPersonRole().getCode(), Constants.PRINCIPAL_INVESTIGATOR)) {
+				pi = person;
+				break;
+			}
+		}
+		principalInvestigator = pi != null ? pi.getFullName() : null;
+		return principalInvestigator;
 	}
 
 }

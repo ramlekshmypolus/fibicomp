@@ -262,4 +262,14 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		return mailAdressList;
 	}
 
+	@Override
+	public List<WorkflowReviewerDetail> getWorkflowReviewerDetails(Integer workflowDetailId, String approvalStatusCode) {
+		Criteria criteria = hibernateTemplate.getSessionFactory().getCurrentSession().createCriteria(WorkflowReviewerDetail.class);
+		criteria.add(Restrictions.eq("workflowDetail.workflowDetailId", workflowDetailId));
+		criteria.add(Restrictions.eq("approvalStatusCode", approvalStatusCode));
+		@SuppressWarnings("unchecked")
+		List<WorkflowReviewerDetail> reviewerDetails = criteria.list();
+		return reviewerDetails;
+	}
+
 }

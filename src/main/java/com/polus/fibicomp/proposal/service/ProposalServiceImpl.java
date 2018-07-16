@@ -769,7 +769,7 @@ public class ProposalServiceImpl implements ProposalService {
 									WorkflowAttachment workflowAttachment = new WorkflowAttachment();
 									workflowAttachment.setDescription(proposalVO.getApproveComment());
 									workflowAttachment.setUpdateTimeStamp(committeeDao.getCurrentTimestamp());
-									workflowAttachment.setUpdateUser(proposalVO.getPersonId());			
+									workflowAttachment.setUpdateUser(proposalVO.getPersonId());
 									workflowAttachment.setAttachment(files[i].getBytes());
 									workflowAttachment.setFileName(files[i].getOriginalFilename());
 									workflowAttachment.setMimeType(files[i].getContentType());
@@ -779,10 +779,21 @@ public class ProposalServiceImpl implements ProposalService {
 								reviewerDetail.getWorkflowAttachments().addAll(workflowAttachments);
 							}
 							workflowDao.saveWorkflowReviewDetail(reviewerDetail);
+							List<WorkflowReviewerDetail> remainingReviewers = workflowDao.getWorkflowReviewerDetails(workflowDetail.getWorkflowDetailId(), Constants.WORKFLOW_STATUS_CODE_WAITING);
+							for (WorkflowReviewerDetail remainingReviewer : remainingReviewers) {
+								if (!remainingReviewer.getReviewerPersonId().equals(proposalVO.getPersonId())) {
+									remainingReviewer.setApprovalStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED);
+									remainingReviewer.setWorkflowStatus(workflowDao.fetchWorkflowStatusByStatusCode(Constants.WORKFLOW_STATUS_CODE_REVIEW_COMPLETED));
+									workflowDao.saveWorkflowReviewDetail(reviewerDetail);
+								}
+							}
+							if (reviewerDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING)) {
+								reviewComplete = false;
+							}
 						}
-						if (reviewerDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING)) {
+						/*if (reviewerDetail.getApprovalStatusCode().equals(Constants.WORKFLOW_STATUS_CODE_WAITING)) {
 							reviewComplete = false;
-						}
+						}*/
 					}
 				}
 			}
