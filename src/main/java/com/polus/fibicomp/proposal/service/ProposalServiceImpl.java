@@ -549,7 +549,8 @@ public class ProposalServiceImpl implements ProposalService {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			proposalVO = mapper.readValue(formDataJSON, ProposalVO.class);
-			Proposal proposal = proposalVO.getProposal();
+			//Proposal proposal = proposalVO.getProposal();
+			Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
 			String actionType = proposalVO.getActionType();
 			String approverComment = proposalVO.getApproveComment();
 			Integer approvalStopNumber = proposalVO.getApproverStopNumber();
@@ -738,7 +739,8 @@ public class ProposalServiceImpl implements ProposalService {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			proposalVO = mapper.readValue(formDataJSON, ProposalVO.class);		
-			Proposal proposal = proposalVO.getProposal();
+			//Proposal proposal = proposalVO.getProposal();
+			Proposal proposal = proposalDao.fetchProposalById(proposalVO.getProposalId());
 			String piName = getPrincipalInvestigator(proposal.getProposalPersons());
 			String message = "The following application has routed for approval:<br/><br/>Application Title: "+ proposal.getTitle() +"<br/>"
 					+ "Principal Investigator: "+ piName +"<br/>Sponsor Due Date: "+ proposal.getSubmissionDate() +"<br/><br/>Please go to "

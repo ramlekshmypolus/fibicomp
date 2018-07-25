@@ -164,6 +164,15 @@ public class Proposal implements Serializable {
 	@Transient
 	private String principalInvestigator;
 
+	@Transient
+	private String applicationCategory;
+
+	@Transient
+	private String applicationType;
+
+	@Transient
+	private String applicationStatus;
+
 	public Proposal() {
 		proposalAttachments = new ArrayList<ProposalAttachment>();
 		proposalBudgets = new ArrayList<ProposalBudget>();
@@ -484,6 +493,34 @@ public class Proposal implements Serializable {
 		}
 		principalInvestigator = pi != null ? pi.getFullName() : null;
 		return principalInvestigator;
+	}
+
+	public String getApplicationCategory() {
+		return applicationCategory;
+	}
+
+	public void setApplicationCategory(String applicationCategory) {
+		this.applicationCategory = applicationCategory;
+	}
+
+	public String getApplicationType() {
+		return applicationType;
+	}
+
+	public void setApplicationType(String applicationType) {
+		this.applicationType = applicationType;
+	}
+
+	public String getApplicationStatus() {
+		return applicationStatus;
+	}
+
+	public void setApplicationStatus(String applicationStatus) {
+		this.applicationStatus = applicationStatus;
+	}
+
+	public void setPrincipalInvestigator(String principalInvestigator) {
+		this.principalInvestigator = principalInvestigator;
 	}
 
 }
