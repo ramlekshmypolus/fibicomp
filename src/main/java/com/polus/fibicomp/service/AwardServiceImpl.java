@@ -94,8 +94,7 @@ public class AwardServiceImpl implements AwardService {
 			serviceRequest.setAssigneePersonId(null);
 			serviceRequest.setAssigneePersonName(null);
 		}
-		Integer successCode = awardDao.updateServiceRequest(serviceRequest, vo.getUserName(), vo.getFullName(),
-				vo.getIsUnitAdmin());
+		Integer successCode = awardDao.updateServiceRequest(serviceRequest, vo.getUserName(), vo.getFullName(), vo.getIsUnitAdmin());
 		if (successCode == 20100) {
 			vo.setSuccessMsg("Data changed between retrieval and update. Do you want to update with the latest?");
 		} else {
