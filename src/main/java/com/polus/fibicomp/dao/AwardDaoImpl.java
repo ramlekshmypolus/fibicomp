@@ -132,10 +132,14 @@ public class AwardDaoImpl implements AwardDao {
 				detailsField.put("award_effective_date", rset.getString("award_effective_date"));
 				detailsField.put("obligation_start", rset.getString("obligation_start"));
 				String obligationEnd = rset.getString("obligation_end");
-				SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
-				java.util.Date date = sdf.parse(obligationEnd);
-				java.sql.Date obligationEndDate = new java.sql.Date(date.getTime());
-				detailsField.put("obligation_end", obligationEndDate);
+				if (obligationEnd != null && !obligationEnd.isEmpty()) {
+					SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
+					java.util.Date date = sdf.parse(obligationEnd);
+					java.sql.Date obligationEndDate = new java.sql.Date(date.getTime());
+					detailsField.put("obligation_end", obligationEndDate);
+				} else {
+					detailsField.put("obligation_end", obligationEnd);
+				}
 				detailsField.put("notice_date", rset.getString("notice_date"));
 				detailsField.put("obligated_amount", rset.getString("obligated_amount"));
 				detailsField.put("anticipated_amount", rset.getString("anticipated_amount"));
@@ -1111,7 +1115,7 @@ public class AwardDaoImpl implements AwardDao {
 		try {
 			if (oracledb.equalsIgnoreCase("N")) {
 				statement = connection.prepareCall(
-						"{call UPD_OST_SERVICE_REQUEST(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+						"{call UPD_OST_SERVICE_REQUEST(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 				statement.setInt(1, serviceRequest.getServiceRequestId());
 				statement.setInt(2, serviceRequest.getStatusCode());
 				statement.setInt(3, serviceRequest.getServiceTypeCode());
@@ -1138,21 +1142,21 @@ public class AwardDaoImpl implements AwardDao {
 				statement.setString(14, serviceRequest.getAcType());
 				statement.setString(15, serviceRequest.getAssigneePersonId());
 				statement.setString(16, serviceRequest.getAssigneePersonName());
-				statement.setInt(17, serviceRequest.getCaReviewStatusCode());
-				statement.setInt(18, serviceRequest.getOstCategoryCode());
-				if (serviceRequest.getFdpFlag() != null && serviceRequest.getFdpFlag() == true) {
+				//statement.setInt(17, serviceRequest.getCaReviewStatusCode());
+				statement.setInt(17, serviceRequest.getOstCategoryCode());
+				/*if (serviceRequest.getFdpFlag() != null && serviceRequest.getFdpFlag() == true) {
 					statement.setString(19, "Y");
 				} else {
 					statement.setString(19, "N");
-				}
-				statement.setDate(20, serviceRequest.getArrivalDate());
-				if (serviceRequest.getNegotiationFlag() != null && serviceRequest.getNegotiationFlag() == true) {
+				}*/
+				statement.setDate(18, serviceRequest.getArrivalDate());
+				/*if (serviceRequest.getNegotiationFlag() != null && serviceRequest.getNegotiationFlag() == true) {
 					statement.setString(21, "Y");
 				} else {
 					statement.setString(21, "N");
-				}
-				statement.setString(22, serviceRequest.getStatusComment());
-				if (serviceRequest.getNegotiatorId() != null) {
+				}*/
+				statement.setString(19, serviceRequest.getStatusComment());
+				/*if (serviceRequest.getNegotiatorId() != null) {
 					statement.setInt(23, serviceRequest.getNegotiatorId());
 				} else {
 					statement.setString(23, null);
@@ -1161,15 +1165,15 @@ public class AwardDaoImpl implements AwardDao {
 					statement.setString(24, serviceRequest.getNegotiatorName());
 				} else {
 					statement.setString(24, null);
-				}
-				statement.setInt(25, serviceRequest.getWorkFlowTaskCode());
-				statement.setTimestamp(26, serviceRequest.getSqlUpdateDate());
+				}*/
+				statement.setInt(20, serviceRequest.getWorkFlowTaskCode());
+				statement.setTimestamp(21, serviceRequest.getSqlUpdateDate());
 				statement.execute();
-				result = statement.getString(27);
+				result = statement.getString(22);
 			} else if (oracledb.equalsIgnoreCase("Y")) {
 				String procedureName = "UPD_OST_SERVICE_REQUEST";
 				String functionCall = "{call " + procedureName
-						+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+						+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 				statement = connection.prepareCall(functionCall);
 				statement.setInt(1, serviceRequest.getServiceRequestId());
 				statement.setInt(2, serviceRequest.getStatusCode());
@@ -1197,21 +1201,21 @@ public class AwardDaoImpl implements AwardDao {
 				statement.setString(14, serviceRequest.getAcType());
 				statement.setString(15, serviceRequest.getAssigneePersonId());
 				statement.setString(16, serviceRequest.getAssigneePersonName());
-				statement.setObject(17, serviceRequest.getCaReviewStatusCode());
-				statement.setInt(18, serviceRequest.getOstCategoryCode());
-				if (serviceRequest.getFdpFlag() != null && serviceRequest.getFdpFlag() == true) {
+				//statement.setObject(17, serviceRequest.getCaReviewStatusCode());
+				statement.setInt(17, serviceRequest.getOstCategoryCode());
+				/*if (serviceRequest.getFdpFlag() != null && serviceRequest.getFdpFlag() == true) {
 					statement.setString(19, "Y");
 				} else {
 					statement.setString(19, "N");
-				}
-				statement.setDate(20, serviceRequest.getArrivalDate());
-				if (serviceRequest.getNegotiationFlag() != null && serviceRequest.getNegotiationFlag() == true) {
+				}*/
+				statement.setDate(18, serviceRequest.getArrivalDate());
+				/*if (serviceRequest.getNegotiationFlag() != null && serviceRequest.getNegotiationFlag() == true) {
 					statement.setString(21, "Y");
 				} else {
 					statement.setString(21, "N");
-				}
-				statement.setString(22, serviceRequest.getStatusComment());
-				if (serviceRequest.getNegotiatorId() != null) {
+				}*/
+				statement.setString(19, serviceRequest.getStatusComment());
+				/*if (serviceRequest.getNegotiatorId() != null) {
 					statement.setInt(23, serviceRequest.getNegotiatorId());
 				} else {
 					statement.setString(23, null);
@@ -1220,12 +1224,12 @@ public class AwardDaoImpl implements AwardDao {
 					statement.setString(24, serviceRequest.getNegotiatorName());
 				} else {
 					statement.setString(24, null);
-				}
-				statement.setObject(25, serviceRequest.getWorkFlowTaskCode());
-				statement.setTimestamp(26, serviceRequest.getSqlUpdateDate());
-				statement.registerOutParameter(27, OracleTypes.CURSOR);
+				}*/
+				statement.setObject(20, serviceRequest.getWorkFlowTaskCode());
+				statement.setTimestamp(21, serviceRequest.getSqlUpdateDate());
+				statement.registerOutParameter(22, OracleTypes.CURSOR);
 				statement.execute();
-				result = statement.getString(27);
+				result = statement.getString(22);
 			}
 			if (result == null) {
 				isUpdated = 0;
