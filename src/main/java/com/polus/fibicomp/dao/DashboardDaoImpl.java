@@ -1168,12 +1168,14 @@ public class DashboardDaoImpl implements DashboardDao {
 			Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 			Criteria searchCriteria = session.createCriteria(Proposal.class);
 			searchCriteria.createAlias("proposalStatus", "proposalStatus");
-			searchCriteria.createAlias("proposalCategory", "proposalCategory");
+			//searchCriteria.createAlias("proposalCategory", "proposalCategory");
+			searchCriteria.createAlias("activityType", "activityType");
 			searchCriteria.createAlias("proposalType", "proposalType");
 
 			Criteria countCriteria = session.createCriteria(Proposal.class);
 			countCriteria.createAlias("proposalStatus", "proposalStatus");
-			countCriteria.createAlias("proposalCategory", "proposalCategory");
+			//countCriteria.createAlias("proposalCategory", "proposalCategory");
+			countCriteria.createAlias("activityType", "activityType");
 			countCriteria.createAlias("proposalType", "proposalType");
 			if (sortBy.isEmpty() || reverse.isEmpty()) {
 				if (!isProvost) {
@@ -1197,7 +1199,8 @@ public class DashboardDaoImpl implements DashboardDao {
 				and.add(Restrictions.like("proposalStatus.description", "%" + property3 + "%").ignoreCase());
 			}
 			if (property4 != null && !property4.isEmpty()) {
-				and.add(Restrictions.like("proposalCategory.description", "%" + property4 + "%").ignoreCase());
+				//and.add(Restrictions.like("proposalCategory.description", "%" + property4 + "%").ignoreCase());
+				and.add(Restrictions.like("activityType.description", "%" + property4 + "%").ignoreCase());
 			}
 			if (isProvost) {
 				List<Integer> proposalStatusCode = new ArrayList<Integer>();
@@ -1219,16 +1222,17 @@ public class DashboardDaoImpl implements DashboardDao {
 			if (personId != null && !personId.isEmpty()) {
 				if(!isUnitAdmin && !isProvost && !isReviewer) {
 					searchCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
-					searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
+					searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())).add(Restrictions.eq("homeUnitNumber", vo.getUnitNumber())));
 					countCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
-					countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
+					countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())).add(Restrictions.eq("homeUnitNumber", vo.getUnitNumber())));
 				}
 			}
 			searchCriteria.add(and);
 			/*ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("proposalId"), "proposalId");
 			projList.add(Projections.property("title"), "title");
-			projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
+			//projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
+			projList.add(Projections.property("activityType.description"), "applicationCategory");
 			projList.add(Projections.property("proposalType.description"), "applicationType");
 			projList.add(Projections.property("proposalStatus.description"), "applicationStatus");
 			projList.add(Projections.property("submissionDate"), "submissionDate");
