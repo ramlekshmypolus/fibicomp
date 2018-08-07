@@ -83,14 +83,16 @@ public class ReportDaoImpl implements ReportDao {
 		Criteria criteria = session.createCriteria(Proposal.class);
 		criteria.createAlias("grantCall", "grantCall");
 		criteria.createAlias("proposalStatus", "proposalStatus");
-		criteria.createAlias("proposalCategory", "proposalCategory");
+		//criteria.createAlias("proposalCategory", "proposalCategory");
+		criteria.createAlias("activityType", "activityType");
 		criteria.createAlias("proposalType", "proposalType");
 
 		criteria.add(Restrictions.eq("grantCall.grantTypeCode", grantCallTypeCode));
 		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.property("proposalId"), "proposalId");
 		projList.add(Projections.property("title"), "title");
-		projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
+		//projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
+		projList.add(Projections.property("activityType.description"), "applicationCategory");
 		projList.add(Projections.property("proposalType.description"), "applicationType");
 		projList.add(Projections.property("proposalStatus.description"), "applicationStatus");
 		projList.add(Projections.property("submissionDate"), "submissionDate");

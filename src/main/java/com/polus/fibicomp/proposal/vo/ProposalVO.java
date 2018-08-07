@@ -2,10 +2,13 @@ package com.polus.fibicomp.proposal.vo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.polus.fibicomp.budget.pojo.CostElement;
 import com.polus.fibicomp.committee.pojo.ResearchArea;
 import com.polus.fibicomp.grantcall.pojo.GrantCall;
 import com.polus.fibicomp.grantcall.pojo.GrantCallType;
+import com.polus.fibicomp.pojo.ActivityType;
 import com.polus.fibicomp.pojo.FundingSourceType;
 import com.polus.fibicomp.pojo.ProposalPersonRole;
 import com.polus.fibicomp.pojo.Protocol;
@@ -17,7 +20,6 @@ import com.polus.fibicomp.proposal.pojo.Proposal;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachment;
 import com.polus.fibicomp.proposal.pojo.ProposalAttachmentType;
 import com.polus.fibicomp.proposal.pojo.ProposalBudgetCategory;
-import com.polus.fibicomp.proposal.pojo.ProposalCategory;
 import com.polus.fibicomp.proposal.pojo.ProposalCostElement;
 import com.polus.fibicomp.proposal.pojo.ProposalExcellenceArea;
 import com.polus.fibicomp.proposal.pojo.ProposalInstituteCentreLab;
@@ -34,7 +36,9 @@ public class ProposalVO {
 
 	private Proposal proposal;
 
-	private List<ProposalCategory> proposalCategories;
+	//private List<ProposalCategory> proposalCategories;
+
+	private List<ActivityType> activityTypes;
 
 	private List<ScienceKeyword> scienceKeywords;
 
@@ -100,6 +104,8 @@ public class ProposalVO {
 
 	private String userName;
 
+	private String userFullName;
+
 	private String personId;
 
 	private String approveComment;
@@ -132,6 +138,16 @@ public class ProposalVO {
 
 	private List<Unit> homeUnits;
 
+	private List<CostElement> costElements;
+
+	private Integer budgetPeriodId;
+
+	private List<CostElement> sysGeneratedCostElements;
+
+	private Integer budgetDetailId;
+
+	private Set<String> rateClassTypes;
+
 	public ProposalVO() {
 		proposal = new Proposal();
 	}
@@ -152,13 +168,13 @@ public class ProposalVO {
 		this.proposal = proposal;
 	}
 
-	public List<ProposalCategory> getProposalCategories() {
+	/*public List<ProposalCategory> getProposalCategories() {
 		return proposalCategories;
 	}
 
 	public void setProposalCategories(List<ProposalCategory> proposalCategories) {
 		this.proposalCategories = proposalCategories;
-	}
+	}*/
 
 	public List<ScienceKeyword> getScienceKeywords() {
 		return scienceKeywords;
@@ -302,14 +318,6 @@ public class ProposalVO {
 
 	public void setAttachmentId(Integer attachmentId) {
 		this.attachmentId = attachmentId;
-	}
-
-	public Integer getBudgetId() {
-		return budgetId;
-	}
-
-	public void setBudgetId(Integer budgetId) {
-		this.budgetId = budgetId;
 	}
 
 	public Integer getProposalPersonId() {
@@ -542,6 +550,70 @@ public class ProposalVO {
 
 	public void setHomeUnits(List<Unit> homeUnits) {
 		this.homeUnits = homeUnits;
+	}
+
+	public List<CostElement> getCostElements() {
+		return costElements;
+	}
+
+	public void setCostElements(List<CostElement> costElements) {
+		this.costElements = costElements;
+	}
+
+	public String getUserFullName() {
+		return userFullName;
+	}
+
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
+	}
+
+	public List<ActivityType> getActivityTypes() {
+		return activityTypes;
+	}
+
+	public void setActivityTypes(List<ActivityType> activityTypes) {
+		this.activityTypes = activityTypes;
+	}
+
+	public List<CostElement> getSysGeneratedCostElements() {
+		return sysGeneratedCostElements;
+	}
+
+	public void setSysGeneratedCostElements(List<CostElement> sysGeneratedCostElements) {
+		this.sysGeneratedCostElements = sysGeneratedCostElements;
+	}
+
+	public Integer getBudgetId() {
+		return budgetId;
+	}
+
+	public void setBudgetId(Integer budgetId) {
+		this.budgetId = budgetId;
+	}
+
+	public Integer getBudgetPeriodId() {
+		return budgetPeriodId;
+	}
+
+	public void setBudgetPeriodId(Integer budgetPeriodId) {
+		this.budgetPeriodId = budgetPeriodId;
+	}
+
+	public Integer getBudgetDetailId() {
+		return budgetDetailId;
+	}
+
+	public void setBudgetDetailId(Integer budgetDetailId) {
+		this.budgetDetailId = budgetDetailId;
+	}
+
+	public Set<String> getRateClassTypes() {
+		return rateClassTypes;
+	}
+
+	public void setRateClassTypes(Set<String> rateClassTypes) {
+		this.rateClassTypes = rateClassTypes;
 	}
 
 }
