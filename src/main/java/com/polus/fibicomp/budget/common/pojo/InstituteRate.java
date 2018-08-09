@@ -61,7 +61,7 @@ public class InstituteRate implements Serializable {
 	@Column(name = "START_DATE")
 	private Date startDate;
 
-	@Column(name = "RATE", precision = 2)
+	@Column(name = "RATE", precision = 10, scale = 3)
 	private BigDecimal instituteRate;
 
 	@Column(name = "UNIT_NUMBER")

@@ -136,7 +136,7 @@ public class FibiRepoConfig {
 			if (container instanceof TomcatEmbeddedServletContainerFactory) {
 				TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) container;
 				tomcat.addConnectorCustomizers((connector) -> {
-					connector.setMaxPostSize(25000000); // 25 MB
+					connector.setMaxPostSize(60000000); // 60 MB
 				});
 			}
 		};
