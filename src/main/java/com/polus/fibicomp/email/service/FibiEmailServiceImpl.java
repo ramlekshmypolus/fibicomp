@@ -60,6 +60,11 @@ public class FibiEmailServiceImpl implements FibiEmailService {
 	@Override
 	public void sendEmail(Set<String> toAddresses, String subject, Set<String> ccAddresses, Set<String> bccAddresses, String body, boolean htmlMessage) {
 		logger.info("Received request for mail sending");
+		logger.info("toAddresses : " + toAddresses);
+		logger.info("subject : " + subject);
+		logger.info("ccAddresses : " + ccAddresses);
+		logger.info("bccAddresses : " + bccAddresses);
+		logger.info("body : " + body);
 		if (mailSender != null) {
 			if (CollectionUtils.isEmpty(toAddresses)) {
 				return;
@@ -86,12 +91,17 @@ public class FibiEmailServiceImpl implements FibiEmailService {
 				}
 
 				if (isEmailTestEnabled()) {
-					helper.setText(getTestMessageBody(body, toAddresses, ccAddresses, bccAddresses), true);
+					logger.info("Test email enabled.");
+					String testEmailBody = getTestMessageBody(body, toAddresses, ccAddresses, bccAddresses);
+					helper.setText(testEmailBody, true);
+					logger.info("test testEmailBody : " + testEmailBody);
 					String toAddress = getEmailNotificationTestAddress();
+					logger.info("test toAddress : " + toAddress);
 					if (StringUtils.isNotBlank(toAddress)) {
 						helper.addTo(toAddress);
 					}
 				} else {
+					logger.info("Production email enabled.");
 					helper.setText(body, htmlMessage);
 					if (CollectionUtils.isNotEmpty(toAddresses)) {
 						for (String toAddress : toAddresses) {
