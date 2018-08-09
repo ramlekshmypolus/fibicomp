@@ -54,7 +54,7 @@ public class ValidCeRateType implements Serializable {
 
 	@JsonBackReference
 	@ManyToOne(optional = false, cascade = { CascadeType.REFRESH })
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_VALID_CE_RATE_TYPES_CE_KRA"), name = "COST_ELEMENT", referencedColumnName = "COST_ELEMENT", insertable = false, updatable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_FIBI_VALID_CE_RATE_TYPES"), name = "COST_ELEMENT", referencedColumnName = "COST_ELEMENT", insertable = false, updatable = false)
 	private CostElement costElementBo;
 
 	@Column(name = "ACTIVE_FLAG")

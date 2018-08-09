@@ -68,10 +68,10 @@ public class FibiProposalRate implements Serializable {
 	@Column(name = "START_DATE")
 	private Date startDate;
 
-	@Column(name = "INSTITUTE_RATE", precision = 2)
+	@Column(name = "INSTITUTE_RATE", precision = 10, scale = 3)
 	private BigDecimal instituteRate;
 
-	@Column(name = "APPLICABLE_RATE", precision = 2)
+	@Column(name = "APPLICABLE_RATE", precision = 10, scale = 3)
 	private BigDecimal applicableRate;
 
 	@Column(name = "UPDATE_TIMESTAMP")
