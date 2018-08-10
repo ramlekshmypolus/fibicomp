@@ -173,6 +173,15 @@ public class Proposal implements Serializable {
 	@Transient
 	private String principalInvestigator;
 
+	@Transient
+	private String applicationActivityType;
+
+	@Transient
+	private String applicationType;
+
+	@Transient
+	private String applicationStatus;
+
 	public Proposal() {
 		proposalAttachments = new ArrayList<ProposalAttachment>();
 		proposalKeywords = new ArrayList<ProposalKeyword>();
@@ -512,6 +521,30 @@ public class Proposal implements Serializable {
 
 	public void setActivityType(ActivityType activityType) {
 		this.activityType = activityType;
+	}
+
+	public String getApplicationActivityType() {
+		return applicationActivityType;
+	}
+
+	public void setApplicationActivityType(String applicationActivityType) {
+		this.applicationActivityType = applicationActivityType;
+	}
+
+	public String getApplicationType() {
+		return applicationType;
+	}
+
+	public void setApplicationType(String applicationType) {
+		this.applicationType = applicationType;
+	}
+
+	public String getApplicationStatus() {
+		return applicationStatus;
+	}
+
+	public void setApplicationStatus(String applicationStatus) {
+		this.applicationStatus = applicationStatus;
 	}
 
 }
