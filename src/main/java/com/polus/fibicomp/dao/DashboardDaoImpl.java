@@ -1228,15 +1228,15 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			searchCriteria.add(and);
-			/*ProjectionList projList = Projections.projectionList();
+			ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("proposalId"), "proposalId");
 			projList.add(Projections.property("title"), "title");
 			//projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
-			projList.add(Projections.property("activityType.description"), "applicationCategory");
+			projList.add(Projections.property("activityType.description"), "applicationActivityType");
 			projList.add(Projections.property("proposalType.description"), "applicationType");
 			projList.add(Projections.property("proposalStatus.description"), "applicationStatus");
 			projList.add(Projections.property("submissionDate"), "submissionDate");
-			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));*/
+			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
 			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
@@ -1246,7 +1246,7 @@ public class DashboardDaoImpl implements DashboardDao {
 			int count = pageNumber * (currentPage - 1);
 			searchCriteria.setFirstResult(count);
 			searchCriteria.setMaxResults(pageNumber);
-			searchCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			//searchCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			@SuppressWarnings("unchecked")
 			List<Proposal> proposals = searchCriteria.list();
 			dashBoardProfile.setProposal(proposals);

@@ -190,7 +190,7 @@ public class BudgetServiceImpl implements BudgetService {
 		// Rounding mode is used to remove an exception thrown in BigDecimal division to get rounding up to 2 precision
 		BigDecimal perDayCost = lineItemCost.divide(new BigDecimal(((budgetPeriodEndDate.getTime() - budgetPeriodStartDate.getTime()) / 86400000 + 1)), 2, RoundingMode.HALF_UP);
 		BigDecimal validRate = BigDecimal.ZERO;
-		BudgetDetailCalcAmount budgetCalculatedAmount = null;
+		//BudgetDetailCalcAmount budgetCalculatedAmount = null;
 		List<ValidCeRateType> ceRateTypes = costElement.getValidCeRateTypes();
 		if (ceRateTypes != null && !ceRateTypes.isEmpty()) {
 			for (ValidCeRateType ceRateType : ceRateTypes) {
@@ -202,7 +202,7 @@ public class BudgetServiceImpl implements BudgetService {
 						|| (applicableRate.getRateClass().getRateClassTypeCode().equals("V") && "8".equals(applicableRate.getRateClassCode())
 								&& !"2".equals(applicableRate.getRateTypeCode())))) {
 					validRate = validRate.add(applicableRate.getApplicableRate());
-					budgetCalculatedAmount = getNewBudgetCalculatedAmount(budgetPeriod, budgetDetail, applicableRate);
+					//budgetCalculatedAmount = getNewBudgetCalculatedAmount(budgetPeriod, budgetDetail, applicableRate);
 				}
 			}
 		}
@@ -211,7 +211,7 @@ public class BudgetServiceImpl implements BudgetService {
 			BigDecimal hundred = new BigDecimal(100);
 			BigDecimal percentageFactor = validRate.divide(hundred, 2, BigDecimal.ROUND_HALF_UP);
 			fringeCost = fringeCost.add((perDayCost.multiply(percentageFactor)).multiply(new BigDecimal(numberOfDays)));
-			budgetCalculatedAmount.setCalculatedCost(fringeCost);
+			//budgetCalculatedAmount.setCalculatedCost(fringeCost);
 			//budgetDetail.getBudgetDetailCalcAmounts().add(budgetCalculatedAmount);
 		}
 		return fringeCost;
@@ -224,7 +224,7 @@ public class BudgetServiceImpl implements BudgetService {
 		CostElement costElement = budgetDetail.getCostElement();
 		// Rounding mode is used to remove an exception thrown in BigDecimal division to get rounding up to 2 precision);
 		BigDecimal validRate = BigDecimal.ZERO;
-		BudgetDetailCalcAmount budgetCalculatedAmount = null;
+		//BudgetDetailCalcAmount budgetCalculatedAmount = null;
 		String ohRateClassTypeCode = commonDao.getParameterValueAsString(Constants.KC_B_PARAMETER_NAMESPACE,
 				Constants.KC_DOC_PARAMETER_DETAIL_TYPE_CODE, Constants.DEFAULT_RATE_CLASS_TYPE_CODE);
 		String rateTypeCode = commonDao.getParameterValueAsString(Constants.KC_B_PARAMETER_NAMESPACE,
@@ -238,7 +238,7 @@ public class BudgetServiceImpl implements BudgetService {
 						&& applicableRate.getRateClass().getRateClassTypeCode().equals(ohRateClassTypeCode)
 						&& applicableRate.getRateTypeCode().equals(rateTypeCode)) {
 					validRate = validRate.add(applicableRate.getApplicableRate());
-					budgetCalculatedAmount = getNewBudgetCalculatedAmount(budgetPeriod, budgetDetail, applicableRate);
+					//budgetCalculatedAmount = getNewBudgetCalculatedAmount(budgetPeriod, budgetDetail, applicableRate);
 				}
 			}
 		}
@@ -246,7 +246,7 @@ public class BudgetServiceImpl implements BudgetService {
 			BigDecimal hundred = new BigDecimal(100);
 			BigDecimal percentageFactor = validRate.divide(hundred, 2, BigDecimal.ROUND_HALF_UP);
 			fandACost = fandACost.add((fringeWithLineItemCost.multiply(percentageFactor)));
-			budgetCalculatedAmount.setCalculatedCost(fandACost);
+			//budgetCalculatedAmount.setCalculatedCost(fandACost);
 			//budgetDetail.getBudgetDetailCalcAmounts().add(budgetCalculatedAmount);
 		}
 		return fandACost;
