@@ -1219,6 +1219,7 @@ public class DashboardDaoImpl implements DashboardDao {
 				//searchCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 				//countCriteria.add(Restrictions.disjunction().add(Restrictions.eq("proposalPersons.personId", personId)).add(Restrictions.eq("createUser", vo.getUserName())));
 			}
+
 			if (personId != null && !personId.isEmpty()) {
 				if(!isUnitAdmin && !isProvost && !isReviewer) {
 					searchCriteria.createAlias("proposalPersons", "proposalPersons", JoinType.LEFT_OUTER_JOIN);
@@ -1228,7 +1229,7 @@ public class DashboardDaoImpl implements DashboardDao {
 				}
 			}
 			searchCriteria.add(and);
-			ProjectionList projList = Projections.projectionList();
+			/*ProjectionList projList = Projections.projectionList();
 			projList.add(Projections.property("proposalId"), "proposalId");
 			projList.add(Projections.property("title"), "title");
 			//projList.add(Projections.property("proposalCategory.description"), "applicationCategory");
@@ -1236,7 +1237,9 @@ public class DashboardDaoImpl implements DashboardDao {
 			projList.add(Projections.property("proposalType.description"), "applicationType");
 			projList.add(Projections.property("proposalStatus.description"), "applicationStatus");
 			projList.add(Projections.property("submissionDate"), "submissionDate");
-			searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
+			searchCriteria.setProjection(Projections.distinct((projList)));*/
+			//searchCriteria.setProjection(Projections.distinct(projList)).setResultTransformer(Transformers.aliasToBean(Proposal.class));
+			//searchCriteria.setProjection(projList).setResultTransformer(Transformers.aliasToBean(Proposal.class));
 			countCriteria.add(and);
 
 			Long dashboardCount = (Long) countCriteria.setProjection(Projections.rowCount()).uniqueResult();
@@ -1246,10 +1249,24 @@ public class DashboardDaoImpl implements DashboardDao {
 			int count = pageNumber * (currentPage - 1);
 			searchCriteria.setFirstResult(count);
 			searchCriteria.setMaxResults(pageNumber);
-			//searchCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			searchCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			@SuppressWarnings("unchecked")
-			List<Proposal> proposals = searchCriteria.list();
-			dashBoardProfile.setProposal(proposals);
+			List<Proposal> proposals = searchCriteria.list();			
+			List<Proposal> proposalList = new ArrayList<>();
+			if(proposals!=null && !proposals.isEmpty()) {
+				for(Proposal proposalObject : proposals) {
+					Proposal propObj = new Proposal();
+					propObj.setProposalId(proposalObject.getProposalId());
+					propObj.setTitle(proposalObject.getTitle());
+					propObj.setApplicationActivityType(proposalObject.getActivityType().getDescription());
+					propObj.setApplicationType(proposalObject.getProposalType().getDescription());
+					propObj.setApplicationStatus(proposalObject.getProposalStatus().getDescription());
+					propObj.setSubmissionDate(proposalObject.getSubmissionDate());
+					propObj.setPrincipalInvestigator(proposalObject.getPrincipalInvestigator());
+					proposalList.add(propObj);
+				}
+			}
+			dashBoardProfile.setProposal(proposalList);
 		} catch (Exception e) {
 			logger.error("Error in method getDashBoardDataForSmuProposal");
 			e.printStackTrace();
